@@ -1,5 +1,5 @@
 - name: 🎭 Comment reactions - Comment reactions
-  uses: lowlighter/metrics@latest
+  uses: ddarkr/metrics@latest
   with:
     token: MOCKED_TOKEN
     plugin_reactions: 'yes'

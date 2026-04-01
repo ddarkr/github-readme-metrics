@@ -1,5 +1,5 @@
 - name: 🎫 Gists - Gists
-  uses: lowlighter/metrics@latest
+  uses: ddarkr/metrics@latest
   with:
     token: MOCKED_TOKEN
     plugin_gists: 'yes'

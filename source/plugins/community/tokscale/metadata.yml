@@ -1,0 +1,50 @@
+name: "🎯 Tokscale"
+category: community
+description: |
+  Displays token usage statistics from [Tokscale.ai](https://tokscale.ai).
+disclaimer: |
+  This plugin is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Tokscale.ai.
+examples:
+  default: https://via.placeholder.com/468x60?text=No%20preview%20available
+authors:
+  - doda
+supports:
+  - user
+scopes: []
+inputs:
+
+  plugin_tokscale:
+    description: |
+      Enable tokscale plugin
+    type: boolean
+    default: no
+
+  plugin_tokscale_user:
+    description: |
+      Tokscale username
+    type: string
+    default: .user.login
+    preset: no
+
+  plugin_tokscale_sections:
+    description: |
+      Displayed sections
+
+      - `overview`: show total tokens, cost, and rank
+      - `models`: show most used models
+      - `recent`: show last submission info
+    type: array
+    format: comma-separated
+    default: overview, models, recent
+    options:
+      - overview
+      - models
+      - recent
+
+  plugin_tokscale_models_limit:
+    description: |
+      Display limit (models)
+    type: number
+    min: 0
+    zero: disable
+    default: 5

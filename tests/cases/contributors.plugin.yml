@@ -1,5 +1,5 @@
 - name: 🏅 Repository contributors - Contributors with contributions count
-  uses: lowlighter/metrics@latest
+  uses: ddarkr/metrics@latest
   with:
     token: MOCKED_TOKEN
     template: repository
@@ -9,7 +9,7 @@
     use_mocked_data: 'yes'
     verify: 'yes'
 - name: 🏅 Repository contributors - Contributors by categories
-  uses: lowlighter/metrics@latest
+  uses: ddarkr/metrics@latest
   with:
     token: MOCKED_TOKEN
     template: repository

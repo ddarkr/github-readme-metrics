@@ -85,15 +85,15 @@
               .replace(
                 RegExp(baseUrl + String.raw`(?:issues|pull|discussions)\/(\d+)(?:\?[\w-]+)?(#[\w-]+)?(?=<)`, "g"),
                 (_, repo, id, comment) => (options?.repo === repo ? "" : repo) + `#${id}` + (comment ? ` (comment)` : ""),
-              ) // -> 'lowlighter/metrics#123'
+              ) // -> 'ddarkr/metrics#123'
               .replace(
                 RegExp(baseUrl + String.raw`commit\/([\da-f]+)(?=<)`, "g"),
                 (_, repo, sha) => (options?.repo === repo ? "" : repo + "@") + sha,
-              ) // -> 'lowlighter/metrics@123abc'
+              ) // -> 'ddarkr/metrics@123abc'
               .replace(
                 RegExp(baseUrl + String.raw`compare\/([\w-.]+...[\w-.]+)(?=<)`, "g"),
                 (_, repo, tags) => (options?.repo === repo ? "" : repo + "@") + tags,
-              ) // -> 'lowlighter/metrics@1.0...1.1'
+              ) // -> 'ddarkr/metrics@1.0...1.1'
               .replace(
                 /[^&]#(\d+)/g,
                 (_, id) => `<a href="https://github.com/${options?.repo}/issues/${id}">#${id}</a>`,

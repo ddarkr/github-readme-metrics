@@ -19,7 +19,7 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.sponsorships.svg" alt=""></img>
+      <img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.sponsorships.svg" alt=""></img>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -80,7 +80,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <!--examples-->
 ```yaml
 name: 💝 GitHub Sponsorships
-uses: lowlighter/metrics@latest
+uses: ddarkr/metrics@latest
 with:
   filename: metrics.plugin.sponsorships.svg
   token: ${{ secrets.METRICS_TOKEN_PERSONAL }}

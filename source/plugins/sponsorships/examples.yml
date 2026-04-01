@@ -1,5 +1,5 @@
 - name: 💝 GitHub Sponsorships
-  uses: lowlighter/metrics@latest
+  uses: ddarkr/metrics@latest
   with:
     filename: metrics.plugin.sponsorships.svg
     token: ${{ secrets.METRICS_TOKEN_PERSONAL }}

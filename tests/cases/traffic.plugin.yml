@@ -1,5 +1,5 @@
 - name: 🧮 Repositories traffic - Repositories traffic
-  uses: lowlighter/metrics@latest
+  uses: ddarkr/metrics@latest
   with:
     token: MOCKED_TOKEN
     base: repositories

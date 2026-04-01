@@ -1,5 +1,5 @@
 - name: 📰 Recent activity - Recent activity
-  uses: lowlighter/metrics@latest
+  uses: ddarkr/metrics@latest
   with:
     token: MOCKED_TOKEN
     plugin_activity: 'yes'

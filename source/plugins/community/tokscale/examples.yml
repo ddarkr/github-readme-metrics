@@ -1,0 +1,15 @@
+- name: Tokscale statistics
+  uses: ddarkr/metrics@latest
+  with:
+    filename: metrics.plugin.tokscale.svg
+    token: NOT_NEEDED
+    base: ""
+    plugin_tokscale: yes
+    plugin_tokscale_user: ddarkr
+  prod:
+    skip: true
+  test:
+    modes:
+      - action
+      - web
+      - placeholder
