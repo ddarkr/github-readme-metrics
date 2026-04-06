@@ -1,0 +1,48 @@
+<% if (plugins.splatoon) { %>
+<div class="stdin"><%- meta.$ %> splatoon status</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.splatoon.error) { -%>
+<span class="error"><%= plugins.splatoon.error.message %></span><%# -%>
+<% } else { -%>
+  <% if (plugins.splatoon.sections.includes("player")) { -%>
+    <% const p = plugins.splatoon.player || {}; -%>
+    <% const name = String(p.byname || p.name || 'player').padEnd(20); -%>
+    <% const lvl = String(p.level ?? '-').padStart(3); -%>
+    <% const rank = String(p.rank?.current ?? '-').padStart(6); -%>
+%>
+<b><%= name %></b> lvl:<%= lvl %> rank:<%= rank %>
+playing since <%= f.date(new Date(p.started), {time:true, date:true, timeZone:config.timezone?.name}) %>
+badges: <%= (p.badges || []).map((b,i)=> b ? `#${i+1}` : '-').join(' ') %>
+weapons: <%= p.equipment?.weapon?.name ?? '-' %> / <%= p.equipment?.sub?.name ?? '-' %> / <%= p.equipment?.special?.name ?? '-' %>
+  <% } -%>
+
+  <% if (plugins.splatoon.sections.includes("versus")) { -%>
+    <% const matches = plugins.splatoon.vs?.matches || []; -%>
+    Matches: <%= matches.length %>
+    <% for (const match of matches) { -%>
+      <% const date = f.date(new Date(match.date), {time:true, date:true, timeZone:config.timezone?.name}); -%>
+      <% const mode = String(match.mode?.name ?? '-').padEnd(12); -%>
+      <% const stage = String(match.stage?.name ?? '-').padEnd(24); -%>
+      <% const result = String(match.result ?? '-').padEnd(6); -%>
+      <% const player = (match.teams||[]).map(t=>t.players||[]).flat().find(p=>p.self) || {}; -%>
+      <% const kills = String(player.result?.kill ?? 0).padStart(3); -%>
+      <% const deaths = String(player.result?.death ?? 0).padStart(3); -%>
+      <% const paint = String(player.result?.paint ?? 0).padStart(4); -%>
+%>
+<%= date.padEnd(22) %> <%= mode %> <%= stage %> <%= result %> — k:<%= kills %> d:<%= deaths %> p:<%= paint %>
+    <% } -%>
+  <% } -%>
+
+  <% if (plugins.splatoon.sections.includes("salmon-run")) { -%>
+    <% const shifts = plugins.splatoon.salmon?.matches || []; -%>
+    Salmon-run shifts: <%= shifts.length %>
+    <% for (const m of shifts) { -%>
+      <% const date = f.date(new Date(m.date), {time:true, date:true, timeZone:config.timezone?.name}); -%>
+      <% const hazard = String(m.hazard ?? '-').padStart(3); -%>
+      <% const eggs = (m.eggs && `${m.eggs.regular}/${m.eggs.golden}`) || '-'; -%>
+%>
+<%= date.padEnd(22) %> hazard:<%= hazard %>% eggs:<%= eggs %>
+    <% } -%>
+  <% } -%>
+<% } -%>
+</div><% } %>

@@ -1,0 +1,15 @@
+<% if (plugins.screenshot) { %>
+<div class="stdin"><%- meta.$ %> screenshot</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.screenshot.error) { -%>
+  <span class="error"><%= plugins.screenshot.error.message %></span><%# -%>
+<% } else if (plugins.screenshot.image) { %>
+  <%= "Image:".padEnd(12) %><span style="color:gray">[base64 image data]</span>
+  <%= "Size:".padEnd(12) %><%= plugins.screenshot.width %>x<%= plugins.screenshot.height %>
+  <%= "Source:".padEnd(12) %><%= plugins.screenshot.title || plugins.screenshot.url || "-" %>
+<% } else if (plugins.screenshot.content) { %>
+  <%= "Content:".padEnd(12) %><span style="color:gray"><%= plugins.screenshot.content %></span>
+<% } else { %>
+  No screenshot available
+<% } %>
+</div><% } %>

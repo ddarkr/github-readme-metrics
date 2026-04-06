@@ -1,0 +1,21 @@
+<% if (plugins.sponsors) { %>
+  <div class="stdin"><%- meta.$ %> sponsors</div><%# -%>
+  <div class="stdout"><%# -%>
+  <% if (plugins.sponsors.error) { -%>
+    <span class="error"><%= plugins.sponsors.error.message %></span><%# -%>
+  <% } else { -%>
+    <% if (plugins.sponsors.goal) { -%>
+// Sponsors: <%= (String(plugins.sponsors.count?.active?.total || 0)).padStart(3) %> active | goal: <%= (plugins.sponsors.goal.title || "") %>
+// Progress: <%= String(Math.round(plugins.sponsors.goal.progress || 0)).padEnd(3) %>%  | funded: <%= String(f(plugins.sponsors.count?.active?.total || 0)).padStart(6) %>
+    <% } else { -%>
+// Sponsors: <%= String(plugins.sponsors.count?.active?.total || 0).padStart(3) %> active
+    <% } -%>
+    <% if (plugins.sponsors.list && plugins.sponsors.list.length) { -%>
+// Recent sponsors:
+    <% for (const sUser of plugins.sponsors.list.slice(0, 8).filter(u => !u.past)) { -%>
+//  - <%= (sUser.name || sUser.login || sUser.login).padEnd(24) %>  <span style="color:#7fb1ff"><%= sUser.type === 'organization' ? 'org' : 'user' %></span>
+    <% } -%>
+    <% } -%>
+  <% } -%>
+  </div>
+<% } %>

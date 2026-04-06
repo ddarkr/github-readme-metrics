@@ -1,0 +1,18 @@
+<% if (plugins.code) { %>
+  <div class="stdin"><%- meta.$ %> cat code snippet</div>
+  <div class="stdout">
+  <% if (plugins.code.error) { -%>
+    <span class="error"><%= plugins.code.error.message %></span>
+  <% } else { -%>
+    <% const snippet = plugins.code.snippet ?? null;
+       const lines = plugins.code.lines ?? (snippet ? (snippet.patch ? String(snippet.patch).split('\n') : []) : []);
+       const lang = plugins.code.lang ?? (snippet ? snippet.language : 'text');
+    %>
+    <% if (!lines || lines.length === 0) { %>
+      <span class="error">No code available</span>
+    <% } else { %>
+      <pre class="code"><code class="language-<%= lang %>"><%- lines.join('\n') %></code></pre>
+    <% } %>
+  <% } -%>
+  </div>
+<% } %>

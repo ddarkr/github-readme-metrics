@@ -1,0 +1,15 @@
+<% if (plugins.isocalendar) { %>
+<div class="stdin"><%- meta.$ %> git log --since='1 year ago' --oneline --shortstat</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.isocalendar.error) { -%>
+<span class="error"><%= plugins.isocalendar.error.message %></span><%# -%>
+<% } else { -%>
+Contributions calendar
+<% if (plugins.isocalendar.streak.current) { %>
+Current streak: <%= `${plugins.isocalendar.streak.current}`.padStart(3) %> day<%= s(plugins.isocalendar.streak.current) %>
+<% } %>
+Best streak:    <%= `${plugins.isocalendar.streak.max}`.padStart(3) %> day<%= s(plugins.isocalendar.streak.max) %>
+Highest in a day at <%= plugins.isocalendar.max %>
+Average per day ~<%= plugins.isocalendar.average %>
+<% } -%>
+</div><% } %>

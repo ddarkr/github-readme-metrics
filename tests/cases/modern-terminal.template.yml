@@ -1,0 +1,8 @@
+- name: 💻 Modern Terminal Template - Example
+  uses: ddarkr/metrics@latest
+  with:
+    template: modern-terminal
+    token: MOCKED_TOKEN
+    base: header, metadata
+    use_mocked_data: yes
+    verify: yes

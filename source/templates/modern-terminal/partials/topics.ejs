@@ -1,0 +1,21 @@
+<% if (plugins.topics) { %>
+<div class="stdin"><%- meta.$ %> gh topic list --mode <%= plugins.topics.mode %></div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.topics.error) { -%>
+<span class="error"><%= plugins.topics.error.message %></span><%# -%>
+<% } else { -%>
+<% const title = {starred:"Starred topics", labels:"Starred topics", icons:"Starred topics", mastered:"Mastered technologies and topics"}[plugins.topics.mode] %>
+<%= title %><%= plugins.topics.list.length ? ` (${plugins.topics.list.length} total)` : "" %>
+
+<% if (plugins.topics.list.length) { -%>
+<% const NUM_COL = 2;
+   const NAME_COL = 24;
+   const DESC_COL = 48;
+   for (const [i, item] of plugins.topics.list.entries()) { -%>
+<%= `${i+1}`.padStart(NUM_COL) %>. <span class="label"><%= (item.name || "").toLowerCase().padEnd(NAME_COL) %></span><% if (item.description) { %>  <span style="color:var(--muted)"><%= item.description.slice(0, DESC_COL) %></span><% } %>
+<% } -%>
+<% } else { -%>
+No starred topics
+<% } -%>
+<% } -%>
+</div><% } %>

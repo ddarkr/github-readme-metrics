@@ -1,0 +1,29 @@
+<% if (plugins.wakatime && !plugins.wakatime.error) { %>
+<div class="stdin"><%- meta.$ %> wakatime status</div><%# -%>
+<div class="stdout"><%# -%>
+<% const range = plugins.wakatime?.days ? {7:"week",30:"month",180:"6 months",365:"year"}[plugins.wakatime.days] : null %>
+WakaTime<%= range ? ` (over last ${range})` : "" %>
+<% if ((plugins.wakatime.sections?.includes("time")) ?? false) { %>
+
+Total coding:           ~<%= String(Math.ceil(plugins.wakatime.time?.total || 0)).padStart(6) %> hour<%= s(plugins.wakatime.time?.total || 0) %>
+Per day:                ~<%= String(Math.ceil(plugins.wakatime.time?.daily || 0)).padStart(6) %> hour<%= s(plugins.wakatime.time?.daily || 0) %>/day<% } %>
+<% if (((plugins.wakatime.sections?.includes("projects")) ?? false) && (plugins.wakatime.projects?.length)) { %>
+Working on:             <%= String(f.ellipsis(plugins.wakatime.projects[0]?.name || '-', {length:40})) %><% } %>
+<% if (((plugins.wakatime.sections?.includes("languages")) ?? false) && (plugins.wakatime.languages?.length)) { %>
+Main language:          <%= String(plugins.wakatime.languages[0]?.name || '-') %><% } %>
+<% if (((plugins.wakatime.sections?.includes("editors")) ?? false) && (plugins.wakatime.editors?.length)) { %>
+Editor:                 <%= String(plugins.wakatime.editors[0]?.name || '-') %><% } %>
+<% if (((plugins.wakatime.sections?.includes("os")) ?? false) && (plugins.wakatime.os?.length)) { %>
+OS:                     <%= String(plugins.wakatime.os[0]?.name || '-') %><% } %>
+<% const sections = plugins.wakatime.sections?.filter(x => /-graphs$/.test(x)).map(x => x.replace(/-graphs$/, "")) ?? []; const slots = 2 + (large || 0) %>
+<% for (let i = 0; i < sections.length; i += slots) { %>
+  <% for (let j = 0; j < slots; j++) { const key = sections[i+j]; const section = plugins.wakatime[key]; if (!key) continue %>
+Activity - <%= {languages:"Languages", projects:"Projects", editors:"Editors", os:"OS"}[key] || key %>
+<% if (section?.length) { %><% for (const e of section) { %>
+<%= String(e.name).padEnd(26) %> <%= String(Math.round(100*(e.percent||0))).padStart(3) %>%<% } %>
+<% } else { %>
+No activity<% } %>
+  <% } %>
+<% } %>
+</div><%# -%>
+<% } %>

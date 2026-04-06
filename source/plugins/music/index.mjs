@@ -19,6 +19,10 @@ const providers = {
     name: "YouTube Music",
     embed: /^https:..music.youtube.com.playlist/,
   },
+  koito: {
+    name: "Koito",
+    embed: /^\b$/,
+  },
 }
 //Supported modes
 const modes = {
@@ -315,6 +319,40 @@ export default async function({login, imports, data, q, account}, {enabled = fal
             }
             break
           }
+          //Koito
+          case "koito": {
+            //Prepare credentials
+            const koito_url = user
+            const api_key = token || null
+
+            //API call and parse tracklist
+            try {
+              console.debug(`metrics/compute/${login}/plugins > music > querying koito api`)
+              const headers = api_key ? {Authorization: `Token ${api_key}`} : {}
+
+              tracks = (await imports.axios.get(`${koito_url}/apis/web/v1/listens?limit=${limit}`, {
+                headers: {
+                  ...headers,
+                  "Content-Type": "application/json",
+                },
+              })).data.items.map(item => ({
+                name: item.track.title,
+                artist: item.track.artists?.[0]?.name ?? "Unknown",
+                artwork: item.track.image ? `${koito_url}/image/${item.track.image}` : null,
+                played_at: item.time ? `${imports.format.date(new Date(item.time), {time: true})} on ${imports.format.date(new Date(item.time), {date: true})}` : null,
+              }))
+            }
+            //Handle errors
+            catch (error) {
+              if (error.isAxiosError) {
+                const status = error.response?.status
+                const message = `Koito API returned ${status}`
+                throw {error: {message}, ...raw}
+              }
+              throw error
+            }
+            break
+          }
           //Unsupported
           default:
             throw {error: {message: `Unsupported mode "${mode}" for provider "${provider}"`}, ...raw}
@@ -457,6 +495,56 @@ export default async function({login, imports, data, q, account}, {enabled = fal
                   name: track.name,
                   artist: track.artist.name,
                   artwork: track.image.reverse()[0]["#text"],
+                }))
+            }
+            //Handle errors
+            catch (error) {
+              throw imports.format.error(error)
+            }
+            break
+          }
+          //Koito
+          case "koito": {
+            //Prepare credentials
+            const koito_url = user
+            const api_key = token || null
+
+            //API call and parse tracklist
+            try {
+              console.debug(`metrics/compute/${login}/plugins > music > querying koito api`)
+              const headers = api_key ? {Authorization: `Token ${api_key}`} : {}
+              const period = time_range === "short" ? "month" : time_range === "medium" ? "6month" : "year"
+
+              tracks = top_type === "artists"
+                ? (
+                  await imports.axios.get(
+                    `${koito_url}/apis/web/v1/top-artists?period=${period}&limit=${limit}`,
+                    {
+                      headers: {
+                        ...headers,
+                        "Content-Type": "application/json",
+                      },
+                    },
+                  )
+                ).data.items.map(artist => ({
+                  name: artist.name,
+                  artist: `Play count: ${artist.listen_count}`,
+                  artwork: artist.image ? `${koito_url}/image/${artist.image}` : null,
+                }))
+                : (
+                  await imports.axios.get(
+                    `${koito_url}/apis/web/v1/top-tracks?period=${period}&limit=${limit}`,
+                    {
+                      headers: {
+                        ...headers,
+                        "Content-Type": "application/json",
+                      },
+                    },
+                  )
+                ).data.items.map(track => ({
+                  name: track.title,
+                  artist: track.artists?.[0]?.name ?? "Unknown",
+                  artwork: track.image ? `${koito_url}/image/${track.image}` : null,
                 }))
             }
             //Handle errors

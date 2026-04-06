@@ -1,0 +1,11 @@
+<% if (plugins.gists) { %>
+<div class="stdin"><%- meta.$ %> gh gist list <%= user.login %></div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.gists.error) { -%>
+<span class="error"><%= plugins.gists.error.message %></span><%# -%>
+<% } else { -%>
+<%= `${plugins.gists.totalCount} Gist${s(plugins.gists.totalCount)}` %>
+Files: <%= `${plugins.gists.files}`.padStart(3) %>  Comments: <%= `${plugins.gists.comments}`.padStart(3) %>
+Stars: <%= `${plugins.gists.stargazers}`.padStart(3) %>  Forks: <%= `${plugins.gists.forks}`.padStart(3) %>
+<% } -%>
+</div><% } %>

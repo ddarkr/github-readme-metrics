@@ -1,0 +1,15 @@
+@font-face {
+  font-family: 'SF Mono';
+  src: local('SF Mono'), local('SFMono-Regular'), local('Menlo'), local('Monaco'), local('Consolas');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Mono';
+  src: local('SF Mono Bold'), local('SFMono-Bold'), local('Menlo-Bold'), local('Monaco-Bold');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}

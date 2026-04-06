@@ -216,6 +216,9 @@
       "token": "Yahoo Finance token",
       "enabled": false,                 "//": "Enable stock plugin"
     },
+    "tokscale":{
+      "enabled": false,                 "//": "Enable tokscale plugin"
+    },
     "//": ""
   }
 }

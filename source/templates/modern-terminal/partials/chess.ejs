@@ -1,0 +1,19 @@
+<% if (plugins.chess) { %>
+<div class="stdin"><%- meta.$ %> chess</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.chess.error) { -%>
+<span class="error"><%= plugins.chess.error.message %></span><%# -%>
+<% } else { -%>
+// Last game from <%= plugins.chess.platform %>
+// White: <%= plugins.chess.meta["White"] %><% if (plugins.chess.meta["WhiteElo"]) { %> (<%= plugins.chess.meta["WhiteElo"] %> ELO)<% } %>
+// Black: <%= plugins.chess.meta["Black"] %><% if (plugins.chess.meta["BlackElo"]) { %> (<%= plugins.chess.meta["BlackElo"] %> ELO)<% } %>
+// Date: <%= plugins.chess.meta["Date"] %>
+// Result: White <%= plugins.chess.result.white %> - Black <%= plugins.chess.result.black %>
+// Victor: <% if (plugins.chess.result.white > plugins.chess.result.black) { %>White<% } else if (plugins.chess.result.black > plugins.chess.result.white) { %>Black<% } else { %>Draw<% } %>
+
+// Moves:
+<% for (let i = 0; i < (plugins.chess.moves || []).length; i++) { const mv = plugins.chess.moves[i]; %>
+<%= String(i+1).padStart(3) %>  <%= (mv.from + '->' + mv.to).padEnd(8) %>  <%= (mv.piece || '') %>  <%= mv.color %>
+<% } %>
+<% } -%>
+</div><% } %>

@@ -59,4 +59,5 @@ Plugins provide additional content and lets you customize rendered metrics.
   * [📸 Website screenshot <sub>`screenshot`</sub>](/source/plugins/community/screenshot/README.md) by [@lowlighter](https://github.com/lowlighter)
   * [🦑 Splatoon <sub>`splatoon`</sub>](/source/plugins/community/splatoon/README.md) by [@lowlighter](https://github.com/lowlighter)
   * [💹 Stock prices <sub>`stock`</sub>](/source/plugins/community/stock/README.md) by [@lowlighter](https://github.com/lowlighter)
+  * [🎯 Tokscale <sub>`tokscale`</sub>](/source/plugins/community/tokscale/README.md) by [@doda](https://github.com/doda)
 

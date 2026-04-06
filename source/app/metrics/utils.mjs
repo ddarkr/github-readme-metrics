@@ -197,7 +197,9 @@ export function htmlunescape(string, u = {"&": true, "<": true, ">": true, '"': 
     .replace(/&lt;/g, u["<"] ? "<" : "&lt;")
     .replace(/&gt;/g, u[">"] ? ">" : "&gt;")
     .replace(/&quot;/g, u['"'] ? '"' : "&quot;")
+    .replace(/&#34;/g, u['"'] ? '"' : "&#34;")
     .replace(/&(?:apos|#39);/g, u["'"] ? "'" : "&apos;")
+    .replace(/&#39;/g, u["'"] ? "'" : "&#39;")
     .replace(/&amp;/g, u["&"] ? "&" : "&amp;")
 }
 

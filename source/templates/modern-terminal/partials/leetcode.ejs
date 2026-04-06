@@ -1,0 +1,26 @@
+<% if (plugins.leetcode) { %>
+<div class="stdin"><%- meta.$ %> leetcode stats <%= user.login %></div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.leetcode.error) { -%>
+<span class="error"><%= plugins.leetcode.error.message %></span><%# -%>
+<% } else { -%>
+<% if (plugins.leetcode.sections.includes("solved")) { %>
+Solved problems:
+<% for (const difficulty of ["All", "Easy", "Medium", "Hard"]) { const problems = plugins.leetcode.problems[difficulty]; %>
+<%= difficulty.padEnd(6) %> <%= `${problems.solved}/${problems.count}`.padStart(8) %>
+<% } %>
+<% } %>
+<% if (plugins.leetcode.sections.includes("skills")) { %>
+Skills:
+<% for (const {name, solved, category} of plugins.leetcode.skills) { %>
+<span class="<%= category %>">⬤</span> <%= name.padEnd(30) %> x<%= `${solved}`.padStart(3) %>
+<% } %>
+<% } %>
+<% if (plugins.leetcode.sections.includes("recent")) { %>
+Recent submissions:
+<% for (const {title, date} of plugins.leetcode.recent) { %>
+- <%= title %> (<%= f.date(new Date(date), {date:true, timeZone:config.timezone?.name}) %>)
+<% } %>
+<% } %>
+<% } -%>
+</div><% } %>

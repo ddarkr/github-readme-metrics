@@ -33,6 +33,7 @@ inputs:
       - `spotify`: Spotify
       - `lastfm`: Last.fm
       - `youtube`: YouTube Music
+      - `koito`: Koito (self-hosted ListenBrainz-compatible scrobbler)
 
       This setting is optional when using [`plugin_music_mode: playlist`](/source/plugins/music/README.md#plugin_music_mode) (provider will be auto-detected from [`plugin_music_playlist`](/source/plugins/music/README.md#plugin_music_playlist) URL)
     type: string
@@ -42,6 +43,7 @@ inputs:
       - spotify
       - lastfm
       - youtube
+      - koito
 
   plugin_music_token:
     description: |
@@ -52,6 +54,7 @@ inputs:
       - `spotify`: "client_id, client_secret, refresh_token"
       - `lastfm`: "api_key"
       - `youtube`: "cookie"
+      - `koito`: "api_key" (optional for public instances)
     type: token
     default: ""
     extras:
@@ -59,7 +62,10 @@ inputs:
 
   plugin_music_user:
     description: |
-      Music provider username
+      Music provider username or Koito instance URL
+
+      - For Spotify, Last.fm, YouTube: username
+      - For Koito: instance URL (e.g., https://music-stats.doda.im)
     type: string
     default: .user.login
     preset: no

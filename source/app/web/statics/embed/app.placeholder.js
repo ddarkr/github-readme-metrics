@@ -953,7 +953,8 @@
                 }))
                 let percents = 100
                 for (const result of results) {
-                  result.percent = 1 + faker.number.int(percents - 1)
+                  const max = Math.max(0, percents - 1)
+                  result.percent = 1 + faker.number.int(max)
                   percents -= result.percent
                   result.percent /= 100
                 }
@@ -1130,6 +1131,40 @@
                   },
                 ],
               },
+            },
+          })
+          : null),
+        //Tokscae
+        ...(set.plugins.enabled.tokscale
+          ? ({
+            tokscale: {
+              sections: options["tokscale.sections"].split(",").map(x => x.trim()).filter(x => x),
+              user: {
+                username: set.user || "metrics",
+                displayName: faker.person.fullName(),
+                avatarUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOcOnfpfwAGfgLYttYINwAAAABJRU5ErkJggg==",
+                rank: faker.number.int({min: 1, max: 1000}),
+              },
+              stats: {
+                totalTokens: faker.number.int({min: 100000, max: 10000000}),
+                totalCost: faker.number.float({min: 1, max: 100}),
+                inputTokens: faker.number.int({min: 50000, max: 5000000}),
+                outputTokens: faker.number.int({min: 50000, max: 5000000}),
+                submissionCount: faker.number.int({min: 100, max: 10000}),
+                activeDays: faker.number.int({min: 30, max: 365}),
+              },
+              models: new Array(Number(options["tokscale.models.limit"]) || 5).fill(null).map(_ => ({
+                name: faker.helpers.arrayElement(["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "claude-3-opus", "claude-3-sonnet", "gemini-pro"]),
+                tokens: faker.number.int({min: 10000, max: 1000000}),
+                cost: faker.number.float({min: 0.1, max: 10}),
+                percentage: faker.number.float({min: 0.05, max: 0.25}),
+              })),
+              dateRange: {
+                start: faker.date.past({years: 1}).toISOString().split("T")[0],
+                end: new Date().toISOString().split("T")[0],
+              },
+              lastSubmit: faker.date.recent({days: 7}).toISOString(),
+              updatedAt: new Date().toISOString(),
             },
           })
           : null),

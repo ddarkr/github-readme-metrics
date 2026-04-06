@@ -1,0 +1,13 @@
+<% if (plugins.poopmap) { %>
+<div class="stdin"><%- meta.$ %> poopmap --days <%= plugins.poopmap.days %></div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.poopmap.error) { -%>
+<span class="error"><%= plugins.poopmap.error.message %></span><%# -%>
+<% } else { -%>
+Poops per hour (last <%= plugins.poopmap.days %> days)
+<% const poops = plugins.poopmap.poops || {}; const max = poops.max || 1; %>
+<% for (let h = 0; h < 24; h++) { const v = poops[h] || 0; const barLen = Math.round((v / max) * 20); const bar = '█'.repeat(barLen).padEnd(20, ' '); %>
+<%= `${h}`.padStart(2, '0') %>: <%= `${v}`.padStart(3, ' ') %> | <span style="color:#238636"><%= bar %></span>
+<% } %>
+<% } -%>
+</div><% } %>

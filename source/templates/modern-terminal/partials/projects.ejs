@@ -1,0 +1,29 @@
+<% if (plugins.projects) { %>
+<div class="stdin"><%- meta.$ %> projects --count <%= plugins.projects.totalCount %></div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.projects.error) { -%>
+<span class="error"><%= plugins.projects.error.message %></span><%# -%>
+<% } else { -%>
+<b><%= plugins.projects.totalCount %></b> project<%= s(plugins.projects.totalCount) %>
+<% for (const {name, updated, progress = {}, items = [], description = ""} of plugins.projects.list || []) { %>
+<b><%= name %></b>
+Updated: <%= updated %>
+<% if (plugins.projects.descriptions && description) { %>
+  <span style="color:#9aa4b2"><%= description %></span>
+<% } %>
+<% if (progress.enabled) { const total = progress.total || 1; const done = progress.done || 0; const pct = Math.round((done/total)*100); const barLen = Math.round((done/total)*20); const bar = '█'.repeat(barLen).padEnd(20, ' '); %>
+Progress: <%= `${done}/${total}` %> (<%= pct %>%) | <span style="color:#238636"><%= bar %></span>
+<% if (progress.done || progress.doing || progress.todo) { %>
+  <%= [progress.done ? `${progress.done} done` : "", progress.doing ? `${progress.doing} doing` : "", progress.todo ? `${progress.todo} todo` : ""].filter(Boolean).join(' · ') %>
+<% } %>
+<% } %>
+<% if (items.length) { %>
+Items:
+<% for (const {type, text} of items) { %>
+ - <%= type %>: <%= text %>
+<% } %>
+<% } %>
+---
+<% } %>
+<% } -%>
+</div><% } %>

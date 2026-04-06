@@ -1,0 +1,37 @@
+<% if (plugins.pagespeed) { %>
+<div class="stdin"><%- meta.$ %> pagespeed --url "<%= plugins.pagespeed.url %>"</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.pagespeed.error) { -%>
+  <span class="error"><%= plugins.pagespeed.error.message %></span><%# -%>
+<% } else { -%>
+  <%= "URL:".padEnd(12) %><span style="color:gray"><%= plugins.pagespeed.url %></span>
+  <% for (const {score, title} of plugins.pagespeed.scores) { %>
+    <%= title.padEnd(20) %><% if (!Number.isNaN(score)) { %><%= Math.round(score*100).toString().padStart(3) + "%" %><% } else { %>-<% } %>
+  <% } %>
+
+  <% if (plugins.pagespeed.detailed) { %>
+    <%= "\nMetrics:" %>
+    <% for (const {score, suffix = "", threshold} of [
+      {score:plugins.pagespeed.metrics.firstContentfulPaint/1000, suffix:"s", threshold:[2.336, 4]},
+      {score:plugins.pagespeed.metrics.largestContentfulPaint/1000, suffix:"s", threshold:[2.5, 4]},
+      {score:+plugins.pagespeed.metrics.cumulativeLayoutShift, threshold:[.1, .25]}
+    ]) { %>
+      <%= (suffix ? (suffix + " ") : "").padEnd(4) %>
+      <% if (!Number.isNaN(score)) { %>
+        <%= score.toFixed(2).replace(/[.]0+$/, "").toString().padStart(8) %> <%= suffix %>
+      <% } else { %>
+        <%= "N/A".padStart(8) %>
+      <% } %>
+      <% if (!Number.isNaN(score)) { %>
+        <% if (score <= threshold[0]) { %>
+          <span style="color:green">  good</span>
+        <% } else if (score <= threshold[1]) { %>
+          <span style="color:orange">  avg</span>
+        <% } else { %>
+          <span style="color:red">  poor</span>
+        <% } %>
+      <% } %>
+    <% } %>
+  <% } %>
+<% } -%>
+</div><% } %>

@@ -1,0 +1,18 @@
+<% if ((plugins.lines)&&((plugins.lines.sections.includes("history"))||(plugins.lines.sections.includes("repositories")))) { %>
+<div class="stdin"><%- meta.$ %> git log --numstat --author=<%= user.login %></div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.lines.error) { -%>
+<span class="error"><%= plugins.lines.error.message %></span><%# -%>
+<% } else { -%>
+<% if (plugins.lines.sections?.includes("repositories")) { %>
+Repositories:
+<% for (const {handle, added, deleted, changed} of plugins.lines.repos) { %>
+<%= handle.padEnd(30) %> +<%= `${f(added+changed)}`.padStart(6) %> -<%= `${f(deleted+changed)}`.padStart(6) %>
+<% } %>
+<% } %>
+<% if ((plugins.lines.sections?.includes("history"))&&(plugins.lines.history)) { %>
+Diff history:
+<%- plugins.lines.history %>
+<% } %>
+<% } -%>
+</div><% } %>

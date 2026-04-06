@@ -1,0 +1,7 @@
+- name: Example
+  uses: ddarkr/metrics@latest
+  with:
+    template: modern-terminal
+    filename: metrics.modern-terminal.svg
+    token: ${{ secrets.METRICS_TOKEN }}
+    base: header, metadata

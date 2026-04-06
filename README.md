@@ -1,6 +1,6 @@
 # 📊 Metrics [<img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=280144&theme=dark" alt="" align="right" width="190" height="41">](https://www.producthunt.com/posts/github-metrics?utm_source=badge-featured&utm_medium=badge&utm_source=badge-github-metrics)
 
-[![Continuous integration](https://github.com/ddarkr/metrics/actions/workflows/ci.yml/badge.svg)](https://github.com/ddarkr/metrics/actions/workflows/ci.yml)
+[![Continuous integration](https://github.com/lowlighter/metrics/actions/workflows/ci.yml/badge.svg)](https://github.com/lowlighter/metrics/actions/workflows/ci.yml)
 
 Generate metrics that can be embedded everywhere, including your GitHub profile readme! Supports users, organizations, and even repositories!
 
@@ -19,7 +19,7 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
   </tr>
   <tr>
     <th colspan="2" align="center">
-      <h3><a href="/README.md#-plugins">🧩 Customizable with 47 plugins and 335 options!</a></h3>
+      <h3><a href="/README.md#-plugins">🧩 Customizable with 48 plugins and 339 options!</a></h3>
     </th>
   </tr>
   <tr>
@@ -371,12 +371,16 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
         <img width="900" height="1" alt="">
       </details>
     </th>
-    <th>
+    <th><a href="source/plugins/community/tokscale/README.md">🎯 Tokscale</a><br><sup>by <a href="https://github.com/doda">@doda</a></sup>
+      <details><summary>Render example</summary>
+        <img alt="" width="400" src="https://via.placeholder.com/468x60?text=No%20preview%20available" alt=""></img>
+        <img width="900" height="1" alt="">
+      </details>
     </th>
   </tr>
   <tr>
     <th colspan="2" align="center">
-      <h3><a href="/README.md#%EF%B8%8F-templates">🖼️ And even more with 4+ templates!</a></h3>
+      <h3><a href="/README.md#%EF%B8%8F-templates">🖼️ And even more with 5+ templates!</a></h3>
     </th>
   </tr>
   <tr>
@@ -408,6 +412,17 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
       </td>
   </tr>
   <tr>
+    <th><a href="/source/templates/modern-terminal/README.md">💻 Modern Terminal Template</a></th>
+    <th><a href="/source/templates//README.md"></a></th>
+  </tr>
+  <tr>
+        <td  align="center">
+        <img alt="" width="400" src="https://via.placeholder.com/480x200?text=Modern+Terminal+Template" alt=""></img>
+        <img width="900" height="1" alt="">
+      </td>
+    <td align="center"><img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
     <th colspan="2"><a href="/source/templates/community/README.md">📕 See also community templates</a></th>
   </tr>
   <tr>
@@ -437,7 +452,7 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
   <tr>
     <td align="center" colspan="2">
       <b>Power user?</b><br>
-      <a href="https://github.com/ddarkr/metrics/fork">Fork this repository</a> and edit HTML, CSS, JS and <a href="https://github.com/mde/ejs">EJS</a> for even more customization!
+      <a href="https://github.com/lowlighter/metrics/fork">Fork this repository</a> and edit HTML, CSS, JS and <a href="https://github.com/mde/ejs">EJS</a> for even more customization!
     </td>
   </tr>
 </table>
@@ -446,7 +461,7 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
 # 📚 Documentation
 
 
-> <sup>*⚠️ This is the documentation of **v3.35-beta** (`@master`/`@main` branches) which includes [unreleased features](https://github.com/ddarkr/metrics/compare/latest...master) planned for next release. See documentation for current released version [**v3.34** (`@latest` branch) here](https://github.com/ddarkr/metrics/blob/latest/README.md).* </sup>
+> <sup>*⚠️ This is the documentation of **v3.35-beta** (`@master`/`@main` branches) which includes [unreleased features](https://github.com/lowlighter/metrics/compare/latest...master) planned for next release. See documentation for current released version [**v3.34** (`@latest` branch) here](https://github.com/lowlighter/metrics/blob/latest/README.md).* </sup>
 
 
 
@@ -481,6 +496,7 @@ Templates lets you change general appearance of rendered metrics.
 * [📘 Repository template <sub>`repository`</sub>](/source/templates/repository/README.md)
 * [📙 Terminal template <sub>`terminal`</sub>](/source/templates/terminal/README.md)
 * [📒 Markdown template <sub>`markdown`</sub>](/source/templates/markdown/README.md)
+* [💻 Modern Terminal Template <sub>`modern-terminal`</sub>](/source/templates/modern-terminal/README.md)
 * [📕 Community templates <sub>`community`</sub>](/source/templates/community/README.md)
 
 ## 🧩 Plugins
@@ -544,6 +560,7 @@ Plugins provide additional content and lets you customize rendered metrics.
   * [📸 Website screenshot <sub>`screenshot`</sub>](/source/plugins/community/screenshot/README.md) by [@lowlighter](https://github.com/lowlighter)
   * [🦑 Splatoon <sub>`splatoon`</sub>](/source/plugins/community/splatoon/README.md) by [@lowlighter](https://github.com/lowlighter)
   * [💹 Stock prices <sub>`stock`</sub>](/source/plugins/community/stock/README.md) by [@lowlighter](https://github.com/lowlighter)
+  * [🎯 Tokscale <sub>`tokscale`</sub>](/source/plugins/community/tokscale/README.md) by [@doda](https://github.com/doda)
 
 
 ## 💪 Contributing
@@ -559,7 +576,7 @@ If you are interested in contributing, the following resources may interest you:
   * [📖 GitHub Rest API](https://docs.github.com/en/rest)
   * [📖 GitHub Octicons](https://github.com/primer/octicons)
 
-Use [`💬 discussions`](https://github.com/ddarkr/metrics/discussions) for feedback, new features suggestions, bugs reports or to request help for installation.
+Use [`💬 discussions`](https://github.com/lowlighter/metrics/discussions) for feedback, new features suggestions, bugs reports or to request help for installation.
 
 
 ## 📜 License
@@ -569,6 +586,6 @@ MIT License
 Copyright (c) 2020-present lowlighter
 ```
 
-![Sponsors](https://github.com/ddarkr/metrics/blob/examples/metrics.sponsors.svg)
+![Sponsors](https://github.com/lowlighter/metrics/blob/examples/metrics.sponsors.svg)
 
 

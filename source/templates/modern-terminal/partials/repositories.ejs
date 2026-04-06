@@ -1,0 +1,24 @@
+<% if (plugins.repositories) { %>
+<div class="stdin"><%- meta.$ %> ls -l featured-repos</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.repositories.error) { -%>
+<span class="error"><%= plugins.repositories.error.message %></span><%# -%>
+<% } else { -%>
+  <% if (plugins.repositories.list && plugins.repositories.list.length) { -%>
+    <% for (const repository of plugins.repositories.list) { -%>
+      <% const name = String(repository.nameWithOwner || "").padEnd(32); -%>
+      <% const created = String(repository.created || "").padEnd(12); -%>
+      <% const lang = String(repository.primaryLanguage?.name || "-").padEnd(10); -%>
+      <% const stars = String(f(repository.stargazerCount)).padStart(6); -%>
+      <% const forks = String(f(repository.forkCount)).padStart(6); -%>
+%>
+<b><%= name %></b> <%= created %> <span style="color:<%= repository.primaryLanguage?.color ?? '#888' %>"><%= lang %></span> ★<%= stars %> ⑂<%= forks %>
+<% if (repository.description) { -%>
+  <%= String(repository.description).trim() %>
+<% } -%>
+    <% } -%>
+  <% } else { -%>
+    no featured repositories configured
+  <% } -%>
+<% } -%>
+</div><% } %>

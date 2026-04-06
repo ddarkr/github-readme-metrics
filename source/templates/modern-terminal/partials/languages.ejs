@@ -1,0 +1,19 @@
+<% if (plugins.languages) { %>
+<div class="stdin"><%- meta.$ %> languages</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.languages.error) { -%>
+  <span class="error"><%= plugins.languages.error.message %></span><%# -%>
+<% } else { -%>
+  <%= "Summary:".padEnd(18) %><b><%= plugins.languages.unique %></b><%= s(plugins.languages.unique) %>
+  <% for (const section of (plugins.languages.sections ?? ["most-used"])) { const list = {"most-used":plugins.languages.favorites, "recently-used":plugins.languages.recent}[section] %>
+    <%= (section === "most-used" ? "Most used:" : "Recently used:").padEnd(18) %>
+    <% if (list && list.length) { %>
+      <% for (const {name, value, lines = 0, size} of list) { %>
+        <%= name.padEnd(24) %><%= (typeof f.percentage === 'function' ? f.percentage(value) : (Math.round((value||0)*100) + "%")).toString().padStart(8) %><% if ((plugins.languages.details ?? []).includes("lines")) { %>  <span style="color:gray"><%= ("(" + f(lines) + " lines)").padStart(14) %></span><% } %>
+      <% } %>
+    <% } else { %>
+      No data
+    <% } %>
+  <% } %>
+<% } -%>
+</div><% } %>

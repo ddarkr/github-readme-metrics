@@ -1,0 +1,19 @@
+<% if (plugins.notable) { %>
+<div class="stdin"><%- meta.$ %> notable</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.notable.error) { -%>
+<span class="error"><%= plugins.notable.error.message %></span><%# -%>
+<% } else { -%>
+  <% const list = plugins.notable.contributions || []; -%>
+  <% if (list.length) { -%>
+// Notable contributions:
+  <% for (const item of list) { -%>
+  <% const name = item.name || item.user?.login || 'unknown'; -%>
+  <% const commits = item.user?.commits || 0; const stars = item.user?.stars || 0; const issues = item.user?.issues || 0; const pulls = item.user?.pulls || 0; -%>
+<%= ('- ' + ('@' + name).padEnd(20)) + (' commits:' + String(commits).padStart(4)) + (' stars:' + String(stars).padStart(4)) + (' issues:' + String(issues).padStart(4)) + (' prs:' + String(pulls).padStart(4)) %>
+  <% } -%>
+  <% } else { -%>
+<span>No recent notable contributions found</span>
+  <% } -%>
+<% } -%>
+</div><% } %>

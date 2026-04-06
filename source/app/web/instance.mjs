@@ -23,7 +23,8 @@ export default async function({sandbox = false} = {}) {
     console.debug("metrics/app > sandbox mode is specified, enabling advanced features")
     Object.assign(conf.settings, {sandbox: true, optimize: true, cached: 0, "plugins.default": true, extras: {default: true}})
   }
-  const {token, maxusers = 0, restricted = [], debug = false, cached = 30 * 60 * 1000, port = 3000, ratelimiter = null, plugins = null} = conf.settings
+  const {token, maxusers = 0, restricted = [], debug = false, cached = 30 * 60 * 1000, port: configPort = 3000, ratelimiter = null, plugins = null} = conf.settings
+  const port = process.env.PORT ?? configPort
   const mock = sandbox || conf.settings.mocked
 
   //Process mocking and default plugin state

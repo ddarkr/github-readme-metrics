@@ -1,0 +1,21 @@
+<% if (plugins.nightscout) { %>
+<div class="stdin"><%- meta.$ %> nightscout</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.nightscout.error) { -%>
+<span class="error"><%= plugins.nightscout.error.message %></span><%# -%>
+<% } else { -%>
+  <% const data = plugins.nightscout.data || []; const last = data.length ? data[data.length-1] : null; -%>
+  <% if (last) { -%>
+// Blood Sugar: <%= String(last.sgv).padEnd(4) %> <%= (last.arrowHumanReadable || '').padEnd(6) %> (<%= last.alert || 'ok' %>)
+    <% if (data.length > 1) { -%>
+// Recent readings:
+    <% const max = Math.max.apply(null, data.map(d => d.sgv || 0)); -%>
+    <% for (const d of data) { -%>
+<%= ('- ' + String(d.sgv).padStart(3)).padEnd(8) + (d.timeUTCHumanReadable || '').padEnd(20) + (d.alert ? (' ' + d.alert) : '') %>
+    <% } -%>
+    <% } -%>
+  <% } else { -%>
+<span>No nightscout data available</span>
+  <% } -%>
+<% } -%>
+</div><% } %>

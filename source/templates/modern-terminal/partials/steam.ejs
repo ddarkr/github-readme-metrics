@@ -1,0 +1,27 @@
+<% if (plugins.steam) { %>
+<div class="stdin"><%- meta.$ %> steam</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.steam.error) { -%>
+  <span class="error"><%= plugins.steam.error.message %></span><%# -%>
+<% } else { -%>
+  <% if (plugins.steam.player) { -%>
+<%= ("Player:").padEnd(12) + String(plugins.steam.player.name || "").padEnd(32) %>
+<%= ("Games:").padEnd(12) + String(plugins.steam.games?.count ?? 0).padStart(4) + ("  Playtime:").padStart(14) + String(f(parseInt(plugins.steam.games?.playtime ?? 0))).padStart(6) + " h" %>
+<%= ("Level:").padEnd(12) + String(plugins.steam.player.level ?? "-").padStart(4) %>
+  <% } -%>
+  <% for (const section of ["most-played","recently-played"]) { if (plugins.steam.sections?.includes(section)) { -%>
+<%= ("-- " + (section === "most-played" ? "Most played" : "Recently played") + " --").padEnd(60) %>
+    <% for (const g of plugins.steam.games?.[section] ?? []) { -%>
+<%= String(g.name || "").slice(0,36).padEnd(36)
+     + (g.genres ? ("  " + g.genres.join(", ")).padStart(24) : "".padStart(24))
+     + (g.playtime ? ("  " + f(parseInt(g.playtime)) + "h").padStart(10) : "".padStart(10)) %>
+    <% if (g.played) { %>
+<%= "  Last played:" .padEnd(16) + f.date(g.played*1000, {date:true, timeZone:config.timezone?.name}) %>
+    <% } %>
+    <% if (g.rate) { %>
+<%= "  Achievements:" .padEnd(16) + (String(g.rate.achieved) + " / " + String(g.rate.total)) %>
+    <% } %>
+    <% } -%>
+  <% } } -%>
+<% } -%>
+</div><% } %>

@@ -1,0 +1,26 @@
+<% if (plugins.habits) { %>
+<div class="stdin"><%- meta.$ %> habits</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.habits.error) { -%>
+<span class="error"><%= plugins.habits.error.message %></span><%# -%>
+<% } else { -%>
+// Recent coding habits
+<% if (plugins.habits.commits?.fetched) { %>
+// computed from last <%= plugins.habits.commits.fetched %> commit<%= s(plugins.habits.commits.fetched) %>
+<% } %>
+<% if (plugins.habits.facts) { %>
+<% if (plugins.habits.indents?.style) { %>
+Indentation: <%= plugins.habits.indents.style %>
+<% } %>
+<% if (plugins.habits.lines?.average?.chars) { %>
+Avg chars/line: <%= f(plugins.habits.lines.average.chars, {fixed:1}) %>
+<% } %>
+<% if (!Number.isNaN(plugins.habits.commits.hour)) { %>
+Typical push hour: <%= `${plugins.habits.commits.hour}`.padStart(2, '0') %>:00
+<% } %>
+<% if (plugins.habits.commits.day) { %>
+Most active day: <%= plugins.habits.commits.day %>
+<% } %>
+<% } %>
+<% } -%>
+</div><% } %>

@@ -1,0 +1,15 @@
+name: 💻 Modern Terminal Template
+description: |
+  A modern terminal-inspired template with dark/light themes, 
+  customizable colors, and enhanced terminal aesthetics.
+examples:
+  default: https://via.placeholder.com/480x200?text=Modern+Terminal+Template
+index: 3
+supports:
+  - user
+  - organization
+formats:
+  - svg
+  - png
+  - jpeg
+  - json

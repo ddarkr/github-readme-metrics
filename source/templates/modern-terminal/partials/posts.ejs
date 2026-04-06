@@ -1,0 +1,20 @@
+<% if (plugins.posts) { %>
+<div class="stdin"><%- meta.$ %> posts --source "<%= plugins.posts.source %>"</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.posts.error) { -%>
+<span class="error"><%= plugins.posts.error.message %></span><%# -%>
+<% } else { -%>
+From <b><%= plugins.posts.source %></b>
+<% if (Array.isArray(plugins.posts.list) && plugins.posts.list.length) { %>
+<% for (const {title, description, date} of plugins.posts.list) { %>
+<%= f.date(new Date(date), {date:true, timeZone:config.timezone?.name}) %>  -  <b><%= title %></b>
+<% if (plugins.posts.descriptions && description) { %>
+  <span style="color:#9aa4b2"><%= description %></span>
+<% } %>
+---
+<% } %>
+<% } else { %>
+No recent posts
+<% } %>
+<% } -%>
+</div><% } %>

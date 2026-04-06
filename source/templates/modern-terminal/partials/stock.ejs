@@ -1,0 +1,21 @@
+<% if (plugins.stock) { %>
+<div class="stdin"><%- meta.$ %> stock</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.stock.error) { -%>
+<span class="error"><%= plugins.stock.error.message %></span><%# -%>
+<% } else { -%>
+<% const _dur = {"1d":"Today", "5d":"Last five days", "1mo":"Last month", "3mo":"Last trimester", "6mo":"Last semester", "1y":"Last year", "2y":"Last two years", "5y":"Last five years", "10y":"Last ten years", ytd:"Year to date", max:"All-time"}[plugins.stock.duration] %>
+<% const _delta = Number(plugins.stock.delta || 0) %>
+<% const _percent = plugins.stock.price ? 100*Number(plugins.stock.delta || 0)/Number(plugins.stock.price) : 0 %>
+<%= ("Company:").padEnd(12) + String(plugins.stock.company || "").padEnd(36) %><%# -%>
+<%= ("Symbol:").padEnd(12) + String(plugins.stock.symbol || "").padEnd(36) %><%# -%>
+<%= ("Price:").padEnd(12) + ((plugins.stock.price!=null) ? (Number(plugins.stock.price).toFixed(2) + " " + (plugins.stock.currency||"")) : "").padStart(24) %><%# -%>
+<%= ("Duration:").padEnd(12) + String(_dur || plugins.stock.duration || "").padEnd(36) %><%# -%>
+<% if (_delta > 0) { %>
+<%= ("Change:").padEnd(12) + ("+" + f(_delta, {fixed:2}) + " " + (plugins.stock.currency||"") + " (" + f(_percent, {sign:true, fixed:2}) + "%)").padStart(36) %><%# -%>
+<% } else { %>
+<%= ("Change:").padEnd(12) + (f(_delta, {sign:true, fixed:2}) + " " + (plugins.stock.currency||"") + " (" + f(_percent, {sign:true, fixed:2}) + "%)").padStart(36) %><%# -%>
+<% } %>
+<%= ("Chart:").padEnd(12) + "(chart omitted in terminal mode)".padEnd(36) %><%# -%>
+<% } -%>
+</div><% } %>

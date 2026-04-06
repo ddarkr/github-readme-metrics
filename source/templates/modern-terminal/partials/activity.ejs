@@ -1,0 +1,43 @@
+<% if (plugins.activity) { %>
+  <div class="stdin"><%- meta.$ %> gh activity feed --user <%= user.login %></div>
+  <div class="stdout">
+    <% if (plugins.activity.error) { %>
+      <span class="error"><%= plugins.activity.error.message %></span>
+    <% } else { %>
+      <% const max = 8;
+         const events = (plugins.activity.events || []).slice(0, max);
+         const typeW = 10; const repoW = 30; const actorW = 15;
+      %>
+      <% if (!events.length) { %>
+        <pre>// No recent activity</pre>
+      <% } else { %>
+        <% for (const ev of events) {
+             const {actor, type, repo, timestamp, ...event} = ev;
+             const ts = plugins.activity.timestamps ? (f.date(timestamp, {time:true, date:true, timeZone:config.timezone?.name}) || "").padEnd(20) : "";
+             const t = (type || "").toLowerCase();
+             let label = "";
+             switch (t) {
+               case "pr": label = (event.action || "").toUpperCase() + " PR #" + (event.number||""); break;
+               case "issue": label = (event.action || "").toUpperCase() + " ISSUE #" + (event.number||""); break;
+               case "push": label = "PUSH " + (event.size||0) + " commit" + ((event.size||0) !== 1 ? "s" : "") + (event.branch ? " on " + event.branch : ""); break;
+               case "ref": label = (/create/.test(type) ? "CREATED" : "DELETED") + " " + (event.ref?.type||"ref") + (event.ref && event.ref.name ? ":" + event.ref.name : ""); break;
+               case "comment": label = "COMMENT " + (event.on === "pr" ? "PR" : event.on === "issue" ? "ISSUE" : "") + (event.number ? " #" + event.number : ""); break;
+               case "wiki": label = "WIKI " + ((event.pages && event.pages.length) || 0) + " page" + ((event.pages && event.pages.length) !== 1 ? "s" : ""); break;
+               case "fork": label = "FORK " + (event.forked ? (repo + " -> " + event.forked) : repo); break;
+               case "public": label = "PUBLIC " + repo; break;
+               case "review": label = "REVIEW " + (event.number ? "#" + event.number : ""); break;
+               case "release": label = "RELEASE " + (event.name || ""); break;
+               case "star": label = "STAR " + repo; break;
+               case "member": label = "MEMBER " + (event.user || ""); break;
+               default: label = (t || "EVENT").toUpperCase();
+             }
+             const typeCol = (t || "").toUpperCase().padEnd(typeW);
+             const repoCol = (repo || "").padEnd(repoW);
+             const actorCol = (actor || "").padEnd(actorW);
+        %>
+          <pre><%= ts %><%= typeCol %><%= repoCol %><%= actorCol %>  <%- label %></pre>
+        <% } %>
+      <% } %>
+    <% } %>
+  </div>
+<% } %>

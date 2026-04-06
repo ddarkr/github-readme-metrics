@@ -1,0 +1,38 @@
+<% if (plugins.calendar) { %>
+<div class="stdin"><%- meta.$ %> git log --oneline --since="1 year ago" | wc -l</div><%# -%>
+  <div class="stdout">
+    <% if (plugins.calendar.error) { -%>
+      <span class="error"><%= plugins.calendar.error.message %></span>
+    <% } else { -%>
+      <% /* Summarize contributions data into plain text lines */ %>
+      <% const years = Array.isArray(plugins.calendar.years) ? plugins.calendar.years : Object.values(plugins.calendar.years || {}); %>
+      <% if (years.length === 0) { %>
+        No contributions found in the provided calendar data.
+      <% } else { %>
+        <% let total = 0; %>
+        <% for (const y of years) { %>
+          <% if (y.weeks) { %>
+            <% for (const w of Object.values(y.weeks)) { %>
+              <% for (const d of Object.values(w.contributionDays || {})) { %>
+                <% total += Number(d.count || d.total || 0); %>
+              <% } %>
+            <% } %>
+          <% } %>
+        <% } %>
+        Total commits in the last year: <%= total %>
+        <% /* Per-year breakdown */ %>
+        <% for (const y of years) { %>
+          <% let yearTotal = 0; %>
+          <% if (y.weeks) { %>
+            <% for (const w of Object.values(y.weeks)) { %>
+              <% for (const d of Object.values(w.contributionDays || {})) { %>
+                <% yearTotal += Number(d.count || d.total || 0); %>
+              <% } %>
+            <% } %>
+          <% } %>
+          <%= y.year || y.name || 'Year' %>: <%= yearTotal %> commits
+        <% } %>
+      <% } %>
+    <% } -%>
+  </div>
+<% } %>

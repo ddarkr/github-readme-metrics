@@ -1,0 +1,230 @@
+svg {
+  font-family: "SF Mono", "JetBrains Mono", "Fira Code", "Monaco", "Menlo", monospace;
+  font-size: 13px;
+  color: #e0e0e0;
+}
+
+.terminal-window {
+  background: #0d1117;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  background: #161b22;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 12px;
+}
+
+.title {
+  color: #888;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.button.close {
+  background: #ff5f56;
+}
+
+.button.minimize {
+  background: #ffbd2e;
+}
+
+.button.maximize {
+  background: #27c93f;
+}
+
+.terminal-content {
+  padding: 16px;
+  background: #0d1117;
+}
+
+pre, .banner, footer {
+  margin: 0;
+  font-family: "SF Mono", "JetBrains Mono", "Fira Code", monospace;
+  color: #e6edf3;
+  line-height: 1.6;
+}
+
+pre {
+  background: transparent;
+  padding: 0;
+}
+
+.banner {
+  color: #8b949e;
+  font-size: 11px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #21262d;
+}
+
+footer {
+  color: #484f58;
+  font-size: 11px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #21262d;
+}
+
+.warnings {
+  color: #d29922;
+  background: rgba(210, 153, 34, 0.1);
+  border: 1px solid rgba(210, 153, 34, 0.3);
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 12px;
+}
+
+.ps1-user {
+  color: #58a6ff;
+  font-weight: 600;
+}
+
+.ps1-path {
+  color: #7ee787;
+  font-weight: 500;
+}
+
+.ps1-location {
+  color: #d2a8ff;
+}
+
+.ps1-symbol {
+  color: #f0883e;
+  font-weight: bold;
+}
+
+.stdin {
+  color: #e6edf3;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  margin-top: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: none;
+}
+
+.stdout {
+  color: #8b949e;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  margin-bottom: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.isocalendar svg {
+  margin-top: -15px !important;
+  filter: brightness(0.9) contrast(1.1);
+}
+
+.isocalendar svg, .screenshot {
+  filter: brightness(0.85) contrast(1.1);
+  margin: 12px 0;
+}
+
+.autosize {
+  width: auto;
+  height: auto;
+}
+
+.diff {
+  color: #3fb950;
+  font-weight: 500;
+}
+
+.error {
+  color: #f85149;
+  background: rgba(248, 81, 73, 0.1);
+  border: 1px solid rgba(248, 81, 73, 0.3);
+  padding: 12px;
+  margin: 12px 0;
+}
+
+.stdin, footer {
+  width: 0%;
+  white-space: nowrap;
+  overflow: hidden;
+  animation-name: stdin-animation;
+  animation-fill-mode: both;
+}
+
+.stdout {
+  max-height: 0%;
+  overflow: hidden;
+  animation-name: stdout-animation;
+  animation-fill-mode: both;
+}
+
+.stdout pre {
+  margin: 0;
+  white-space: pre;
+  font-family: inherit;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+@keyframes stdin-animation {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+@keyframes stdout-animation {
+  0% { max-height: 0; opacity: 0; }
+  100% { max-height: 500px; opacity: 1; }
+}
+
+:root {
+  --color-calendar-graph-day-bg: #161b22;
+  --color-calendar-graph-day-border: rgba(27,31,35,0.06);
+  --color-calendar-graph-day-L1-bg: #0e4429;
+  --color-calendar-graph-day-L2-bg: #006d32;
+  --color-calendar-graph-day-L3-bg: #26a641;
+  --color-calendar-graph-day-L4-bg: #39d353;
+  --color-calendar-halloween-graph-day-L1-bg: #631c03;
+  --color-calendar-halloween-graph-day-L2-bg: #bd561d;
+  --color-calendar-halloween-graph-day-L3-bg: #fa7a18;
+  --color-calendar-halloween-graph-day-L4-bg: #f9822c;
+  --color-calendar-winter-graph-day-L1-bg: #0e4429;
+  --color-calendar-winter-graph-day-L2-bg: #006d32;
+  --color-calendar-winter-graph-day-L3-bg: #26a641;
+  --color-calendar-winter-graph-day-L4-bg: #39d353;
+  --color-calendar-graph-day-L4-border: rgba(27,31,35,0.06);
+  --color-calendar-graph-day-L3-border: rgba(27,31,35,0.06);
+  --color-calendar-graph-day-L2-border: rgba(27,31,35,0.06);
+  --color-calendar-graph-day-L1-border: rgba(27,31,35,0.06);
+}
+
+#metrics-end {
+  width: 100%;
+  height: 20px;
+}
+
+.no-animations * {
+  transition-delay: 0s !important;
+  transition-duration: 0s !important;
+  animation-delay: -0.0001s !important;
+  animation-duration: 0s !important;
+  animation-play-state: paused !important;
+  caret-color: transparent !important;
+}

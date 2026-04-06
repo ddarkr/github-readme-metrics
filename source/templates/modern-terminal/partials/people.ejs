@@ -1,0 +1,20 @@
+<% if (plugins.people) { %>
+<div class="stdin"><%- meta.$ %> people</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.people.error) { -%>
+<span class="error"><%= plugins.people.error.message %></span><%# -%>
+<% } else { -%>
+  <% const types = plugins.people.types || []; -%>
+  <% for (const type of types) { -%>
+  <% const list = plugins.people[type] || []; -%>
+// <%= type %>: <%= (list.length || 0).toString().padStart(3) %>
+  <% if (list.length) { -%>
+    <% for (const u of list) { -%>
+<%= ('- ' + (u.login || u.name || 'unknown').padEnd(20)) + (' ' + (u.url || '')).padEnd(30) %>
+    <% } -%>
+  <% } else { -%>
+<span>No entries for <%= type %></span>
+  <% } -%>
+  <% } -%>
+<% } -%>
+</div><% } %>

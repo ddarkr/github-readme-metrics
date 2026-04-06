@@ -1,0 +1,31 @@
+<% if (plugins.starlists) { %>
+<div class="stdin"><%- meta.$ %> starlists</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.starlists.error) { -%>
+<span class="error"><%= plugins.starlists.error.message %></span><%# -%>
+<% } else { -%>
+<% for (const {name, description, count, repositories = [], languages = null} of plugins.starlists.lists) { %>
+<%# list header %>
+<%= ("* " + (name || "Unnamed list")).padEnd(36) + (String(count) + " repos").padStart(12) %>
+<% if (description) { %>
+<%= description %>
+<% } %>
+<% if (languages) { %>
+<% for (const {name: langName, value} of languages) { %>
+<%= (langName || "").padEnd(20) + f.percentage(value/count).padStart(8) + ("  " + f(value) + "★").padStart(8) %>
+<% } %>
+<% } %>
+<% if (repositories.length) { %>
+<% for (const repo of repositories) { %>
+<%= (repo.name || "").padEnd(36)
+     + (repo.language?.name ? repo.language.name.padStart(12) : "".padStart(12))
+     + (Number.isFinite(repo.stargazers) ? ("  " + f(repo.stargazers) + "★").padStart(10) : "")
+     + (Number.isFinite(repo.forks) ? ("  forks:" + f(repo.forks)).padStart(10) : "") %>
+<% if (repo.description) { %>
+<%= "  " + repo.description %>
+<% } %>
+<% } %>
+<% } %>
+<% } %>
+<% } -%>
+</div><% } %>

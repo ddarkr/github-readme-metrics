@@ -1,0 +1,16 @@
+<% if (plugins.music) { %>
+<div class="stdin"><%- meta.$ %> music <%= plugins.music.mode %></div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.music.error) { -%>
+<span class="error"><%= plugins.music.error.message %></span><%# -%>
+<% } else if (plugins.music.tracks && plugins.music.tracks.length) { -%>
+From: <%= plugins.music.provider || "unknown" %>
+<% const NUM_COL = 3;
+   const NAME_COL = 42;
+   for (const [i, {name = "", artist = ""}] of plugins.music.tracks.entries()) { -%>
+<%= `${i+1}`.padStart(NUM_COL) %>  <%= (name || "Untitled").slice(0, NAME_COL).padEnd(NAME_COL) %>  <%= artist || "Unknown Artist" %>
+<% } -%>
+<% } else { -%>
+No music recently listened
+<% } -%>
+</div><% } %>

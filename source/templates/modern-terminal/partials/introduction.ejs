@@ -1,0 +1,14 @@
+<% if (plugins.introduction) { %>
+<div class="stdin"><%- meta.$ %> introduction</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.introduction.error) { -%>
+<span class="error"><%= plugins.introduction.error.message %></span><%# -%>
+<% } else { -%>
+<% if (plugins.introduction.title) { %>
+<b>About <%= {user:"me", organization:"us", repository:""}[plugins.introduction.mode] %></b>
+<% } %>
+<% if (plugins.introduction.text) { %>
+<%= String(plugins.introduction.text).split('\n').map(line=>line).join('\n') %>
+<% } %>
+<% } -%>
+</div><% } %>

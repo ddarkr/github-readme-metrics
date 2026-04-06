@@ -1,0 +1,23 @@
+<% if (plugins.tweets) { %>
+<div class="stdin"><%- meta.$ %> tweets show</div><%# -%>
+<div class="stdout"><%# -%>
+<% if (plugins.tweets.error) { -%>
+<span class="error"><%= plugins.tweets.error.message %></span><%# -%>
+<% } else { -%>
+<% const userLine = plugins.tweets.username ? plugins.tweets.username : "(username not set)" %>
+User: <%= String(userLine).padEnd(24) %> <%= plugins.tweets.profile ? (plugins.tweets.profile.verified ? "verified" : "") : "profile missing" %>
+
+<% if (!plugins.tweets.profile) { %>
+  : twitter username not found
+<% } else if (plugins.tweets.list && plugins.tweets.list.length) { %>
+  <% for (const t of plugins.tweets.list) { %>
+    <%= String(t.createdAt || '').padEnd(20) %> <%- (t.text || '').replace(/\n/g, ' ') %>
+    <% if (t.attachments?.length) { %>
+      <span style="color:var(--muted)">[attachments: <%= t.attachments.length %>]</span>
+    <% } %>
+  <% } %>
+<% } else { %>
+  No recent tweets
+<% } %>
+<% } -%>
+</div><% } %>
