@@ -26,16 +26,18 @@ export default async function({login, q, imports, data, account}, {enabled = fal
     console.debug(`metrics/compute/${login}/plugins > wakatime > querying api`)
     const {data: {data: stats}} = await imports.axios.get(`${url}/api/v1/users/${user}/stats/${range}?api_key=${token}`)
 
-    // Deduplicate entries from WakaTime API that share the same name
-    function deduplicate(entries) {
-      if (!entries) return undefined
+    //Deduplicate entries from WakaTime API that share the same name
+    const deduplicate = entries => {
+      if (!entries)
+        return undefined
       const map = new Map()
       for (const {name, percent, total_seconds: total} of entries) {
         const existing = map.get(name)
         if (existing) {
-          existing.percent += percent
+          existing.percent += percent / 100
           existing.total += total
-        } else {
+        }
+        else {
           map.set(name, {name, percent: percent / 100, total})
         }
       }

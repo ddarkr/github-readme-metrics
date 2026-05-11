@@ -60,7 +60,7 @@ export default async function({login, q}, {conf, data, rest, graphql, plugins, q
   //Plugins
   for (const name of Object.keys(imports.plugins)) {
     //Skip base plugin - it's already called before the template runs
-    if (name === 'base')
+    if (name === "base")
       continue
     if (!q[name])
       continue

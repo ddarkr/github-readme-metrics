@@ -146,20 +146,20 @@ export function formatters({timeZone} = {}) {
       if (error.isAxiosError) {
         //Error code
         const status = error.response?.status
-        message = `API error: ${status}`
+        message = status ? `API error: ${status}` : `API error: ${error.code ?? error.message}`
 
         //Error description (optional)
         if ((descriptions) && (descriptions[status]))
           message += ` (${descriptions[status]})`
         else {
-          const description = error.response?.data?.errors?.[0]?.message ?? error.response.data?.error_description ?? error.response?.data?.message ?? null
+          const description = error.response?.data?.errors?.[0]?.message ?? error.response?.data?.error_description ?? error.response?.data?.message ?? null
           if (description)
             message += ` (${description})`
         }
 
         //Error data
-        console.debug(error.response.data)
-        error = error.response?.data ?? null
+        console.debug(error.response?.data)
+        error = error.response?.data ?? error.message ?? null
         throw {error: {message, instance: error}}
       }
       throw {error: {message, instance: error}}
@@ -447,7 +447,7 @@ export async function imgb64(image, {width, height, fallback = true} = {}) {
   //SVG image
   if ((typeof image === "string") && (image.endsWith(".svg")))
     return `data:image/svg+xml;base64,${Buffer.from(await fetch(image).then(response => response.arrayBuffer())).toString("base64")}`
-  //Load image
+  //Load, resize and encode image
   let ext = "png"
   try {
     if (image.startsWith("http://") || image.startsWith("https://")) {
@@ -458,26 +458,49 @@ export async function imgb64(image, {width, height, fallback = true} = {}) {
     else {
       image = sharp(image)
     }
+
+    //Resize image
+    if ((width) && (height))
+      image = image.resize({width: width > 0 ? width : null, height: height > 0 ? height : null})
+
+    return `data:image/${ext};base64,${(await image.toBuffer()).toString("base64")}`
   }
   catch (error) {
     console.debug(`metrics/imgb64 > error > ${error}${fallback ? " (using fallback image instead)" : ""}`)
     return imgb64(null, {fallback})
   }
-  //Resize image
-  if ((width) && (height))
-    image = image.resize({width: width > 0 ? width : null, height: height > 0 ? height : null})
-  return `data:image/${ext};base64,${(await image.toBuffer()).toString("base64")}`
 }
 
 /**SVG utils */
 export const svg = {
-  /**Render as pdf */
-  async pdf(rendered, {paddings = "", style = "", twemojis = false, gemojis = false, octicons = false, rest = null, errors = []} = {}) {
-    //Instantiate browser if needed
+  /**Get a healthy browser page */
+  async page(context) {
+    if (svg.resize.browser) {
+      try {
+        await svg.resize.browser.version()
+      }
+      catch (error) {
+        console.debug(`metrics/svg/${context} > browser unavailable: ${error} (restarting)`)
+        svg.resize.browser = null
+      }
+    }
     if (!svg.resize.browser) {
       svg.resize.browser = await puppeteer.launch()
-      console.debug(`metrics/svg/pdf > started ${await svg.resize.browser.version()}`)
+      console.debug(`metrics/svg/${context} > started ${await svg.resize.browser.version()}`)
     }
+    try {
+      return await svg.resize.browser.newPage()
+    }
+    catch (error) {
+      console.debug(`metrics/svg/${context} > failed to create page: ${error} (restarting)`)
+      await svg.resize.browser?.close().catch(() => null)
+      svg.resize.browser = await puppeteer.launch()
+      console.debug(`metrics/svg/${context} > restarted ${await svg.resize.browser.version()}`)
+      return svg.resize.browser.newPage()
+    }
+  },
+  /**Render as pdf */
+  async pdf(rendered, {paddings = "", style = "", twemojis = false, gemojis = false, octicons = false, rest = null, errors = []} = {}) {
     //Additional transformations
     if (twemojis)
       rendered = await svg.twemojis(rendered, {custom: false})
@@ -488,32 +511,30 @@ export const svg = {
     rendered = marked.parse(rendered)
     //Render through browser and print pdf
     console.debug("metrics/svg/pdf > loading svg")
-    const page = await svg.resize.browser.newPage()
-    page.on("console", ({_text: text}) => console.debug(`metrics/svg/pdf > puppeteer > ${text}`))
-    await page.setContent(`<main class="markdown-body">${rendered}</main>`, {waitUntil: puppeteer.events})
-    console.debug("metrics/svg/pdf > loaded svg successfully")
-    const margins = (Array.isArray(paddings) ? paddings : paddings.split(",")).join(" ")
-    console.debug(`metrics/svg/pdf > margins set to ${margins}`)
-    await page.addStyleTag({
-      content: `
-        main { margin: ${margins}; }
-        main svg { height: 1em; width: 1em; }
-        ${await fs.readFile(paths.join(__module(import.meta.url), "../../../node_modules", "@primer/css/dist/markdown.css")).catch(_ => "")}${style}
-      `,
-    })
-    rendered = await page.pdf()
-    //Result
-    await page.close()
-    console.debug("metrics/svg/pdf > rendering complete")
-    return {rendered, mime: "application/pdf", errors}
+    const page = await svg.page("pdf")
+    try {
+      page.on("console", ({_text: text}) => console.debug(`metrics/svg/pdf > puppeteer > ${text}`))
+      await page.setContent(`<main class="markdown-body">${rendered}</main>`, {waitUntil: puppeteer.events})
+      console.debug("metrics/svg/pdf > loaded svg successfully")
+      const margins = (Array.isArray(paddings) ? paddings : paddings.split(",")).join(" ")
+      console.debug(`metrics/svg/pdf > margins set to ${margins}`)
+      await page.addStyleTag({
+        content: `
+          main { margin: ${margins}; }
+          main svg { height: 1em; width: 1em; }
+          ${await fs.readFile(paths.join(__module(import.meta.url), "../../../node_modules", "@primer/css/dist/markdown.css")).catch(_ => "")}${style}
+        `,
+      })
+      rendered = await page.pdf()
+      console.debug("metrics/svg/pdf > rendering complete")
+      return {rendered, mime: "application/pdf", errors}
+    }
+    finally {
+      await page.close().catch(error => console.debug(`metrics/svg/pdf > failed to close page: ${error}`))
+    }
   },
   /**Render and resize svg */
   async resize(rendered, {paddings, convert, scripts = []}) {
-    //Instantiate browser if needed
-    if (!svg.resize.browser) {
-      svg.resize.browser = await puppeteer.launch()
-      console.debug(`metrics/svg/resize > started ${await svg.resize.browser.version()}`)
-    }
     //Format padding
     const padding = {width: 1, height: 1, absolute: {width: 0, height: 0}}
     paddings = Array.isArray(paddings) ? paddings : `${paddings}`.split(",").map(x => x.trim())
@@ -530,18 +551,18 @@ export const svg = {
     console.debug(`metrics/svg/resize > padding width*${padding.width}+${padding.absolute.width}, height*${padding.height}+${padding.absolute.height}`)
     //Render through browser and resize height
     console.debug("metrics/svg/resize > loading svg")
-    const page = await svg.resize.browser.newPage()
-    page.setViewport({width: 980, height: 980})
-    page
-      .on("console", message => console.debug(`metrics/svg/resize > puppeteer > ${message.text()}`))
-      .on("pageerror", error => console.debug(`metrics/svg/resize > puppeteer > ${error.message}`))
-    await page.setContent(rendered, {waitUntil: puppeteer.events})
-    console.debug("metrics/svg/resize > loaded svg successfully")
-    await page.addStyleTag({content: "body { margin: 0; padding: 0; }"})
-    let mime = "image/svg+xml"
-    console.debug("metrics/svg/resize > resizing svg")
-    let height, resized, width
+    const page = await svg.page("resize")
     try {
+      page.setViewport({width: 980, height: 980})
+      page
+        .on("console", message => console.debug(`metrics/svg/resize > puppeteer > ${message.text()}`))
+        .on("pageerror", error => console.debug(`metrics/svg/resize > puppeteer > ${error.message}`))
+      await page.setContent(rendered, {waitUntil: puppeteer.events})
+      console.debug("metrics/svg/resize > loaded svg successfully")
+      await page.addStyleTag({content: "body { margin: 0; padding: 0; }"})
+      let mime = "image/svg+xml"
+      console.debug("metrics/svg/resize > resizing svg")
+      let height, resized, width
       ;({resized, width, height} = await page.evaluate(
         async (padding, scripts) => {
           //Execute additional JavaScript
@@ -581,44 +602,45 @@ export const svg = {
         padding,
         scripts,
       ))
+      //Convert if required
+      if (convert) {
+        console.debug(`metrics/svg/resize > convert to ${convert}`)
+        resized = await page.screenshot({type: convert, clip: {x: 0, y: 0, width, height}, omitBackground: true})
+        mime = `image/${convert}`
+      }
+      //Result
+      console.debug("metrics/svg/resize > rendering complete")
+      return {resized, mime}
     }
     catch (error) {
       console.debug(`metrics/svg/resize > an error occurred: ${error}`)
       throw error
     }
-    //Convert if required
-    if (convert) {
-      console.debug(`metrics/svg/resize > convert to ${convert}`)
-      resized = await page.screenshot({type: convert, clip: {x: 0, y: 0, width, height}, omitBackground: true})
-      mime = `image/${convert}`
+    finally {
+      await page.close().catch(error => console.debug(`metrics/svg/resize > failed to close page: ${error}`))
     }
-    //Result
-    await page.close()
-    console.debug("metrics/svg/resize > rendering complete")
-    return {resized, mime}
   },
   /**Hash a SVG (removing its metadata first)*/
   async hash(rendered) {
     //Handle empty case
     if (!rendered)
       return null
-    //Instantiate browser if needed
-    if (!svg.resize.browser) {
-      svg.resize.browser = await puppeteer.launch()
-      console.debug(`metrics/svg/hash > started ${await svg.resize.browser.version()}`)
-    }
     //Compute hash
-    const page = await svg.resize.browser.newPage()
-    await page.setContent(rendered, {waitUntil: puppeteer.events})
-    const data = await page.evaluate(async () => {
-      document.querySelector("footer")?.remove()
-      return document.querySelector("svg").outerHTML
-    })
-    const hash = crypto.createHash("md5").update(data).digest("hex")
-    //Result
-    await page.close()
-    console.debug(`metrics/svg/hash > MD5=${hash}`)
-    return hash
+    const page = await svg.page("hash")
+    try {
+      await page.setContent(rendered, {waitUntil: puppeteer.events})
+      const data = await page.evaluate(async () => {
+        document.querySelector("footer")?.remove()
+        return document.querySelector("svg").outerHTML
+      })
+      const hash = crypto.createHash("md5").update(data).digest("hex")
+      //Result
+      console.debug(`metrics/svg/hash > MD5=${hash}`)
+      return hash
+    }
+    finally {
+      await page.close().catch(error => console.debug(`metrics/svg/hash > failed to close page: ${error}`))
+    }
   },
   /**Render twemojis */
   async twemojis(rendered, {custom = true} = {}) {
