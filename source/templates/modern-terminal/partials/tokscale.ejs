@@ -4,19 +4,40 @@
 <% if (plugins.tokscale.error) { -%>
 <span class="error"><%= plugins.tokscale.error.message %></span><%# -%>
 <% } else { -%>
-<% const user = plugins.tokscale.user?.username ? ` for ${plugins.tokscale.user.username}` : "" %>
-Tokscale statistics<%= user %>
-<% if (plugins.tokscale.sections.includes("overview")) { %>
-  <%= "Total tokens:".padEnd(20) %> <%= String(f(plugins.tokscale.stats.totalTokens)).padStart(10) %>
-  <%= "Rank:".padEnd(20) %><%= ("#"+String(plugins.tokscale.user?.rank ?? "-")).padStart(8) %>
-  <%= "Total cost:".padEnd(20) %><%= ("$"+String((plugins.tokscale.stats.totalCost||0).toFixed(2))).padStart(9) %>
-  <%= "Submissions:".padEnd(20) %> <%= String(plugins.tokscale.stats.submissionCount || 0).padStart(6) %> (<%= String(plugins.tokscale.stats.activeDays || 0).padStart(3) %> days)<% } %>
-<% if ((plugins.tokscale.sections.includes("models")) && (plugins.tokscale.models?.length)) { %>
+<%
+  const profile = plugins.tokscale.user?.username ? ` for ${plugins.tokscale.user.username}` : ""
+  const amount = value => `$${Number(value || 0).toFixed(2)}`
+  const integerAmount = value => `$${Number(value || 0).toFixed(0)}`
+  const clip = (value, length) => {
+    value = String(value || "")
+    return value.length > length ? `${value.slice(0, length - 1)}…` : value
+  }
+  const overview = [
+    ["Total tokens", f(plugins.tokscale.stats.totalTokens)],
+    ["Rank", `#${plugins.tokscale.user?.rank ?? "-"}`],
+    ["Total cost", amount(plugins.tokscale.stats.totalCost)],
+    ["Submissions", `${plugins.tokscale.stats.submissionCount || 0} (${plugins.tokscale.stats.activeDays || 0} days)`],
+  ]
+  const modelNameWidth = 30
+  const modelRows = (plugins.tokscale.models ?? []).map((model, index) => {
+    const name = clip(model.name, modelNameWidth).padEnd(modelNameWidth)
+    const percentage = `${((model.percentage || 0) * 100).toFixed(1)}%`.padStart(6)
+    const cost = integerAmount(model.cost).padStart(8)
+    return `${String(index + 1).padStart(2)}. ${name} ${percentage} ${cost}`
+  })
+-%>
+Tokscale statistics<%= profile %>
+<% if (plugins.tokscale.sections.includes("overview")) { -%>
+<% for (const [label, value] of overview) { -%>
+<%= `${label}:`.padEnd(15) %> <%= value %>
+<% } -%>
+<% } -%>
+<% if ((plugins.tokscale.sections.includes("models")) && (modelRows.length)) { -%>
+
 Top models:
-<% for (const [i, m] of plugins.tokscale.models.entries()) { const name = String(m.name||""); const pct = ((m.percentage||0)*100).toFixed(1); const cost = (m.cost||0).toFixed(0); %>
-<%= `${i+1}`.padStart(2) %>. <span class="label"><%= name.padEnd(22) %></span>  <%= String(pct + "%").padStart(6) %>  $<%= String(cost).padStart(6) %><% } %>
-<% } %>
-<% if ((plugins.tokscale.sections.includes("recent")) && (plugins.tokscale.lastSubmit)) { %>
-Last submission: <%= f.date(new Date(plugins.tokscale.lastSubmit), {date:true, timeZone:config.timezone?.name}) %><% } %>
+<pre class="tokscale-table"><%= modelRows.join("\n") %></pre><% } %>
+<% if ((plugins.tokscale.sections.includes("recent")) && (plugins.tokscale.lastSubmit)) { -%>
+
+Last submission: <%= f.date(new Date(plugins.tokscale.lastSubmit), {date:true, timeZone:config.timezone?.name}) %><% } -%>
 <% } -%>
 </div><% } %>

@@ -54,15 +54,17 @@ svg {
 }
 
 .terminal-content {
-  padding: 16px;
+  padding: 12px;
   background: #0d1117;
+  font-family: "SF Mono", "JetBrains Mono", "Fira Code", monospace;
+  line-height: 1.45;
 }
 
 pre, .banner, footer {
   margin: 0;
-  font-family: "SF Mono", "JetBrains Mono", "Fira Code", monospace;
+  font-family: inherit;
   color: #e6edf3;
-  line-height: 1.6;
+  line-height: inherit;
 }
 
 pre {
@@ -73,16 +75,16 @@ pre {
 .banner {
   color: #8b949e;
   font-size: 11px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1px solid #21262d;
 }
 
 footer {
   color: #484f58;
   font-size: 11px;
-  margin-top: 16px;
-  padding-top: 12px;
+  margin-top: 10px;
+  padding-top: 8px;
   border-top: 1px solid #21262d;
 }
 
@@ -90,8 +92,8 @@ footer {
   color: #d29922;
   background: rgba(210, 153, 34, 0.1);
   border: 1px solid rgba(210, 153, 34, 0.3);
-  padding: 12px;
-  margin: 12px 0;
+  padding: 10px;
+  margin: 8px 0;
   font-size: 12px;
 }
 
@@ -116,20 +118,26 @@ footer {
 
 .stdin {
   color: #e6edf3;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: rgba(255, 255, 255, 0.03);
-  margin-top: 12px;
+  margin-top: 8px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-bottom: none;
+  white-space: nowrap;
+}
+
+.banner + .stdin, .terminal-content > .stdin:first-child {
+  margin-top: 0;
 }
 
 .stdout {
   color: #8b949e;
-  padding: 12px;
+  padding: 10px;
   background: rgba(255, 255, 255, 0.02);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-top: 1px solid rgba(255, 255, 255, 0.03);
+  white-space: pre-wrap;
 }
 
 .isocalendar svg {
@@ -217,7 +225,7 @@ footer {
 
 #metrics-end {
   width: 100%;
-  height: 20px;
+  height: 8px;
 }
 
 .no-animations * {
@@ -227,4 +235,8 @@ footer {
   animation-duration: 0s !important;
   animation-play-state: paused !important;
   caret-color: transparent !important;
+}
+.label {
+  display: inline-block;
+  width: 14ch;
 }
