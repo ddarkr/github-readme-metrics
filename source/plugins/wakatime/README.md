@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>⏰ WakaTime</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays statistics from a <a href="https://wakatime.com">WakaTime</a> account.</p>
 <p>It is also compatible with self-hosted instances from <a href="https://github.com/muety/wakapi">wakapi</a>.</p>
@@ -20,7 +20,7 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.wakatime.svg" alt=""></img>
+      <img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.wakatime.svg" alt=""></img>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -170,7 +170,7 @@ Then setup [WakaTime plugins](https://wakatime.com/plugins) to be ready to go!
 <!--examples-->
 ```yaml
 name: WakaTime
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.wakatime.svg
   token: NOT_NEEDED

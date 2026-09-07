@@ -236,7 +236,7 @@ inputs:
   use_prebuilt_image:
     description: >-
       Use pre-built docker image from [GitHub container
-      registry](https://github.com/ddarkr/metrics/pkgs/container/metrics)
+      registry](https://github.com/ddarkr/github-readme-metrics/pkgs/container/github-readme-metrics)
     default: yes
 
   plugins_errors_fatal:

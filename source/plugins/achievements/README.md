@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🏆 Achievements</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays several highlights about what an account has achieved on GitHub.</p>
 </td></tr>
@@ -19,8 +19,8 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>Compact display</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.achievements.compact.svg" alt=""></img></details>
-      <details><summary>Detailed display</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.achievements.svg" alt=""></img></details>
+      <details open><summary>Compact display</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.achievements.compact.svg" alt=""></img></details>
+      <details><summary>Detailed display</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.achievements.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -129,7 +129,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <!--examples-->
 ```yaml
 name: Detailed display
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.achievements.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -140,7 +140,7 @@ with:
 ```
 ```yaml
 name: Compact display
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.achievements.compact.svg
   token: ${{ secrets.METRICS_TOKEN }}

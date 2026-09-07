@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🏅 Repository contributors</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin display repositories contributors from a commit range along with additional stats.</p>
 </td></tr>
@@ -19,8 +19,8 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>By contribution types</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.contributors.categories.svg" alt=""></img></details>
-      <details><summary>By number of contributions</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.contributors.contributions.svg" alt=""></img></details>
+      <details open><summary>By contribution types</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.contributors.categories.svg" alt=""></img></details>
+      <details><summary>By number of contributions</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.contributors.contributions.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -140,7 +140,7 @@ Each modified file by a contributor matching a file glob will add them in said c
 
 *Example: *
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     plugin_contributors: yes
     plugin_contributors_categories: |
@@ -156,7 +156,7 @@ Each modified file by a contributor matching a file glob will add them in said c
 <!--examples-->
 ```yaml
 name: Contributors with contributions count
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.contributors.contributions.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -169,7 +169,7 @@ with:
 ```
 ```yaml
 name: Contributors by categories
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.contributors.categories.svg
   token: ${{ secrets.METRICS_TOKEN }}

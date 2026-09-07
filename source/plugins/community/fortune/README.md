@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🥠 Fortune</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugins displays a random fortune message</p>
 </td></tr>
@@ -17,7 +17,7 @@
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.fortune.svg" alt=""></img>
+      <img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.fortune.svg" alt=""></img>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -49,7 +49,7 @@
 <!--examples-->
 ```yaml
 name: Fortune
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.fortune.svg
   token: NOT_NEEDED

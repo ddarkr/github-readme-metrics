@@ -1,96 +1,57 @@
-# 💪 Interested in contributing?
+# Contributing
 
-Nice! Please read the few sections below to understand how to implement new features.
+This repository maintains [ddarkr/github-readme-metrics](https://github.com/ddarkr/github-readme-metrics), a fork of [lowlighter/metrics](https://github.com/lowlighter/metrics). Submit pull requests against this fork for its changes; do not send fork-specific support requests to the upstream project. Issues and Discussions are currently disabled.
 
-## 👨‍💻 Extending *metrics*
+Read [ARCHITECTURE.md](ARCHITECTURE.md) for the source layout and [local setup](.github/readme/partials/documentation/setup/local.md) for installation. Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Report vulnerabilities according to [SECURITY.md](SECURITY.md), not in a public issue containing exploit details.
 
-Be sure to read [ARCHITECTURE.md](/ARCHITECTURE.md) first to understand how `metrics` is structured and to follow [`🔧 Local setup for development`](.github/readme/partials/documentation/setup/local.md) to get a working development environment!
+## Development prerequisites
 
-Before working on something, ensure that it will not duplicate any active open pull requests (including drafts).
+- Node.js 24 or newer and npm. Use `npm ci` to install the lockfile's dependency versions.
+- Chrome/Chromium for browser-backed rendering tests. Use Puppeteer's installed browser, or set `PUPPETEER_BROWSER_PATH` to an existing executable.
+- Keep personal credentials in GitHub Actions secrets or the ignored local `settings.json`. Never put real credentials in test fixtures, screenshots, logs, or committed workflow files.
+- `tests/secrets.json` contains committed dummy inputs for scenario generation. It is not a credential store; never replace its fixture values with real tokens.
 
-It is advised to open a [`💬 discussion`](https://github.com/ddarkr/metrics/discussions) first to gather feedback about new features.
+## Making a change
 
-> ⚠️ To avoid an ever-growing backlog, inactive pull requests will be closed after 3 weeks and locked after 5 weeks.
+1. Search this fork's existing pull requests. For a substantial feature or incompatible change, use a draft pull request to explain the proposed behavior before expanding the implementation.
+2. Keep a pull request focused on one behavior or a related set of fixes. Explain the problem, the observable change, and any compatibility impact.
+3. Follow the existing ES module (`.mjs`) and two-space indentation conventions. Reuse existing plugin and template patterns rather than adding parallel implementations.
+4. Run the relevant checks below. State exactly what was exercised and which external-service paths were not tested.
+5. For visual changes, attach actual dark/light renders at narrow widths. For bug fixes, add a regression test when it protects a plausible failure; avoid assertions that only pin source text or incidental markup.
 
-> 😅 Be positive! Even if your changes don't get merged in [ddarkr/metrics](https://github.com/ddarkr/metrics), please don't be too sad, you will always be able to run workflows directly from your fork!
+## Checks
 
-## 🤝 Accepted contributions
+```sh
+npm test
+npm run linter
+npm run build
+```
 
-The following contributions are accepted:
-<table>
-  <tr>
-    <th>Section</th>
-    <th>Changes</th>
-    <th>Additions</th>
-    <th>Notes</th>
-  </tr>
-  <tr>
-    <td nowrap="nowrap">🧩 Plugins</td>
-    <td>✔️</td>
-    <td>✔️</td>
-    <td>
-      <ul>
-        <li>New features for existing plugins are allowed but must be optional and backward compatible</li>
-        <li>New community plugins are welcomed provided they're functional and not redundant with existing plugins</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap="nowrap">🖼️ Templates</td>
-    <td>✓</td>
-    <td>❌</td>
-    <td>
-      <ul>
-        <li>Template changes are allowed with new features additions (but must remain consistent with current visuals)</li>
-        <li>New templates should use <a href="https://github.com/ddarkr/metrics/blob/master/source/templates/community/README.md">📕 Community templates</a> instead</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap="nowrap">🪛 Presets</td>
-    <td>✔️</td>
-    <td>✔️</td>
-    <td>
-      <ul>
-        <li>New presets are welcomed provided they're functional and not redundant with existing presets</li>
-        <li>Note that presets are on <code><a href="https://github.com/ddarkr/metrics/tree/presets">@presets</a></code> branch</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap="nowrap">🧪 Tests</td>
-    <td>✔️</td>
-    <td>✔️</td>
-    <td>
-      <ul>
-        <li>Everything that makes metrics more stable is welcomed!</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap="nowrap">🧱 Core</td>
-    <td>✓</td>
-    <td>❌</td>
-    <td>
-      <ul>
-        <li>Core changes impact all rendering process and should be avoided unless necessary</li>
-        <li>New dependencies should be avoided when possible</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td nowrap="nowrap">🗃️ Repository</td>
-    <td>❌</td>
-    <td>❌</td>
-    <td>
-      <ul>
-        <li>Workflows, license, readmes, etc. usually don't need to be edited</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+`npm test` runs the offline regression, integration-fixture, widget, and browser rendering suites. It does not establish that every external service accepts live credentials. The browser-backed cases require Chrome/Chromium even though they use local fixture data.
 
-**Legend**
-* ✔️: Contributions welcomed!
-* ✓: Contributions are welcomed, but must be discussed first
-* ❌: Only maintainers can manage these files
+`npm run test-metrics` runs the broader Action/web scenario matrix. `npm run test-presets` is separate and requires its configured preset checkout. These suites can depend on external resources; they are not the default offline check.
+
+`npm run build` regenerates documentation, descriptors, example workflows, and test cases in place; it is not a JavaScript compilation step. The normal command does not publish. Do not use the build script's `publish` mode for local verification.
+
+## Source files and generated files
+
+| Change | Edit first |
+| --- | --- |
+| Plugin behavior or options | `source/plugins/<plugin>/index.mjs`, `metadata.yml`, and `examples.yml` |
+| Community plugin | `source/plugins/community/<plugin>/` |
+| Template layout | `source/templates/<template>/image.svg`, `partials/`, and `style.css` |
+| Template processing or examples | `template.mjs`, `metadata.yml`, and `examples.yml` in that template |
+| Root README and shared guides | `.github/readme/partials/` |
+| Action descriptor | `source/app/action/action.yml` and plugin input metadata |
+| Example server settings | `source/app/web/settings.example.json` and plugin input metadata |
+| API fixtures | `tests/mocks/api/` and their corresponding test cases |
+
+Regenerate after changing metadata, examples, or documentation templates. Do not fix a generated README header, root `action.yml`, or generated case in isolation: the next build would overwrite it. Plugin/template README content outside generated markers can be maintained directly.
+
+## Pull request checklist
+
+- Describe the behavior and any changed options or configuration.
+- Include verification commands and their outcomes, with browser/API prerequisites noted.
+- Update the source documentation and regenerate affected outputs.
+- Include no local settings, real tokens, assistant artifacts, or unrelated formatting changes.
+- Preserve the MIT license and original authors' attribution.

@@ -1,137 +1,89 @@
-# 📐 Project architecture
+# Architecture
 
-Following diagram explain how **metrics** code is structured:
+GitHub Readme Metrics is a Node.js 24 application using JavaScript ES modules (`.mjs`). The GitHub Action and Express web server are separate adapters around the same metrics engine. There is no TypeScript compilation step in the maintained runtime.
 
-![Architecture](/.github/architecture.svg)
+## Repository map
 
-## 🗂️ Project structure
-This section explain how *metrics* is structured.
+```text
+source/
+  app/
+    metrics/              Shared data collection and rendering engine
+    action/               GitHub Action entrypoint and descriptor source
+    web/                  Express entrypoint, instance, settings source, and static UI
+      statics/embed/      Embedded configuration UI and preview fixture generator
+  plugins/                Built-in plugins
+    community/            Community plugins
+  templates/              SVG/Markdown templates and their processors
+    community/            Community template support
+.github/
+  readme/                 Documentation templates, guides, and images
+  scripts/                Build, preview, and maintenance tooling
+  workflows/              Validation and publishing workflows
+  config/                 Tool configuration
+tests/
+  mocks/api/              GitHub and third-party response fixtures
+  mocks/                  Fixture helpers and mock integration
+  fixtures/               File-backed test inputs
+  cases/                  Generated Action/web scenario cases
+```
 
-* `source/app/metrics/` contains *metrics* engine files
-* `source/app/action/` contains GitHub action files
-  * `index.mjs` contains GitHub action entry point
-  * `action.yml` contains GitHub action templated descriptor
-* `source/app/web/` contains web instance files
-  * `index.mjs` contains web instance entry point
-  * `instance.mjs` contains web instance source code
-  * `settings.example.json` contains web instance settings example
-  * `statics/` contains web instance static files
-    * `app.js` contains web instance client source code
-    * `app.placeholder.js` contains web instance placeholder mocked data
-* `source/plugins/*/` contains source code of plugins
-  * `README.md` contains plugin documentation
-  * `metadata.yml` contains plugin metadata
-  * `examples.yml` contains plugin workflow examples
-  * `index.mjs` contains plugin source code
-  * `queries/` contains plugin GraphQL queries
-* `source/templates/*/` contains templates files
-  * `README.md` contains template documentation
-  * `metadata.yml` contains template metadata
-  * `examples.yml` contains template workflow examples
-  * `image.svg` contains template image used to render metrics
-  * `style.css` contains style used to render metrics
-  * `fonts.css` contains additional fonts used to render metrics
-  * `template.mjs` contains template source code
-* `tests/` contains tests
-  * `metrics.test.js` contains metrics testers
-  * `source/app/mocks/` contains mocked data files
-  * `api/` contains mocked api data
-    * `axios/` contains external REST APIs mocked data
-    * `github/` contains mocked GitHub api data
-  * `index.mjs` contains mockers
-* `Dockerfile` contains docker instructions used to build metrics image
-* `package.json` contains dependencies and command line aliases
+The root `action.yml` and `settings.example.json` are generated public configuration surfaces. `package.json` defines supported commands and dependencies. Personal `settings.json` is ignored. `MIGRATION_PLAN.md` is a historical proposal, not an active implementation guide.
 
-## 🎬 Behind the scenes
+## Execution flow
 
-This section explore some topics which explain globally how metrics was designed and how it works.
+1. **Adapter:** `source/app/action/index.mjs` converts Action inputs into a query; `source/app/web/index.mjs` starts the Express instance in `instance.mjs`, which handles web requests.
+2. **Metadata and setup:** `source/app/metrics/metadata.mjs` loads plugin/template definitions and input metadata. `setup.mjs` configures the available processors and templates.
+3. **Collection:** `source/app/metrics/index.mjs` coordinates the base data and enabled plugins. Plugins fetch or transform their data and expose result objects to the selected template. GitHub access uses Octokit GraphQL/REST; other providers use their own APIs.
+4. **Template:** The template processor prepares presentation context. EJS renders the image/Markdown source and partials using plugin results and shared helpers.
+5. **Output:** SVG is verified and resized; raster output is captured using Chromium. The adapter handles delivery or Action output behavior.
 
-### 💬 Creating SVGs images on-the-fly
+The adapters share the engine, not a single process entrypoint. Public web previews use generated example data and must not be treated as proof that an external API integration works with real credentials.
 
-*metrics* actually exploit the possibility of integrating HTML and CSS into SVGs, so basically creating these images is as simple as designing static web pages. It can even handle animations and transparency.
+## Plugins
 
-![Metrics are html](/.github/readme/imgs/about_metrics_are_html.png)
+A plugin directory contains `index.mjs` for processing, `metadata.yml` for input and capability definitions, `examples.yml` for workflow examples, and `README.md` for documentation. API query templates live in `queries/` where needed. Community implementations use `source/plugins/community/<name>/`.
 
-SVGs are templated through [EJS framework](https://github.com/mde/ejs) to make the whole rendering process easier thanks to variables, conditional and loop statements. Only drawback is that it tends to make syntax coloration a bit confused because templates are often misinterpreted as HTML tags markers (`<%= "EJS templating syntax" %>`).
+Keep acquisition, filtering, limits, and provider-specific errors in the plugin. Templates consume the resulting fields; they should not fetch data or manufacture measurements. When changing an API fixture in `tests/mocks/api/`, update the corresponding consumer test.
 
-Images (and custom fonts) are encoded into base64 to prevent cross-origin requests, while also removing any external dependencies, although it tends to increase files sizes.
+## Templates and browser rendering
 
-Since SVG renders differently depending on OS and browsers (system fonts, CSS support, ...), it's pretty hard to compute dynamically height. Previously, it was computed with ugly formulas, but as it wasn't scaling really well (especially since the introduction of variable content length plugins). It was often resulting in large empty blank spaces or really badly cropped image.
+Templates have an `image.svg` or other output source, `style.css`, `template.mjs`, metadata, and examples. Optional font definitions and EJS partials are template-specific. SVG templates embed XHTML with `foreignObject`; image and font assets can be embedded to avoid external requests in the delivered report.
 
-To solve this, metrics now spawns a [puppeteer](https://github.com/puppeteer/puppeteer) instance and directly render SVG in a browser environment (with all animations disabled). An hidden "marker" element is placed at the end of the image, and is used to resize image through its Y-offset.
+The renderer uses Puppeteer to measure the final `#metrics-end` marker and obtain output dimensions. It waits for fonts and image decoding with animations disabled during measurement. The SVG renderer shares a browser, serializes launch/recovery, and closes each render's page in `finally`.
 
-![Metrics marker](/.github/readme/imgs/about_metrics_marker.png)
+Nested charts need their own valid coordinate system, not just valid XML. For example, the lines plugin emits a `viewBox` and reserves space for axis labels so responsive sizing does not clip them. Browser bounding-box checks cover failures that string and XML assertions cannot detect.
 
-Additional bonus of using puppeteer is that it can take screenshots, making it easy to convert SVGs to PNG output.
+Modern Terminal registers its content partials in `source/templates/modern-terminal/partials/_.json`. Shared helpers own the command/output shell, Powerline prompts, and embedded vector icons. Helpers do not belong in the content registry. See the [template rendering contract](source/templates/modern-terminal/README.md#rendering-contract) before changing its layout.
 
-The SVG renderer shares one browser and serializes browser launch/recovery. Each render owns its page and closes it in `finally`. Sizing waits for fonts, image decoding, and animation-disabled layout frames rather than a fixed delay. Generated SVGs without an authored `viewBox` receive one for proportional embedding; raster captures keep animations disabled.
+## Source of generated files
 
-### 💬 Gathering external data from GitHub APIs and Third-Party services
+`npm run build` invokes `.github/scripts/build.mjs`. It regenerates files in place; it does not compile the application or publish in its normal mode.
 
-*metrics* mostly use GitHub APIs since it is its primary target. Most of the time, data are retrieved through GraphQL to save APIs requests, but it sometimes fallback on REST for other features. Octokit SDKs are used to make it easier.
+| Generated output | Maintained source |
+| --- | --- |
+| Root `README.md` | `.github/readme/partials/templated/README.md` and included partials |
+| Plugin/template README headers and examples | Their `metadata.yml` and `examples.yml`; body text outside generated markers remains hand-maintained |
+| Plugin/template indexes and compatibility tables | Metadata plus `.github/readme/partials/templated/` |
+| Root `action.yml` | `source/app/action/action.yml` plus input metadata |
+| Root `settings.example.json` | `source/app/web/settings.example.json` plus input metadata |
+| `tests/cases/*.yml` | Plugin/template examples processed into test scenarios |
+| `.github/workflows/examples.yml` | `.github/scripts/files/examples.yml` and collected plugin/template examples |
 
-As for other external services (Twitter, Spotify, PageSpeed, ...), metrics use their respective APIs, usually making https requests through [axios](https://github.com/axios/axios) and by following their documentation. It would be overkill to install entire SDKs for these since plugins rarely uses more than 2/3 calls.
+Change generator inputs before regenerating outputs. Generated example workflows are examples, not evidence that an examples branch, container tag, or hosted service has been published by this fork.
 
-In last resort, puppeteer is seldom used to scrap websites, though its use tends to make things slow and unstable (as it'll break upon HTML structural changes).
+## Testing boundaries
 
-### 💬 Web instance and GitHub action similarities
+- `regressions.test.js` checks runtime edge cases and recovery.
+- `integrations.test.js` exercises provider behavior using fixtures.
+- `rendering.test.js` checks consumer-visible rendering behavior, including actual Chromium chart bounds.
+- `modern-terminal.test.js` renders every registered content widget with seeded data in both themes, disabled states, and escaped error states.
+- `metrics.test.js` covers the broader Action, web, and placeholder scenario matrix.
+- `presets.test.js` covers an explicitly configured preset checkout.
 
-Historically, metrics used to be only a web service without any customization possible. The single input was a GitHub username, and was composed of what is now `base` content (along with `languages` and `followup` plugin, which is why they can be computed without any additional queries). That's why `base` content is handled a bit differently from plugins.
+`npm test` selects the offline suites; browser-backed cases still need Chrome/Chromium. Use Puppeteer's installed browser or `PUPPETEER_BROWSER_PATH`. The broader scenario and preset suites have separate commands because they can depend on external resources. See [CONTRIBUTING.md](CONTRIBUTING.md) for the verification workflow and [.github/readme/partials/documentation/setup/local.md](.github/readme/partials/documentation/setup/local.md) for setup.
 
-As it gathered more and more plugins over time, generating a single user's metrics was becoming costly both in terms of resources but also in APIs requests. It was thus decided to switch to GitHub Action. At first, it was just a way to explore possibilities of this GitHub feature, but now it's basically the full-experience of metrics (unless you use your own  self-hosted instance).
+## Credentials and deployment
 
-Both web instance and Action actually use the same entrypoint so they basically have the same features.
-Action just format inputs into a query-like object (similarly to when url params are parsed by web instance), from which metrics compute the rendered image. It also makes testing easier, as test cases can be reused since only inputs differs.
+The Action and web instance can access credential-protected data. Tokens and personal settings are runtime inputs, not source files or test data. Review the [security policy](SECURITY.md) before exposing a web instance or publishing reports. The original MIT attribution is preserved in [LICENSE](LICENSE).
 
-## 📦 Packages reference
-
-Below is a list of used packages.
-
-* [express/express.js](https://github.com/expressjs/express) and [expressjs/compression](https://github.com/expressjs/compression)
-  * To serve, compute and render a GitHub user's metrics
-* [nfriedly/express-rate-limit](https://github.com/nfriedly/express-rate-limit)
-  * To apply rate limiting on server and avoid spams and hitting GitHub API's own rate limit
-* [octokit/graphql.js](https://github.com/octokit/graphql.js/) and [octokit/rest.js](https://github.com/octokit/rest.js)
-  * To perform request to GitHub GraphQL API and GitHub REST API
-* [mde/ejs](https://github.com/mde/ejs)
-  * To render SVG images
-* [ptarjan/node-cache](https://github.com/ptarjan/node-cache)
-  * To cache generated content
-* [lovell/sharp](https://github.com/lovell/sharp), [foliojs/png.js](https://github.com/foliojs/png.js) and [eugeneware/gifencoder](https://github.com/eugeneware/gifencoder)
-  * To process images transformations
-* [svg/svgo](https://github.com/svg/svgo)
-  * To optimize generated SVG
-* [axios/axios](https://github.com/axios/axios)
-  * To make HTTP/S requests
-* [actions/toolkit](https://github.com/actions/toolkit/tree/master)
-  * To build the GitHub Action
-* [vuejs/vue](https://github.com/vuejs/vue), [egoist/vue-prism-component](https://github.com/egoist/vue-prism-component), [prismjs/prism](https://github.com/prismjs/prism) and [zenorocha/clipboard.js](https://github.com/zenorocha/clipboard.js)
-  * To display server application
-* [puppeteer/puppeteer](https://github.com/puppeteer/puppeteer)
-  * To scrape the web
-* [jsdom/jsdom](https://github.com/jsdom/jsdom) and [chrisbottin/xml-formatter](https://github.com/chrisbottin/xml-formatter)
-  * To format, test and verify SVG validity
-* [facebook/jest](https://github.com/facebook/jest) and [nodeca/js-yaml](https://github.com/nodeca/js-yaml)
-  * For unit testing
-* [faker-js/faker](https://github.com/faker-js/faker)
-  * For mocking data
-* [steveukx/git-js](https://github.com/steveukx/git-js)
-  * For simple git operations
-* [twitter/twemoji-parser](https://github.com/twitter/twemoji-parser) and [IonicaBizau/emoji-name-map](https://github.com/IonicaBizau/emoji-name-map)
-  * To parse and handle emojis/[twemojis](https://github.com/twitter/twemoji)
-* [jshemas/openGraphScraper](https://github.com/jshemas/openGraphScraper)
-  * To retrieve open graphs metadata
-* [rbren/rss-parser](https://github.com/rbren/rss-parser)
-  * To parse RSS streams
-* [Nixinova/Linguist](https://github.com/Nixinova/Linguist)
-  * To analyze used languages
-* [markedjs/marked](https://github.com/markedjs/marked) and [apostrophecms/sanitize-html](https://github.com/apostrophecms/sanitize-html)
-  * To render markdown blocks
-* [css/csso](https://github.com/css/csso) and [FullHuman/purgecss](https://github.com/FullHuman/purgecss)
-  * To optimize and purge unused CSS
-* [isaacs/minimatch](https://github.com/isaacs/minimatch)
-  * For file traversal
-* [node-fetch/node-fetch](https://github.com/node-fetch/node-fetch)
-  * For `fetch` polyfill
-* [eslint/eslint](https://github.com/eslint/eslint)
-  * As linter
+The inherited root `vercel.json` is a reverse-proxy configuration for upstream `metrics.lecoq.io` endpoints, not a deployment of this fork's Node.js engine. Do not use it for private reports or assume it provides an independently hosted service. Use the documented Node.js or Docker setup to run this fork.

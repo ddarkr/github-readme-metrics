@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🗂️ GitHub projects</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays progress of profile and repository projects.</p>
 </td></tr>
@@ -19,7 +19,7 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.projects.svg" alt=""></img>
+      <img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.projects.svg" alt=""></img>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -113,7 +113,7 @@ Be sure to tick `Track project progress` in project settings to display a progre
 
 *Example: include a project repository*
 ```yml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     plugin_projects: yes
     plugin_projects_repositories: ddarkr/metrics/projects/1
@@ -124,13 +124,13 @@ Be sure to tick `Track project progress` in project settings to display a progre
 <!--examples-->
 ```yaml
 name: Project from a repository
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.projects.svg
   token: ${{ secrets.METRICS_TOKEN_WITH_SCOPES }}
   base: ""
   plugin_projects: yes
-  plugin_projects_repositories: ddarkr/metrics/projects/1
+  plugin_projects_repositories: ddarkr/github-readme-metrics/projects/1
   plugin_projects_descriptions: yes
 
 ```

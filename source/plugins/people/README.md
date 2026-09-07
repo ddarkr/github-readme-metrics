@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🧑‍🤝‍🧑 People</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin can display relationships with users, such as followers, sponsors, contributors, stargazers, watchers, members, etc.</p>
 </td></tr>
@@ -19,8 +19,8 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>Related to a user</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.people.followers.svg" alt=""></img></details>
-      <details><summary>Related to a repository</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.people.repository.svg" alt=""></img></details>
+      <details open><summary>Related to a user</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.people.followers.svg" alt=""></img></details>
+      <details><summary>Related to a repository</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.people.repository.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -168,7 +168,7 @@ This will fetch additional data (10 times <a href="/source/plugins/people/README
 <!--examples-->
 ```yaml
 name: Followers
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.people.followers.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -179,7 +179,7 @@ with:
 ```
 ```yaml
 name: Contributors and sponsors
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.people.repository.svg
   token: ${{ secrets.METRICS_TOKEN }}

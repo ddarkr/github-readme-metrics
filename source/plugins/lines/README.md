@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>👨‍💻 Lines of code changed</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays the number of lines of code added and removed across repositories.</p>
 </td></tr>
@@ -19,8 +19,8 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>Repositories and diff history</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.lines.history.svg" alt=""></img></details>
-      <details><summary>Compact display in base plugin</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.lines.svg" alt=""></img></details>
+      <details open><summary>Repositories and diff history</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.lines.history.svg" alt=""></img></details>
+      <details><summary>Compact display in base plugin</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.lines.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -124,7 +124,7 @@ after returning correct results upon performing another query.</p>
 <!--examples-->
 ```yaml
 name: Compact display in base plugin
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.lines.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -135,7 +135,7 @@ with:
 ```
 ```yaml
 name: Repositories and diff history
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.lines.history.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -148,7 +148,7 @@ with:
   repositories_skipped: |
     @use.patterns
     */*
-    +ddarkr/metrics
+    +ddarkr/github-readme-metrics
 
 ```
 <!--/examples-->

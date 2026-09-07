@@ -4,73 +4,52 @@ on:
   push:
     branches: [ master ]
 
-jobs:
+permissions:
+  contents: read
 
-  # Build, test and analyze
+jobs:
   build-test-analyze:
     name: Build, test and analyze
     if: "!contains(github.event.head_commit.message, '[skip test]')"
-    uses: ddarkr/metrics/.github/workflows/test.yml@master
+    permissions:
+      contents: read
+      security-events: write
+    uses: ./.github/workflows/test.yml
 
-  # Format code
-  format:
-    name: Format code
-    runs-on: ubuntu-latest
-    needs: [ build-test-analyze ]
-    if: always() && (needs.build-test-analyze.result == 'success' || needs.build-test-analyze.result == 'skipped')
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Checkout master
-        run: git checkout master
-      - name: Format code
-        run: |
-          npm install -g dprint
-          mkdir -v -p /home/runner/.cache/dprint/cache
-          npx dprint fmt --config .github/config/dprint.json
-      - name: Publish formatted code
-        run: |
-          set +e
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add --all
-          git commit -m "chore: code formatting"
-          git push
-          set -e
-
-  # Update plugins and template indexes, along with README.md
+  # Rebuilds only the canonical repository after its checked-out revision passed CI.
   update-indexes:
     name: Publish rebuilt metrics indexes
     runs-on: ubuntu-latest
-    needs: [ format ]
+    needs: [ build-test-analyze ]
+    if: github.repository == 'ddarkr/github-readme-metrics'
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Pull changes
-        run: |
-          git checkout master
-          git pull
       - name: Setup metrics
         run: npm ci
-      - name: Publish rebuild metrics indexes
+      - name: Publish rebuilt metrics indexes
         run: npm run build -- publish
 
-  # Build docker image from master and publish it to GitHub registry
+  # Publish only from the canonical master branch, after authorized regeneration.
   docker-master:
     name: Publish master to GitHub registry
     runs-on: ubuntu-latest
     needs: [ update-indexes ]
+    if: github.repository == 'ddarkr/github-readme-metrics'
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Login to GitHub registry
         run: echo ${{ github.token }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Build docker image
@@ -80,30 +59,35 @@ jobs:
       - name: Tag docker image (beta) and publish to GitHub registry
         run: |
           set +e
-          METRICS_VERSION=$(cat package.json | grep -Po '(?<="version": ")\d+[.]\d+(?=[.]0-beta")')
+          METRICS_VERSION=$(node -p "require('./package.json').version.match(/^(\d+\.\d+)\.0-beta$/)?.[1] ?? ''")
           METRICS_VERSION_BETA="$METRICS_VERSION-beta"
           set -e
-          if [[ ! -z "$METRICS_VERSION" ]]; then
+          if [[ -n "$METRICS_VERSION" ]]; then
             echo "Beta version: v$METRICS_VERSION_BETA"
-            docker tag ghcr.io/ddarkr/github-readme-metrics:master ghcr.io/ddarkr/github-readme-metrics:$(echo "v$METRICS_VERSION_BETA")
-            docker push ghcr.io/ddarkr/github-readme-metrics:$(echo "v$METRICS_VERSION_BETA")
+            docker tag ghcr.io/ddarkr/github-readme-metrics:master ghcr.io/ddarkr/github-readme-metrics:v$METRICS_VERSION_BETA
+            docker push ghcr.io/ddarkr/github-readme-metrics:v$METRICS_VERSION_BETA
           fi
       - name: Tag docker image (main) and publish to GitHub registry
         run: |
           docker tag ghcr.io/ddarkr/github-readme-metrics:master ghcr.io/ddarkr/github-readme-metrics:main
           docker push ghcr.io/ddarkr/github-readme-metrics:main
 
-  # Test ddarkr/metrics@master
-  action-master-test:
-    name: Test ddarkr/metrics@master
+  action-smoke:
+    name: Test checked-out action
     runs-on: ubuntu-latest
     needs: [ docker-master ]
+    if: github.repository == 'ddarkr/github-readme-metrics'
+    permissions:
+      contents: read
     steps:
-      - name: Run tests
-        uses: ddarkr/metrics@master
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run action
+        uses: ./
         with:
           token: MOCKED_TOKEN
           plugins_errors_fatal: yes
           dryrun: yes
           use_mocked_data: yes
+          use_prebuilt_image: no
           verify: yes

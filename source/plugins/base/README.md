@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🗃️ Base content</h3></th></tr>
   <tr><td colspan="2" align="center"></td></tr>
   <tr>
@@ -16,10 +16,10 @@
   <tr>
 <td colspan="2"><table><tr>
 <td align="center">
-<img src="https://github.com/ddarkr/metrics/blob/examples/metrics.classic.svg" alt=""></img>
+<img src="https://github.com/lowlighter/metrics/blob/examples/metrics.classic.svg" alt=""></img>
 </td>
 <td align="center">
-<img src="https://github.com/ddarkr/metrics/blob/examples/metrics.organization.svg" alt=""></img>
+<img src="https://github.com/lowlighter/metrics/blob/examples/metrics.organization.svg" alt=""></img>
 </td>
 </tr></table></td>
   </tr>
@@ -205,7 +205,7 @@ Broad affiliations will result in less representative metrics.</p>
 <!--examples-->
 ```yaml
 name: Default metrics
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.base.svg
   token: ${{ secrets.METRICS_TOKEN }}

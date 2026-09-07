@@ -5,19 +5,18 @@ on:
     branches: [ master ]
   workflow_call:
 
-jobs:
+permissions:
+  contents: read
 
-  # Run linter to ensure new code respect coding rules
+jobs:
   lint:
-    name: Lint code
+    name: Lint checked-out revision
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
       - name: Setup NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 24
       - name: Setup metrics
@@ -25,40 +24,32 @@ jobs:
       - name: Run linter
         run: npm run linter
 
-  # Build docker image from branch and run tests
   build:
-    name: Build and test
+    name: Build and test checked-out revision
     runs-on: ubuntu-latest
     needs: [ lint ]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Format code with dprint
-        run: |
-          npm install -g dprint
-          mkdir -v -p /home/runner/.cache/dprint/cache
-          npx dprint fmt --config .github/config/dprint.json
-      - name: Build ddarkr/github-readme-metrics:${{ github.head_ref || 'master' }}
-        env:
-          GIT_REF: ${{ github.head_ref || 'master' }}
-        run: docker build -t ddarkr/github-readme-metrics:$(echo $GIT_REF | sed 's/[^a-z]/-/g') .
-      - name: Run tests
-        env:
-          GIT_REF: ${{ github.head_ref || 'master' }}
-        run: docker run --rm --entrypoint="" ddarkr/github-readme-metrics:$(echo $GIT_REF | sed 's/[^a-z]/-/g') npm test
+        uses: actions/checkout@v4
+      - name: Build test image
+        run: docker build -t github-readme-metrics:${{ github.sha }} .
+      - name: Run offline regression and widget tests
+        run: docker run --rm --entrypoint="" github-readme-metrics:${{ github.sha }} npm test
 
-  # Run CodeQL on branch
   analyze:
-    name: Analyze code
+    name: Analyze checked-out revision
     runs-on: ubuntu-latest
     needs: [ lint ]
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: javascript
           config-file: ./.github/config/codeql.yml
       - name: Analyze code
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3

@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>📜 Repository licenses</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin display repository license informations like permissions, limitations and conditions along with additional stats about dependencies.</p>
 </td></tr>
@@ -27,8 +27,8 @@ This could result in compromised server!</p>
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>Permissions, limitations and conditions</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.licenses.svg" alt=""></img></details>
-      <details open><summary>Licenses overview</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.licenses.ratio.svg" alt=""></img></details>
+      <details open><summary>Permissions, limitations and conditions</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.licenses.svg" alt=""></img></details>
+      <details open><summary>Licenses overview</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.licenses.ratio.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -134,7 +134,7 @@ with:
 ```
 ```yaml
 name: Licenses with open-source ratio graphs
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.licenses.ratio.svg
   token: ${{ secrets.METRICS_TOKEN }}

@@ -1,14 +1,14 @@
-## 💪 Contributing
+## Contributing
 
-If you are interested in contributing, the following resources may interest you:
+- [Contribution guide](/CONTRIBUTING.md)
+- [Architecture](/ARCHITECTURE.md)
+- [MIT license](/LICENSE)
+- [Pull requests for this fork](https://github.com/ddarkr/github-readme-metrics/pulls)
 
-* [💪 Contribution guide](/CONTRIBUTING.md)
-* [🧬 Architecture](/ARCHITECTURE.md)
-* [📜 License](/LICENSE)
-* **:octocat: GitHub resources**
-  * [📖 GitHub GraphQL API](https://docs.github.com/en/graphql)
-  * [📖 GitHub GraphQL Explorer](https://docs.github.com/en/free-pro-team@latest/graphql/overview/explorer)
-  * [📖 GitHub Rest API](https://docs.github.com/en/rest)
-  * [📖 GitHub Octicons](https://github.com/primer/octicons)
+Issues, Discussions, and private vulnerability reporting are currently disabled in the repository settings. Do not post sensitive reports publicly; see [SECURITY.md](/SECURITY.md).
 
-Use [`💬 discussions`](https://github.com/lowlighter/metrics/discussions) for feedback, new features suggestions, bugs reports or to request help for installation.
+Useful upstream APIs and dependencies:
+
+- [GitHub GraphQL API](https://docs.github.com/en/graphql)
+- [GitHub REST API](https://docs.github.com/en/rest)
+- [GitHub Octicons](https://github.com/primer/octicons)

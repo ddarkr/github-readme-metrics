@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🙋 Introduction</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays account bio or organization/repository description.</p>
 <p>Since account bio is already displayed on account profile, this plugin is mostly intended for external usage.</p>
@@ -20,8 +20,8 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>For a user or an organization</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.introduction.svg" alt=""></img></details>
-      <details><summary>For a repository</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.introduction.repository.svg" alt=""></img></details>
+      <details open><summary>For a user or an organization</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.introduction.svg" alt=""></img></details>
+      <details><summary>For a repository</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.introduction.repository.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -63,7 +63,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <!--examples-->
 ```yaml
 name: Organization introduction
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.introduction.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -74,7 +74,7 @@ with:
 ```
 ```yaml
 name: Repository introduction
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.introduction.repository.svg
   token: ${{ secrets.METRICS_TOKEN }}

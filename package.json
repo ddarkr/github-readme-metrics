@@ -1,11 +1,12 @@
 {
   "name": "github-readme-metrics",
   "version": "3.35.0-beta",
+  "private": true,
   "description": "An infographics generator with 40+ plugins and 300+ options to display stats about your GitHub account and render them as SVG, Markdown, PDF or JSON!",
-  "main": "index.mjs",
+  "main": "source/app/action/index.mjs",
   "scripts": {
     "start": "node source/app/web/index.mjs",
-    "test": "jest --runInBand --testPathIgnorePatterns presets.test.js",
+    "test": "jest --runInBand regressions.test.js rendering.test.js integrations.test.js modern-terminal.test.js",
     "test-presets": "jest --runInBand presets.test.js --noStackTrace",
     "test-metrics": "jest --runInBand metrics.test.js",
     "build": "node .github/scripts/build.mjs",
@@ -21,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ddarkr/metrics.git"
+    "url": "git+https://github.com/ddarkr/github-readme-metrics.git"
   },
   "author": "ddarkr",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ddarkr/metrics/issues"
+    "url": "https://github.com/ddarkr/github-readme-metrics/blob/master/CONTRIBUTING.md"
   },
-  "homepage": "https://github.com/ddarkr/metrics#readme",
+  "homepage": "https://github.com/ddarkr/github-readme-metrics#readme",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/github": "^9.0.0",

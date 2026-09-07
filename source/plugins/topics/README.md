@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>📌 Starred topics</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays <a href="https://github.com/stars?filter=topics">starred topics</a>.</p>
 <p>Check out <a href="https://github.com/topics">GitHub topics</a> to search interesting topics.</p>
@@ -20,8 +20,8 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>With icons</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.topics.icons.svg" alt=""></img></details>
-      <details open><summary>With labels</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.topics.svg" alt=""></img></details>
+      <details open><summary>With icons</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.topics.icons.svg" alt=""></img></details>
+      <details open><summary>With labels</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.topics.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -105,7 +105,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <!--examples-->
 ```yaml
 name: Labels
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.topics.svg
   token: NOT_NEEDED
@@ -116,7 +116,7 @@ with:
 ```
 ```yaml
 name: Icons
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.topics.icons.svg
   token: NOT_NEEDED

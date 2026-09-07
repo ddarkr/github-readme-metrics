@@ -1,5 +1,5 @@
 - name: 🎫 Gists - Gists
-  uses: ddarkr/metrics@master
+  uses: ddarkr/github-readme-metrics@master
   with:
     token: MOCKED_TOKEN
     plugin_gists: 'yes'

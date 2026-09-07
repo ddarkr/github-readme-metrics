@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>📓 Featured repositories</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays a list of chosen featured repositories.</p>
 <p>Since it is possible to <a href="https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/pinning-items-to-your-profile">pin repositories</a> on GitHub, this plugin is mostly intended for external usage.</p>
@@ -24,8 +24,8 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>Featured</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.repositories.svg" alt=""></img></details>
-      <details><summary>Pinned</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.repositories.pinned.svg" alt=""></img></details>
+      <details open><summary>Featured</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.repositories.svg" alt=""></img></details>
+      <details><summary>Pinned</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.repositories.pinned.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -148,18 +148,18 @@ All product and company names are trademarks™ or registered® trademarks of th
 <!--examples-->
 ```yaml
 name: Featured repositories
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.repositories.svg
   token: ${{ secrets.METRICS_TOKEN }}
   base: ""
   plugin_repositories: yes
-  plugin_repositories_featured: ddarkr/metrics
+  plugin_repositories_featured: ddarkr/github-readme-metrics
 
 ```
 ```yaml
 name: Pinned repositories
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.repositories.pinned.svg
   token: ${{ secrets.METRICS_TOKEN }}

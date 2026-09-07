@@ -40,9 +40,9 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run script
-        run: ./delete_workflows.sh ddarkr/metrics
+        run: ./delete_workflows.sh ddarkr/github-readme-metrics
         working-directory: .github/actions/ghcr-clean
         env:
           GITHUB_TOKEN: ${{ github.token }}

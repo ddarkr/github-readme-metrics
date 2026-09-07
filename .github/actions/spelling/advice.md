@@ -10,7 +10,7 @@ If items relate to a ...
 https://www.regexplanet.com/advanced/perl/) yours before committing to verify it will match your files.
 
   `^` refers to the file's path from the root of the repository, so `^README\.md$` would exclude [README.md](
-../tree/HEAD/README.md) (on whichever branch you're using).
+/README.md) (on whichever branch you're using).
 
 * well-formed pattern.
 

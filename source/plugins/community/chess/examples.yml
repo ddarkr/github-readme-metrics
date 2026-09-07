@@ -1,5 +1,5 @@
 - name: Last chess game from lichess.org
-  uses: ddarkr/metrics@master
+  uses: ddarkr/github-readme-metrics@master
   with:
     filename: metrics.plugin.chess.svg
     token: NOT_NEEDED

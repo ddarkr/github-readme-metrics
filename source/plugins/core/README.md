@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🧱 Core</h3></th></tr>
   <tr><td colspan="2" align="center"><p>Global configuration and options</p>
 </td></tr>
@@ -32,7 +32,7 @@ Configure `config_timezone` (see [supported timezone](https://en.wikipedia.org/w
 
 *Example: configuring timezone*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     config_timezone: Europe/Paris
 ```
@@ -43,7 +43,7 @@ Content can be manually ordered using `config_order` option.
 
 *Example: display base.header, isocalendar, languages and stars in this specific order*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     base: header
     plugin_isocalendar: yes
@@ -123,23 +123,18 @@ Options resolution is done in the following order:
 
 *Example: using a configuration preset from an url*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
-    config_presets: https://raw.githubusercontent.com/ddarkr/metrics/presets/lunar-red/preset.yaml
+    config_presets: https://raw.githubusercontent.com/lowlighter/metrics/presets/lunar-red/preset.yml
 ```
 
-Some presets are hosted on this repository on the [`@presets`](https://github.com/ddarkr/metrics/tree/presets) branch and can be used directly by using their identifier prefixed by an arobase (`@`).
+This example uses the upstream project's published preset. Remote presets can contain CSS or JavaScript; load only sources you trust and pin a commit in the URL when you need reproducible behavior.
 
-*Example: using a pre-defined configuration preset*
-```yaml
-- uses: ddarkr/metrics@latest
-  with:
-    config_presets: "@lunar-red"
-```
+The `@name` shorthand resolves against this fork's `presets` branch. That branch is not currently published, so use an explicit URL or a local preset file rather than `@lunar-red`.
 
 > ⚠️ `🔐 Tokens` and options marked with `⏯️ Cannot be preset`, as they suggest, cannot be preset and thus requires to be explicitly defined to be set.
 
-> ℹ️ Presets configurations use [schemas](https://github.com/ddarkr/metrics/tree/presets/%40schema) to ensure compatibility between format changes
+Preset schemas describe compatibility between configuration formats. The upstream schema reference is in [lowlighter/metrics](https://github.com/lowlighter/metrics/tree/presets/%40schema).
 
 ## 🎨 Custom CSS styling
 
@@ -147,7 +142,7 @@ Additional CSS can be injected using `extras_css` option.
 
 *Example: changing the color of `h2`*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     base: header
     extras_css: |
@@ -168,7 +163,7 @@ Additional JavaScript can be injected using `extras_js` option.
 
 *Example: removing all `h2`*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     base: header
     extras_js: |
@@ -205,21 +200,21 @@ Each value need to respect the following format:
 
 *Example: add 10px padding for both width and height*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     config_padding: 10
 ```
 
 *Example: add 10px padding to height and increase it by 8%*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     config_padding: 0, 10 + 8%
 ```
 
 *Example: remove 10% from height*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     config_padding: 0, -10%
 ```
@@ -234,7 +229,7 @@ The `columns` display will render a full-width image with automatic resizing: tw
 
 *Example: output a PNG image*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     config_display: large
 ```
@@ -245,7 +240,7 @@ Use `config_output` to change output format.
 
 *Example: output a PNG image*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     config_output: png
 ```
@@ -254,7 +249,7 @@ A JSON output can be used to retrieved collected data and use it elsewhere.
 
 *Example: output a JSON data dump*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     config_output: json
 ```
@@ -263,7 +258,7 @@ When using a PDF output, it is advised to set `config_base64: yes` to encode emb
 
 *Example: output a self-contained PDF document*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     markdown: TEMPLATE.md
     config_output: markdown-pdf
@@ -278,7 +273,7 @@ It is possible to generate a self-contained HTML file containing `✨ Metrics in
 
 *Example: output `✨ Metrics insights` report*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     config_output: insights
 ```
@@ -306,7 +301,7 @@ metrics:
   permissions:
     contents: write
   steps:
-    - uses: ddarkr/metrics@latest
+    - uses: ddarkr/github-readme-metrics@master
       with:
         output_action: commit
         committer_branch: metrics-renders
@@ -328,12 +323,12 @@ metrics:
     contents: write
     pull-requests: write
   steps:
-    - uses: ddarkr/metrics@latest
+    - uses: ddarkr/github-readme-metrics@master
       with:
         filename: my-metrics-0.svg
         output_action: pull-request
 
-    - uses: ddarkr/metrics@latest
+    - uses: ddarkr/github-readme-metrics@master
       with:
         filename: my-metrics-1.svg
         output_action: pull-request-merge
@@ -350,7 +345,7 @@ It is required to provide a gist id to `committer_gist` option to make it work.
 ```yaml
 metrics:
   steps:
-    - uses: ddarkr/metrics@latest
+    - uses: ddarkr/github-readme-metrics@master
       with:
         output_action: gist
         committer_gist: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -372,11 +367,11 @@ metrics:
         with:
           fetch-depth: 0
 
-    - uses: ddarkr/metrics@latest
+    - uses: ddarkr/github-readme-metrics@master
       with:
         output_action: none
 
-    - uses: ddarkr/metrics@latest
+    - uses: ddarkr/github-readme-metrics@master
       run: |
         set +e
         git checkout metrics-renders
@@ -395,7 +390,7 @@ Use `retries` and `retries_delay` options to automatically retry rendering.
 
 *Example: retry render up to 3 times (wait 5 minutes between each fail)*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     retries: 3
     retries_delay: 300
@@ -408,7 +403,7 @@ Use `retries_output_action` and `retries_delay_output_action` options to automat
 
 *Example: retry output action up to 5 times (wait 2 minutes between each fail)*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     retries_output_action: 5
     retries_delay_output_action: 120
@@ -422,14 +417,14 @@ To reduce filesize and decrease loading time, *metrics* offers several optimizat
 
 *Example: optimize CSS and XML*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     optimize: css, xml
 ```
 
 *Example: optimize SVG (experimental)*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     optimize: svg
     experimental_features: --optimize-svg
@@ -437,7 +432,7 @@ To reduce filesize and decrease loading time, *metrics* offers several optimizat
 
 ## 🐳 Faster execution with prebuilt docker images
 
-When using `ddarkr/metrics` official releases as a GitHub Action, a prebuilt docker container image will be pulled from [GitHub Container Registry](https://github.com/users/lowlighter/packages/container/package/metrics). It allows to significantly reduce workflow execution time.
+When using `ddarkr/github-readme-metrics` official releases as a GitHub Action, a prebuilt docker container image will be pulled from [GitHub Container Registry](https://github.com/ddarkr/github-readme-metrics/pkgs/container/github-readme-metrics). It allows to significantly reduce workflow execution time.
 
 > 💡 This option is enabled by default!
 
@@ -445,7 +440,7 @@ On forks, this feature is disable to take into account any changes you made on i
 
 *Example: using prebuilt docker image*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     use_prebuilt_image: yes
 ```
@@ -637,7 +632,7 @@ When doing so, any settings which defaults on user fetched values will not be te
   <tr>
     <td nowrap="nowrap"><h4><code>setup_community_templates</code></h4></td>
     <td rowspan="2"><p>Community templates to setup</p>
-<p>See <a href="https://github.com/ddarkr/metrics/blob/master/source/templates/community/README.md">community templates guide</a> for more informations</p>
+<p>See <a href="https://github.com/ddarkr/github-readme-metrics/blob/master/source/templates/community/README.md">community templates guide</a> for more informations</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -653,7 +648,7 @@ When doing so, any settings which defaults on user fetched values will not be te
     <td nowrap="nowrap"><h4><code>template</code></h4></td>
     <td rowspan="2"><p>Template</p>
 <p>Community templates must be prefixed by at sign (<code>@</code>)
-See <a href="https://github.com/ddarkr/metrics/blob/master/README.md#%EF%B8%8F-templates">list of supported templates</a></p>
+See <a href="https://github.com/ddarkr/github-readme-metrics/blob/master/README.md#%EF%B8%8F-templates">list of supported templates</a></p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -817,7 +812,7 @@ You can override the content order by using this setting.</p>
   <tr>
     <td nowrap="nowrap"><h4><code>config_twemoji</code></h4></td>
     <td rowspan="2"><p>Use twemojis</p>
-<p>Replace emojis by <a href="%5Btwemojis%5D(https://github.com/twitter/twemoji)">twemojis</a> to have a consistent render across all platforms
+<p>Replace emojis with <a href="https://github.com/twitter/twemoji">Twemoji</a> to have a consistent render across all platforms.
 May increase filesize.</p>
 <img width="900" height="1" alt=""></td>
   </tr>
@@ -866,7 +861,7 @@ Size must be a supported icon size (12, 16 or 24).
 <li><code>regular</code>: 480px width</li>
 <li><code>large</code>: 960px width (may not be supported by all templates)</li>
 <li><code>columns</code>: Full width with auto-sizing (two columns for desktops, and one column for mobile)<ul>
-<li>known issue: <a href="https://github.com/ddarkr/metrics/issues/374">https://github.com/ddarkr/metrics/issues/374</a></li>
+<li>known issue: <a href="https://github.com/ddarkr/github-readme-metrics/issues/374">https://github.com/ddarkr/github-readme-metrics/issues/374</a></li>
 </ul>
 </li>
 </ul>
@@ -1103,7 +1098,7 @@ Be sure to disable this option when asking for help or submitting bug reports.</
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>use_prebuilt_image</code></h4></td>
-    <td rowspan="2"><p>Use pre-built docker image from <a href="https://github.com/ddarkr/metrics/pkgs/container/metrics">GitHub container registry</a></p>
+    <td rowspan="2"><p>Use pre-built docker image from <a href="https://github.com/ddarkr/github-readme-metrics/pkgs/container/github-readme-metrics">GitHub container registry</a></p>
 <p>It allows to save build time and make job significantly faster, and there is almost no reason to disable this settings.
 This option has no effects on forks (images will always be rebuilt from Dockerfile)</p>
 <img width="900" height="1" alt=""></td>

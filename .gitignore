@@ -71,6 +71,8 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env.*
+!.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -123,3 +125,8 @@ source/app/web/statics/preview
 .test
 source/run/serve/static/app.js
 metrics.config.yml
+
+# Local OS and assistant artifacts
+.DS_Store
+.ai-bridge/
+.migration-backup-filelist.txt

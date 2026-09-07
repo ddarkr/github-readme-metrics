@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>💹 Stock prices</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays the stock market price of a given company.</p>
 </td></tr>
@@ -17,7 +17,7 @@
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.stock.svg" alt=""></img>
+      <img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.stock.svg" alt=""></img>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -123,7 +123,7 @@ Create a [RapidAPI account](https://rapidapi.com) and subscribe to [Yahoo Financ
 <!--examples-->
 ```yaml
 name: Stock prices from Tesla
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.stock.svg
   token: NOT_NEEDED

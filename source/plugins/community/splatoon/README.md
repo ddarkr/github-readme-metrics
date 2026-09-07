@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🦑 Splatoon</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays your Splatoon 3 recent matches based on data fetched from Splatnet.</p>
 </td></tr>
@@ -22,7 +22,7 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.splatoon.svg" alt=""></img>
+      <img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.splatoon.svg" alt=""></img>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -155,7 +155,7 @@ The helper script is intended to be run by [deno runtime](https://deno.land/). E
 
 Run the following command in your terminal and follow instructions:
 ```bash
-deno run --allow-run=deno --allow-read=profile.json --allow-write=profile.json --unstable https://raw.githubusercontent.com/ddarkr/metrics/master/source/plugins/community/splatoon/token.ts
+deno run --allow-run=deno --allow-read=profile.json --allow-write=profile.json --unstable https://raw.githubusercontent.com/ddarkr/github-readme-metrics/master/source/plugins/community/splatoon/token.ts
 ```
 
 ![Script](/.github/readme/imgs/plugin_splatoon_script.png)
@@ -184,7 +184,7 @@ Data are fetched using [spacemeowx2/s3si.ts](https://github.com/spacemeowx2/s3si
 <!--examples-->
 ```yaml
 name: Splatnet data
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.splatoon.svg
   token: NOT_NEEDED
@@ -195,7 +195,7 @@ with:
 ```
 ```yaml
 name: Splatnet data with stat.ink integration
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.splatoon.svg
   token: NOT_NEEDED

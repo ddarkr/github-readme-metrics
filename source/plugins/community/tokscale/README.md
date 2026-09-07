@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🎯 Tokscale</h3></th></tr>
   <tr><td colspan="2" align="center"><p>Displays token usage statistics from <a href="https://tokscale.ai">Tokscale.ai</a>.</p>
 </td></tr>
@@ -91,7 +91,7 @@
 <!--examples-->
 ```yaml
 name: Tokscale statistics
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.tokscale.svg
   token: NOT_NEEDED

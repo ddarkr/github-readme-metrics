@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🌸 Anilist watch list and reading list</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays favorites animes, mangas and characters from a <a href="https://anilist.co">AniList</a> account.</p>
 </td></tr>
@@ -19,9 +19,9 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>For anime watchers</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.anilist.svg" alt=""></img></details>
-      <details><summary>For manga readers</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.anilist.manga.svg" alt=""></img></details>
-      <details open><summary>For waifus simp</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.anilist.characters.svg" alt=""></img></details>
+      <details open><summary>For anime watchers</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.anilist.svg" alt=""></img></details>
+      <details><summary>For manga readers</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.anilist.manga.svg" alt=""></img></details>
+      <details open><summary>For waifus simp</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.anilist.characters.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -135,7 +135,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <!--examples-->
 ```yaml
 name: Favorites anime and currently watching
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.anilist.svg
   token: NOT_NEEDED
@@ -148,7 +148,7 @@ with:
 ```
 ```yaml
 name: Favorites manga and currently reading
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.anilist.manga.svg
   token: NOT_NEEDED
@@ -161,7 +161,7 @@ with:
 ```
 ```yaml
 name: Favorites characters
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.anilist.characters.svg
   token: NOT_NEEDED

@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>💩 PoopMap plugin</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays statistics from a <a href="https://poopmap.net">PoopMap</a> account.</p>
 </td></tr>
@@ -99,7 +99,7 @@ This token will not expire and it will be able to access only public details.
 
 <!--examples-->
 ```yaml
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   plugin_poopmap_token: ${{ secrets.POOPMAP_TOKEN }}

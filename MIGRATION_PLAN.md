@@ -1,9 +1,11 @@
 # TypeScript Migration Plan
 
+> **Historical proposal — not implemented.** This document is retained as a design reference, not an installation guide or an active migration checklist. The maintained application uses Node.js 24 and JavaScript ES modules (`.mjs`). See [ARCHITECTURE.md](ARCHITECTURE.md) and [CONTRIBUTING.md](CONTRIBUTING.md) for the current structure and workflow. Do not run the migration commands as part of normal setup.
+
 > **Project**: metrics (GitHub metrics infographics generator)
-> **Current Stack**: Node.js 20, ES Modules (.mjs), Express, Puppeteer
+> **Stack assumed by this proposal**: Node.js 20, ES Modules (.mjs), Express, Puppeteer
 > **Target Stack**: TypeScript 5.x, esbuild, tsx
-> **Scope**: 73 .mjs files + 2 existing .ts files
+> **Scope estimated by this proposal**: 73 .mjs files + 2 existing .ts files
 
 ---
 

@@ -9,19 +9,21 @@ on:
         type: string
       repo:
         type: string
-jobs:
 
+permissions:
+  contents: read
+
+jobs:
   test:
-    name: Test
+    name: Test checked-out presets
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: master
       - name: Setup NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 24
       - name: Setup metrics
@@ -29,5 +31,5 @@ jobs:
       - name: Run tests
         run: npm run test-presets
         env:
-          HEAD_REF: ${{ inputs.ref }}
-          REPO: ${{ inputs.repo }}
+          HEAD_REF: ${{ inputs.ref || github.head_ref || 'presets' }}
+          REPO: ${{ inputs.repo || github.event.pull_request.head.repo.full_name || github.repository }}

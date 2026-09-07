@@ -1,6 +1,6 @@
 # 📒 Markdown template example (pdf)
 
-See [rendering of this file here](https://github.com/ddarkr/metrics/blob/examples/metrics.markdown.pdf) and [original template source here](https://github.com/ddarkr/metrics/blob/master/source/templates/markdown/example.pdf.md).
+See [rendering of this file here](https://github.com/lowlighter/metrics/blob/examples/metrics.markdown.pdf) and [original template source here](https://github.com/ddarkr/github-readme-metrics/blob/master/source/templates/markdown/example.pdf.md).
 
 ## 🧩 Plugins
 

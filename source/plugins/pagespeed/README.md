@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>⏱️ Google PageSpeed</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays performance statistics of a website.</p>
 <p>It uses <a href="https://developers.google.com/speed/docs/insights/v5/get-started">Google&#39;s PageSpeed API</a> (same as <a href="https://web.dev">web.dev</a>), see <a href="https://web.dev/performance-scoring/">performance scoring</a> and <a href="https://googlechrome.github.io/lighthouse/scorecalc/">score calculator</a> for more informations about results.</p>
@@ -20,9 +20,9 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>PageSpeed scores</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.pagespeed.svg" alt=""></img></details>
-      <details><summary>PageSpeed scores with detailed report</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.pagespeed.detailed.svg" alt=""></img></details>
-      <details><summary>PageSpeed scores with a website screenshot</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.pagespeed.screenshot.svg" alt=""></img></details>
+      <details open><summary>PageSpeed scores</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.pagespeed.svg" alt=""></img></details>
+      <details><summary>PageSpeed scores with detailed report</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.pagespeed.detailed.svg" alt=""></img></details>
+      <details><summary>PageSpeed scores with a website screenshot</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.pagespeed.screenshot.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -122,7 +122,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <!--examples-->
 ```yaml
 name: Succinct report
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.pagespeed.svg
   token: NOT_NEEDED
@@ -134,7 +134,7 @@ with:
 ```
 ```yaml
 name: Detailed report
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.pagespeed.detailed.svg
   token: NOT_NEEDED
@@ -147,7 +147,7 @@ with:
 ```
 ```yaml
 name: Screenshot
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.pagespeed.screenshot.svg
   token: NOT_NEEDED
@@ -160,7 +160,7 @@ with:
 ```
 ```yaml
 name: Succinct report with PWA
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.pagespeed.svg
   token: NOT_NEEDED

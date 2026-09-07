@@ -411,7 +411,7 @@ metadata.plugin = async function({__plugins, __templates, name, logger}) {
       //Header table
       const header = [
         "<table>",
-        '  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>',
+        '  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>',
         `  <tr><th colspan="2"><h3>${meta.name}</h3></th></tr>`,
         `  <tr><td colspan="2" align="center">${marked.parse(meta.description ?? "", {silent: true})}</td></tr>`,
         meta.deprecation ? `  <tr><th>⚠️ Deprecated</th><td>${marked.parse(meta.deprecation ?? "", {silent: true})}</td></tr>` : "",
@@ -547,12 +547,12 @@ metadata.template = async function({__templates, name, plugins}) {
     //Header table
     const header = [
       "<table>",
-      '  <tr><td colspan="2"><a href="/README.md#%EF%B8%8F-templates">← Back to templates index</a></td></tr>',
+      '  <tr><td colspan="2"><a href="/source/templates/README.md">← Back to templates index</a></td></tr>',
       `  <tr><th colspan="2"><h3>${meta.name ?? "(unnamed template)"}</h3></th></tr>`,
       `  <tr><td colspan="2" align="center">${marked.parse(meta.description ?? "", {silent: true})}</td></tr>`,
       "  <tr>",
       '    <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>',
-      `    <td>${Object.entries(compatibility).filter(([_, value]) => value).map(([id]) => `<a href="/source/plugins/${id}/README.md" title="${plugins[id].name}">${plugins[id].icon}</a>`).join(" ")}${meta.formats?.includes("markdown") ? " <code>✓ embed()</code>" : ""}</td>`,
+      `    <td>${Object.entries(compatibility).filter(([_, value]) => value).map(([id]) => `<a href="/source/plugins/${plugins[id].community ? "community/" : ""}${id}/README.md" title="${plugins[id].name}">${plugins[id].icon}</a>`).join(" ")}${meta.formats?.includes("markdown") ? " <code>✓ embed()</code>" : ""}</td>`,
       "  </tr>",
       "  <tr>",
       `    <td>${

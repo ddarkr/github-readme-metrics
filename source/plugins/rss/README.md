@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🗼 Rss feed</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays news from a given RSS feed.</p>
 </td></tr>
@@ -16,7 +16,7 @@
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.rss.svg" alt=""></img>
+      <img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.rss.svg" alt=""></img>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -71,7 +71,7 @@
 <!--examples-->
 ```yaml
 name: News from hackernews
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.rss.svg
   token: NOT_NEEDED

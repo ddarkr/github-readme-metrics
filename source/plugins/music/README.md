@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🎼 Music activity and suggestions</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin can display top and recently listened music tracks or titles from a random playlist.</p>
 <p>Different music providers are supported.</p>
@@ -20,8 +20,8 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>Random tracks from a playlist</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.music.playlist.svg" alt=""></img></details>
-      <details open><summary>Recently listened</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.music.recent.svg" alt=""></img></details>
+      <details open><summary>Random tracks from a playlist</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.music.playlist.svg" alt=""></img></details>
+      <details open><summary>Recently listened</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.music.recent.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -268,7 +268,7 @@ Extract the source link from the code pasted in your clipboard:
 
 *(Not available)*
 
-> 😥 Unfortunately I wasn't able to find a workaround to avoid paying the $99 fee for the developer program, even using workarounds like *smart playlists*, *shortcuts* and other stuff. However if you really want this feature, you could [sponsor me](github.com/sponsors/lowlighter) and I could eventually invest in a developer account with enough money, implement it and also eventually offer service on the shared instance
+Apple Music integration requires an Apple developer account and provider credentials. This fork does not supply a shared developer account or promise access through an upstream hosted service.
 
 ### 🔗 Get an embed playlist url for `plugin_music_playlist`
 
@@ -347,7 +347,7 @@ The token is optional for public instances. When set, the plugin sends it as `Au
 <!--examples-->
 ```yaml
 name: Apple Music - Random track from playlist
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.music.playlist.svg
   token: NOT_NEEDED
@@ -359,7 +359,7 @@ with:
 ```
 ```yaml
 name: Spotify - Random track from playlist
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.music.playlist.spotify.svg
   token: NOT_NEEDED
@@ -370,7 +370,7 @@ with:
 ```
 ```yaml
 name: Spotify - Recently listed
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.music.recent.svg
   token: NOT_NEEDED
@@ -384,7 +384,7 @@ with:
 ```
 ```yaml
 name: Spotify - Top tracks
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -398,7 +398,7 @@ with:
 ```
 ```yaml
 name: Spotify - Top artists
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -412,7 +412,7 @@ with:
 ```
 ```yaml
 name: Youtube Music - Random track from playlist
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -423,7 +423,7 @@ with:
 ```
 ```yaml
 name: Youtube Music - Recently listed
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -435,7 +435,7 @@ with:
 ```
 ```yaml
 name: Last.fm  - Recently listed
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -447,7 +447,7 @@ with:
 ```
 ```yaml
 name: Koito - Recently listened
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -459,7 +459,7 @@ with:
 ```
 ```yaml
 name: Koito - Top tracks
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -472,7 +472,7 @@ with:
 ```
 ```yaml
 name: Koito - Top artists
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   base: ""

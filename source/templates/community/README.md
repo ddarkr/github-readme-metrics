@@ -2,7 +2,7 @@
   <tr><th colspan="2"><h3>📕 Community templates</h3></th></tr>
   <tr><td colspan="2" align="center">
 
-  Community templates are a way to use official releases of [ddarkr/metrics](https://github.com/ddarkr/metrics) while using templates from external repositories (owned or not).
+  Community templates are a way to use official releases of [ddarkr/metrics](https://github.com/ddarkr/github-readme-metrics) while using templates from external repositories (owned or not).
 
   </td></tr>
 </table>
@@ -18,7 +18,7 @@ These templates will be downloaded through git and will be usable by prefixing t
 
 *Example: using `my-theme` template by downloading it from `user/repo`*
 ```yml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     template: "@my-theme"
     setup_community_templates: "user/repo@main:my-theme"
@@ -29,7 +29,7 @@ If you trust a community template, append `+trust` to it.
 
 *Example: using and trusting `my-theme` template by downloading it from `user/repo`*
 ```yml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     template: "@my-theme"
     setup_community_templates: "user/repo@main:my-theme+trust"
@@ -41,7 +41,7 @@ Some templates may accept additional custom parameters that can be passed throug
 
 *Example: using and trusting `my-theme` template by downloading it from `user/repo`*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     template: "@my-theme"
     query: |
@@ -55,20 +55,20 @@ Some templates may accept additional custom parameters that can be passed throug
 <!--examples-->
 ```yaml
 name: Using a community template
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: ${{ secrets.METRICS_TOKEN }}
   template: "@classic"
-  setup_community_templates: ddarkr/metrics@master:classic
+  setup_community_templates: ddarkr/github-readme-metrics@master:classic
 
 ```
 ```yaml
 name: Using a trusted community template
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: ${{ secrets.METRICS_TOKEN }}
   template: "@terminal"
-  setup_community_templates: ddarkr/metrics@master:terminal+trust
+  setup_community_templates: ddarkr/github-readme-metrics@master:terminal+trust
 
 ```
 <!--/examples-->
@@ -81,7 +81,7 @@ Templates creation requires you to be comfortable with HTML, CSS and [EJS](https
 
 To create a new template, clone and setup this repository first:
 ```shell
-git clone https://github.com/ddarkr/metrics.git
+git clone https://github.com/ddarkr/github-readme-metrics.git
 cd metrics/
 npm install
 ```

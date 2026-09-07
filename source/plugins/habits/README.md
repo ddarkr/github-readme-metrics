@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>💡 Coding habits and activity</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays coding habits based on recent activity, such as active hours and languages recently used.</p>
 </td></tr>
@@ -19,8 +19,8 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>Recent activity charts</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.habits.charts.svg" alt=""></img></details>
-      <details open><summary>Mildly interesting facts</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.habits.facts.svg" alt=""></img></details>
+      <details open><summary>Recent activity charts</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.habits.charts.svg" alt=""></img></details>
+      <details open><summary>Mildly interesting facts</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.habits.facts.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -178,7 +178,7 @@ Configure `config_timezone` (see [supported timezone](https://en.wikipedia.org/w
 
 *Example: configuring timezone*
 ```yaml
-- uses: ddarkr/metrics@latest
+- uses: ddarkr/github-readme-metrics@master
   with:
     config_timezone: Europe/Paris
 ```
@@ -188,7 +188,7 @@ Configure `config_timezone` (see [supported timezone](https://en.wikipedia.org/w
 <!--examples-->
 ```yaml
 name: Mildly interesting facts
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.habits.facts.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -201,7 +201,7 @@ with:
 ```
 ```yaml
 name: Recent activity charts
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.habits.charts.svg
   token: ${{ secrets.METRICS_TOKEN }}

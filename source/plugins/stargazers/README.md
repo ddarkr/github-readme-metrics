@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>✨ Stargazers</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays stargazers evolution across affiliated repositories.</p>
 </td></tr>
@@ -19,9 +19,9 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <details open><summary>Classic charts</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.stargazers.svg" alt=""></img></details>
-      <details><summary>Graph charts</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.stargazers.graph.svg" alt=""></img></details>
-      <details open><summary>Worldmap</summary><img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.stargazers.worldmap.svg" alt=""></img></details>
+      <details open><summary>Classic charts</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.stargazers.svg" alt=""></img></details>
+      <details><summary>Graph charts</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.stargazers.graph.svg" alt=""></img></details>
+      <details open><summary>Worldmap</summary><img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.stargazers.worldmap.svg" alt=""></img></details>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -151,7 +151,7 @@ Helps to avoid consuming too much Google Geocoding API requests while still bein
 <!--examples-->
 ```yaml
 name: Using classic charts
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.stargazers.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -161,7 +161,7 @@ with:
 ```
 ```yaml
 name: Using graph charts
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.stargazers.graph.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -172,7 +172,7 @@ with:
 ```
 ```yaml
 name: With worldmap
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.stargazers.worldmap.svg
   token: ${{ secrets.METRICS_TOKEN }}

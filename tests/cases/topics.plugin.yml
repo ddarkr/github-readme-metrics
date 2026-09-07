@@ -1,5 +1,5 @@
 - name: 📌 Starred topics - Labels
-  uses: ddarkr/metrics@master
+  uses: ddarkr/github-readme-metrics@master
   with:
     token: NOT_NEEDED
     plugin_topics: 'yes'
@@ -7,7 +7,7 @@
     use_mocked_data: 'yes'
     verify: 'yes'
 - name: 📌 Starred topics - Icons
-  uses: ddarkr/metrics@master
+  uses: ddarkr/github-readme-metrics@master
   with:
     token: NOT_NEEDED
     plugin_topics: 'yes'

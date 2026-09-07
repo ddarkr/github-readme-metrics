@@ -6,16 +6,22 @@ on:
       - published
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   clean:
     name: Clean untagged docker images
     runs-on: ubuntu-latest
     continue-on-error: true
+    permissions:
+      packages: write
+      contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run script
-        run: ./delete_ghcr_dangling_images.sh lowlighter metrics
+        run: ./delete_ghcr_dangling_images.sh ddarkr github-readme-metrics
         working-directory: .github/actions/ghcr-clean
         env:
           GITHUB_TOKEN: ${{ secrets.GHCR_BOT_TOKEN }}

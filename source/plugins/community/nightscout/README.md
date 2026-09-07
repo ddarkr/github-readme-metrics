@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>💉 Nightscout</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays blood sugar values from a <a href="http://nightscout.info">Nightscout</a> site.</p>
 </td></tr>
@@ -127,7 +127,7 @@ Check out the instructions there.
 
 <!--examples-->
 ```yaml
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   token: NOT_NEEDED
   plugin_nightscout: yes

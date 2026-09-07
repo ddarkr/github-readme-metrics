@@ -1,6 +1,6 @@
 <!--header-->
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>♐ Random code snippet</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays a random code snippet from recent activity history.</p>
 </td></tr>
@@ -25,7 +25,7 @@ Use at your own risk, <em>metrics</em> and its authors cannot be held responsibl
   </tr>
   <tr>
     <td colspan="2" align="center">
-      <img src="https://github.com/ddarkr/metrics/blob/examples/metrics.plugin.code.svg" alt=""></img>
+      <img src="https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.code.svg" alt=""></img>
       <img width="900" height="1" alt="">
     </td>
   </tr>
@@ -130,7 +130,7 @@ Use at your own risk, <em>metrics</em> and its authors cannot be held responsibl
 <!--examples-->
 ```yaml
 name: JavaScript or TypeScript snippet of the day
-uses: ddarkr/metrics@master
+uses: ddarkr/github-readme-metrics@master
 with:
   filename: metrics.plugin.code.svg
   token: ${{ secrets.METRICS_TOKEN }}

@@ -116,15 +116,15 @@
       oauth: false,
       docs: {
         overview: {
-          link: "https://github.com/ddarkr/metrics#-documentation",
+          link: "https://github.com/ddarkr/github-readme-metrics#-documentation",
           name: "Complete documentation",
         },
         markdown: {
-          link: "https://github.com/ddarkr/metrics/blob/master/.github/readme/partials/documentation/setup/shared.md",
+          link: "https://github.com/ddarkr/github-readme-metrics/blob/master/.github/readme/partials/documentation/setup/shared.md",
           name: "Setup using the shared instance",
         },
         action: {
-          link: "https://github.com/ddarkr/metrics/blob/master/.github/readme/partials/documentation/setup/action.md",
+          link: "https://github.com/ddarkr/github-readme-metrics/blob/master/.github/readme/partials/documentation/setup/action.md",
           name: "Setup using GitHub Action on a profile repository",
         },
       },
@@ -233,7 +233,7 @@
       //GitHub action auto-generated code
       action() {
         return [
-          `# Visit https://github.com/ddarkr/metrics#-documentation for full reference`,
+          `# Visit https://github.com/ddarkr/github-readme-metrics#-documentation for full reference`,
           `name: Metrics`,
           `on:`,
           `  # Schedule updates (each hour)`,
@@ -247,7 +247,7 @@
           `    permissions:`,
           `      contents: write`,
           `    steps:`,
-          `      - uses: ddarkr/metrics@latest`,
+          `      - uses: ddarkr/github-readme-metrics@latest`,
           `        with:`,
           ...(this.scopes.size
             ? [

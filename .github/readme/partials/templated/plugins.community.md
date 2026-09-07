@@ -1,5 +1,5 @@
 <table>
-  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><td colspan="2"><a href="/source/plugins/README.md">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🎲 Community plugins</h3></th></tr>
   <tr><td colspan="2" align="center">Additional plugins maintained by community for even more features!</td></tr>
 <% {
@@ -53,9 +53,9 @@ Please respect the following guidelines:
 
 To create a new plugin, clone and setup this repository first:
 ```shell
-git clone https://github.com/ddarkr/metrics.git
-cd metrics/
-npm install
+git clone https://github.com/ddarkr/github-readme-metrics.git
+cd github-readme-metrics/
+npm ci
 ```
 
 Find a cool name and an [unused emoji](https://emojipedia.org) for your new plugin and run the following:
@@ -311,7 +311,7 @@ Workflow examples from `examples.yml` are used as unit testing and to auto-gener
 It uses the same syntax as GitHub action and looks like below:
 ```yml
 - name: Test name
-  uses: ddarkr/metrics@master
+  uses: ddarkr/github-readme-metrics@master
   with:
     filename: metrics.plugin.{name}.svg
     token: ${{ secrets.METRICS_TOKEN }}
@@ -335,7 +335,7 @@ It uses the same syntax as GitHub action and looks like below:
 
 ### 💬 Testing locally and creating mocked data
 
-The easiest way to test a new plugin is to setup a web instance locally ([see documentation](.github/readme/partials/documentation/setup/local.md)).
+The easiest way to test a new plugin is to set up a web instance locally ([see documentation](/.github/readme/partials/documentation/setup/local.md)).
 
 Once server is started, open a browser and try to generate an output with your new plugin enabled and check if it works as expected:
 ```
@@ -356,7 +356,7 @@ They must be created in `tests/mocks/api`:
 
 > 💡 Files from these directories are auto-loaded, so it is just required to create them with faked data.
 
-Finally [/source/app/web/statics/app.placeholder.js](/source/app/web/statics/app.placeholder.js) to add mocked placeholder data to make users using the shared instance able to preview a render locally without any server computation.
+Finally update [/source/app/web/statics/embed/app.placeholder.js](/source/app/web/statics/embed/app.placeholder.js) with fixture data so web-instance users can preview the plugin without fetching live API data.
 
 ### 💬 Submitting a pull request
 
@@ -384,7 +384,7 @@ You're almost done, review the following checklist before submitting a pull requ
 - [x] I am ready!
   - [x] Run `npm run build` and include regenerated metadata, examples, documentation, and test cases
   - [x] Commit and push your changes (commits are squashed, no need to rebase)
-  - [x] Open a new [pull request](https://github.com/ddarkr/metrics/pulls)
+  - [x] Open a new [pull request](https://github.com/ddarkr/github-readme-metrics/pulls)
   - [x] Post a screenshot or a render in the pull request so it can be previewed
 
 > 💡 A pull request **will need** to have passing builds and an example screenshot if you want to get it merged.

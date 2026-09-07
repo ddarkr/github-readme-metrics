@@ -242,7 +242,7 @@ export default async function({login, imports, data, q, account}, {enabled = fal
               console.debug(`metrics/compute/${login}/plugins > music > querying lastfm api`)
               tracks = (await imports.axios.get(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${user}&api_key=${token}&limit=${limit}&format=json`, {
                 headers: {
-                  "User-Agent": "ddarkr/metrics",
+                  "User-Agent": "ddarkr/github-readme-metrics",
                   Accept: "application/json",
                 },
               })).data.recenttracks.track.map(track => ({
@@ -456,7 +456,7 @@ export default async function({login, imports, data, q, account}, {enabled = fal
                     `https://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=${user}&api_key=${token}&limit=${limit}&period=${period}&format=json`,
                     {
                       headers: {
-                        "User-Agent": "ddarkr/metrics",
+                        "User-Agent": "ddarkr/github-readme-metrics",
                         Accept: "application/json",
                       },
                     },
@@ -471,7 +471,7 @@ export default async function({login, imports, data, q, account}, {enabled = fal
                     `https://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user=${user}&api_key=${token}&limit=${limit}&period=${period}&format=json`,
                     {
                       headers: {
-                        "User-Agent": "ddarkr/metrics",
+                        "User-Agent": "ddarkr/github-readme-metrics",
                         Accept: "application/json",
                       },
                     },

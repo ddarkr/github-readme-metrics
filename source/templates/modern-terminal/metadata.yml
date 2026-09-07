@@ -4,7 +4,7 @@ description: |
   Compact key/value rows, aligned data tables, text distributions, and activity trees
   inside command/output blocks, with dark/light themes and configurable density.
 examples:
-  default: https://github.com/ddarkr/metrics/blob/examples/metrics.modern-terminal.svg
+  default: https://raw.githubusercontent.com/ddarkr/github-readme-metrics/master/.github/readme/imgs/modern-terminal.png
 index: 3
 supports:
   - user
