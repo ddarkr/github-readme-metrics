@@ -17,7 +17,7 @@ This could result in compromised server!</p>
 </td></tr>
   <tr>
     <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>
-    <td><a href="/source/templates/repository/README.md"><code>📘 Repository template</code></a></td>
+    <td><a href="/source/templates/modern-terminal/README.md"><code>Modern Terminal</code></a> <a href="/source/templates/repository/README.md"><code>📘 Repository template</code></a></td>
   </tr>
   <tr>
     <td><code>📓 Repositories</code></td>
@@ -69,8 +69,7 @@ Dependencies will be analyzed by [GitHub licensed](https://github.com/github/lic
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-🌐 Web instances must configure <code>settings.json</code>:
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
 <ul>
 <li><i>metrics.cpu.overuse</i></li>
 <li><i>metrics.run.tempdir</i></li>
@@ -92,8 +91,7 @@ The example command is intended for NodeJs projects that use <code>npm</code> to
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>string</code>
+    <td nowrap="nowrap"><b>type:</b> <code>string</code>
 <br></td>
   </tr>
   <tr>
@@ -102,8 +100,7 @@ The example command is intended for NodeJs projects that use <code>npm</code> to
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>boolean</code>
+    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> no<br></td>
   </tr>
@@ -113,8 +110,7 @@ The example command is intended for NodeJs projects that use <code>npm</code> to
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>boolean</code>
+    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> yes<br></td>
   </tr>
@@ -138,7 +134,7 @@ with:
 ```
 ```yaml
 name: Licenses with open-source ratio graphs
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   filename: metrics.plugin.licenses.ratio.svg
   token: ${{ secrets.METRICS_TOKEN }}

@@ -162,6 +162,7 @@
         descriptions: {
           classic: "Classic template",
           terminal: "Terminal template",
+          "modern-terminal": "Modern terminal template",
           markdown: "(hidden)",
           repository: "(hidden)",
         },

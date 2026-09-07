@@ -43,7 +43,7 @@ If the token owner is not the repository owner, then the `user` option must be s
 <!--examples-->
 ```yaml
 name: Example
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   template: repository
   filename: metrics.repository.svg

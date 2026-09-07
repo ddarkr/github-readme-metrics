@@ -1,13 +1,31 @@
 <% if (plugins.poopmap) { %>
-<div class="stdin"><%- meta.$ %> poopmap --days <%= plugins.poopmap.days %></div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.poopmap.error) { -%>
-<span class="error"><%= plugins.poopmap.error.message %></span><%# -%>
-<% } else { -%>
-Poops per hour (last <%= plugins.poopmap.days %> days)
-<% const poops = plugins.poopmap.poops || {}; const max = poops.max || 1; %>
-<% for (let h = 0; h < 24; h++) { const v = poops[h] || 0; const barLen = Math.round((v / max) * 20); const bar = '█'.repeat(barLen).padEnd(20, ' '); %>
-<%= `${h}`.padStart(2, '0') %>: <%= `${v}`.padStart(3, ' ') %> | <span style="color:#238636"><%= bar %></span>
+<% if (plugins.poopmap.error) { %>
+<p class="error"><%= plugins.poopmap.error.message %></p>
+<% } else { const poops = plugins.poopmap.poops && typeof plugins.poopmap.poops === "object" ? plugins.poopmap.poops : {}; const hours = Array.from({length: 24}, (_, hour) => { const value = poops[hour]; return {hour, count: Number.isFinite(value) && value >= 0 ? value : 0}; }); const total = hours.reduce((sum, {count}) => sum + count, 0); const peak = Math.max(...hours.map(({count}) => count)); const peakHours = peak > 0 ? hours.filter(({count}) => count === peak).map(({hour}) => hour) : []; const days = Number(plugins.poopmap.days); const hasValidDays = Number.isFinite(days) && days > 0; %>
+<p class="terminal-subtitle"><% if (hasValidDays) { %>Last <%= days %> days<% } else { %>Recorded period<% } %> · hourly activity</p>
+<% if (total > 0) { %>
+<h3>Period summary</h3>
+<dl class="terminal-kv">
+<dt>Total entries</dt><dd><%= f(total) %></dd>
+<% if (hasValidDays) { %><dt>Daily average</dt><dd><%= (total / days).toFixed(1) %> / day</dd><% } %>
+<dt>Peak hour<%= s(peakHours.length) %></dt><dd><%= peakHours.map(hour => `${String(hour).padStart(2, "0")}:00`).join(", ") %> · <%= f(peak) %><%= peakHours.length > 1 ? " each" : "" %></dd>
+</dl>
+<h3>Hourly distribution</h3>
+<p class="terminal-subtitle">Counts relative to peak (<%= f(peak) %> entries).</p>
+<table class="tui-table tui-table--hours">
+<thead><tr><th scope="col" aria-label="Hour, 24-hour clock">Hr</th><th scope="col">Count / peak</th><th scope="col" aria-label="Hour, 24-hour clock">Hr</th><th scope="col">Count / peak</th></tr></thead>
+<tbody>
+<% for (let index = 0; index < 12; index++) { %>
+<tr>
+<% for (const {hour, count} of [hours[index], hours[index + 12]]) { const filled = Math.round((count / peak) * 10); %>
+<th scope="row"><%= String(hour).padStart(2, "0") %></th><td><%= f(count) %> <span class="tui-bar" aria-hidden="true"><span><%= "█".repeat(filled) %></span><span class="tui-bar-empty"><%= "░".repeat(10 - filled) %></span></span></td>
 <% } %>
-<% } -%>
-</div><% } %>
+</tr>
+<% } %>
+</tbody>
+</table>
+<% } else { %>
+<p class="empty">No PoopMap entries recorded in this period.</p>
+<% } %>
+<% } %>
+<% } %>

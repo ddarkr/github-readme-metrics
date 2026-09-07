@@ -1,21 +1,25 @@
-<% if (plugins.sponsors) { %>
-  <div class="stdin"><%- meta.$ %> sponsors</div><%# -%>
-  <div class="stdout"><%# -%>
-  <% if (plugins.sponsors.error) { -%>
-    <span class="error"><%= plugins.sponsors.error.message %></span><%# -%>
-  <% } else { -%>
-    <% if (plugins.sponsors.goal) { -%>
-// Sponsors: <%= (String(plugins.sponsors.count?.active?.total || 0)).padStart(3) %> active | goal: <%= (plugins.sponsors.goal.title || "") %>
-// Progress: <%= String(Math.round(plugins.sponsors.goal.progress || 0)).padEnd(3) %>%  | funded: <%= String(f(plugins.sponsors.count?.active?.total || 0)).padStart(6) %>
-    <% } else { -%>
-// Sponsors: <%= String(plugins.sponsors.count?.active?.total || 0).padStart(3) %> active
-    <% } -%>
-    <% if (plugins.sponsors.list && plugins.sponsors.list.length) { -%>
-// Recent sponsors:
-    <% for (const sUser of plugins.sponsors.list.slice(0, 8).filter(u => !u.past)) { -%>
-//  - <%= (sUser.name || sUser.login || sUser.login).padEnd(24) %>  <span style="color:#7fb1ff"><%= sUser.type === 'organization' ? 'org' : 'user' %></span>
-    <% } -%>
-    <% } -%>
-  <% } -%>
-  </div>
+<% if (plugins["sponsors"]) { %>
+<% if (plugins["sponsors"].error) { %>
+<p class="error"><%= plugins["sponsors"].error.message %></p>
+<% } else { %>
+<% for (const section of plugins.sponsors.sections) { %>
+<% if (section === "about") { %><div class="prose"><%- plugins.sponsors.about %></div><% } %>
+<% if (section === "goal" && plugins.sponsors.goal) { %>
+<h3><%= plugins.sponsors.goal.title %></h3><p><%= plugins.sponsors.goal.description %></p><p><%= plugins.sponsors.goal.progress %>% funded</p>
+<% } %>
+<% if (section === "list" || section === "goal") { %>
+<% if (section === "list" || !plugins.sponsors.sections.includes("list")) { %>
+<p><%= f(plugins.sponsors.count.active.total) %> active sponsors</p>
+<% } %>
+<% } %>
+<% if (section === "list") { %>
+<ul class="terminal-list">
+<% for (const person of plugins.sponsors.list.filter(person => !person.past || plugins.sponsors.past)) { %>
+<li><%= person.private ? "Private sponsor" : person.login %><% if (person.past) { %> <span class="terminal-subtitle">past</span><% } %></li>
+<% } %>
+</ul>
+<% if (!plugins.sponsors.list.length) { %><p class="empty">No sponsors to display.</p><% } %>
+<% } %>
+<% } %>
+<% } %>
 <% } %>

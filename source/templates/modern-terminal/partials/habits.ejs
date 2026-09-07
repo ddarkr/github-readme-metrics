@@ -1,26 +1,30 @@
-<% if (plugins.habits) { %>
-<div class="stdin"><%- meta.$ %> habits</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.habits.error) { -%>
-<span class="error"><%= plugins.habits.error.message %></span><%# -%>
-<% } else { -%>
-// Recent coding habits
-<% if (plugins.habits.commits?.fetched) { %>
-// computed from last <%= plugins.habits.commits.fetched %> commit<%= s(plugins.habits.commits.fetched) %>
-<% } %>
+<% if (plugins["habits"]) { %>
+<% if (plugins["habits"].error) { %>
+<p class="error"><%= plugins["habits"].error.message %></p>
+<% } else { const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; %>
+<p><%= plugins.habits.commits.fetched %> push events analyzed</p>
 <% if (plugins.habits.facts) { %>
-<% if (plugins.habits.indents?.style) { %>
-Indentation: <%= plugins.habits.indents.style %>
+<dl class="terminal-kv">
+<% if (plugins.habits.indents.style) { %><dt>Indentation</dt><dd><%= plugins.habits.indents.style %></dd><% } %>
+<% if (Number.isFinite(plugins.habits.lines.average.chars)) { %><dt>Average line</dt><dd><%= f(plugins.habits.lines.average.chars, {fixed:1}) %> characters</dd><% } %>
+<% if (!Number.isNaN(plugins.habits.commits.hour)) { %><dt>Typical push time</dt><dd><%= plugins.habits.commits.hour %>:00</dd><% } %>
+<% if (plugins.habits.commits.day) { %><dt>Most active day</dt><dd><%= plugins.habits.commits.day %></dd><% } %>
+</dl>
 <% } %>
-<% if (plugins.habits.lines?.average?.chars) { %>
-Avg chars/line: <%= f(plugins.habits.lines.average.chars, {fixed:1}) %>
+<% if (plugins.habits.charts) { %>
+<% for (const [label, entries] of [["Pushes by hour", plugins.habits.commits.hours], ["Pushes by weekday", plugins.habits.commits.days]]) { const peak = Number(entries.max); const hasPeak = Number.isFinite(peak) && peak > 0; %>
+<h3><%= label %></h3>
+<table class="tui-table tui-table--habits">
+<thead><tr><th scope="col"><%= label === "Pushes by hour" ? "Hour" : "Day" %></th><th scope="col" class="tui-number">Pushes</th><% if (hasPeak) { %><th scope="col">Relative to peak</th><% } %></tr></thead>
+<tbody>
+<% for (const [key, count] of Object.entries(entries)) { if (key === "max") continue; const filled = hasPeak ? Math.round((count / peak) * 10) : 0; %>
+<tr><th scope="row"><%= label === "Pushes by hour" ? `${key.padStart(2, "0")}:00` : weekdays[key] %></th><td class="tui-number"><%= count %></td><% if (hasPeak) { %><td><span class="tui-bar" aria-hidden="true"><span><%= "█".repeat(filled) %></span><span class="tui-bar-empty"><%= "░".repeat(10 - filled) %></span></span></td><% } %></tr>
 <% } %>
-<% if (!Number.isNaN(plugins.habits.commits.hour)) { %>
-Typical push hour: <%= `${plugins.habits.commits.hour}`.padStart(2, '0') %>:00
+</tbody>
+</table>
 <% } %>
-<% if (plugins.habits.commits.day) { %>
-Most active day: <%= plugins.habits.commits.day %>
+<% if (plugins.habits.linguist.available) { %><h3>Recent languages</h3><table class="tui-table tui-table--habits-languages"><thead><tr><th scope="col">Language</th><th scope="col" class="tui-number">Share</th><th scope="col">Distribution</th></tr></thead><tbody><% for (const [name, value] of plugins.habits.linguist.ordered) { const hasFraction = Number.isFinite(value); const filled = hasFraction ? Math.round(Math.max(0, Math.min(1, value)) * 10) : 0; %><tr><th scope="row"><%= name %></th><td class="tui-number"><%= f.percentage(value) %></td><td><% if (hasFraction) { %><span class="tui-bar" aria-hidden="true"><span><%= "█".repeat(filled) %></span><span class="tui-bar-empty"><%= "░".repeat(10 - filled) %></span></span><% } %></td></tr><% } %></tbody></table><% } %>
+<% } %>
+<% if (!plugins.habits.commits.fetched) { %><p class="empty">No recent push events matching the configured filters.</p><% } %>
 <% } %>
 <% } %>
-<% } -%>
-</div><% } %>

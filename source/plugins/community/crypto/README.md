@@ -85,7 +85,7 @@
 <!--examples-->
 ```yaml
 name: Crypto Metrics
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   filename: metrics.plugin.crypto.svg
   token: NOT_NEEDED

@@ -138,7 +138,7 @@ inputs:
     type: array
     format: comma-separated
     default: ""
-    example: ddarkr/metrics, ddarkr/metrics@main, ddarkr/metrics@latest:v1.0..v1.1
+    example: ddarkr/metrics, ddarkr/metrics@main, ddarkr/metrics@master:v1.0..v1.1
 
   plugin_languages_analysis_timeout:
     description: |

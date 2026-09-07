@@ -1,19 +1,14 @@
-<% if (plugins.chess) { %>
-<div class="stdin"><%- meta.$ %> chess</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.chess.error) { -%>
-<span class="error"><%= plugins.chess.error.message %></span><%# -%>
-<% } else { -%>
-// Last game from <%= plugins.chess.platform %>
-// White: <%= plugins.chess.meta["White"] %><% if (plugins.chess.meta["WhiteElo"]) { %> (<%= plugins.chess.meta["WhiteElo"] %> ELO)<% } %>
-// Black: <%= plugins.chess.meta["Black"] %><% if (plugins.chess.meta["BlackElo"]) { %> (<%= plugins.chess.meta["BlackElo"] %> ELO)<% } %>
-// Date: <%= plugins.chess.meta["Date"] %>
-// Result: White <%= plugins.chess.result.white %> - Black <%= plugins.chess.result.black %>
-// Victor: <% if (plugins.chess.result.white > plugins.chess.result.black) { %>White<% } else if (plugins.chess.result.black > plugins.chess.result.white) { %>Black<% } else { %>Draw<% } %>
-
-// Moves:
-<% for (let i = 0; i < (plugins.chess.moves || []).length; i++) { const mv = plugins.chess.moves[i]; %>
-<%= String(i+1).padStart(3) %>  <%= (mv.from + '->' + mv.to).padEnd(8) %>  <%= (mv.piece || '') %>  <%= mv.color %>
+<% if (plugins["chess"]) { %>
+<% if (plugins["chess"].error) { %>
+<p class="error"><%= plugins["chess"].error.message %></p>
+<% } else { %>
+<p class="terminal-subtitle">Latest game from <%= plugins.chess.platform %></p>
+<dl class="terminal-kv">
+<% for (const color of ["White", "Black"]) { %><dt><%= color %></dt><dd><%= plugins.chess.meta[color] %><% if (plugins.chess.meta[`${color}Elo`]) { %> · <%= plugins.chess.meta[`${color}Elo`] %> Elo<% } %></dd><% } %>
+<dt>Date</dt><dd><%= plugins.chess.meta.Date %></dd>
+<dt>Result</dt><dd><%= plugins.chess.meta.Result %></dd>
+</dl>
+<h3>Moves</h3>
+<% if (plugins.chess.moves.length) { %><ol class="terminal-list"><% for (const move of plugins.chess.moves) { %><li><%= move.color === "w" ? "White" : "Black" %> · <%= move.san %> <span class="terminal-subtitle">(<%= move.from %> → <%= move.to %>)</span></li><% } %></ol><% } else { %><p class="empty">No moves recorded.</p><% } %>
 <% } %>
-<% } -%>
-</div><% } %>
+<% } %>

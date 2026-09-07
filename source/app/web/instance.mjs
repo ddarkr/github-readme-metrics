@@ -558,11 +558,11 @@ export default async function({sandbox = false} = {}) {
   }
 
   //Listen
-  app.listen(port, () =>
+  const server = app.listen(port, () =>
     console.log([
       "───────────────────────────────────────────────────────────────────",
       "── Server configuration ───────────────────────────────────────────",
-      `Listening on port         │ ${port}`,
+      `Listening on port         │ ${server.address().port}`,
       `Modes                     │ ${conf.settings.modes}`,
       "── Server capacity ───────────────────────────────────────────────",
       `Restricted to users       │ ${restricted.size ? [...restricted].join(", ") : "(unrestricted)"}`,
@@ -589,4 +589,5 @@ export default async function({sandbox = false} = {}) {
       "───────────────────────────────────────────────────────────────────",
       "Server ready !",
     ].join("\n")))
+  return server
 }

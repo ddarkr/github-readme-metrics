@@ -1,19 +1,17 @@
 <% if (plugins.stars) { %>
-  <div class="stdin"><%- meta.$ %> gh starred list --user <%= user.login %></div>
-  <div class="stdout">
-    <% if (plugins.stars.error) { -%>
-      <span class="error"><%= plugins.stars.error.message %></span>
+  <% if (plugins.stars.error) { -%>
+    <span class="error"><%= plugins.stars.error.message %></span>
+  <% } else { const repositories = Array.isArray(plugins.stars.repositories) ? plugins.stars.repositories : [] -%>
+    <% if (repositories.length) { -%>
+      <ul class="terminal-list">
+      <% for (const {node: repository} of repositories) { -%>
+        <li><div><%= repository.nameWithOwner || "unknown" %> <span class="tui-status">★ <%= f(repository.stargazerCount || 0) %></span></div>
+        <% if (repository.primaryLanguage?.name) { %><div class="tui-detail"><span style="--data-color:<%= repository.primaryLanguage.color ?? 'var(--color-muted)' %>;color:var(--data-color)"><%= repository.primaryLanguage.name %></span></div><% } %>
+        </li>
+      <% } -%>
+      </ul>
     <% } else { -%>
-      <% 
-        const all = Array.isArray(plugins.stars.repositories) ? plugins.stars.repositories : [];
-        const repos = all.slice(0, 10);
-        const sample = repos.map(r => r.node || {});
-        const nameWidth = sample.length ? Math.max(...sample.map(r => (r.nameWithOwner || '').length), 20) : 20;
-        const starsWidth = sample.length ? Math.max(...sample.map(r => String(r.stargazerCount || 0).length), 2) : 2;
-      %>
-      <pre><% for (const {node:repository} of repos) { %>
-<%= (repository.nameWithOwner || '').padEnd(nameWidth) %>  <%= String(repository.stargazerCount || 0).padStart(starsWidth) %>  <%= repository.primaryLanguage ? repository.primaryLanguage.name : '' %>
-      <% } %></pre>
+      <p class="empty">No recently starred repositories</p>
     <% } -%>
-  </div>
+  <% } -%>
 <% } %>

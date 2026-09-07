@@ -1,16 +1,12 @@
-<% if (plugins.reactions) { %>
-<div class="stdin"><%- meta.$ %> reactions --comments <%= plugins.reactions?.comments %></div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.reactions.error) { -%>
-<span class="error"><%= plugins.reactions.error.message %></span><%# -%>
-<% } else { -%>
-Overall reactions from last <%= plugins.reactions?.comments %> comments
-<% const mapping = {HEART: '❤️', THUMBS_UP: '👍', THUMBS_DOWN: '👎', LAUGH: '😄', CONFUSED: '😕', EYES: '👀', ROCKET: '🚀', HOORAY: '🎉'}; %>
-<% for (const [reaction, emoji] of Object.entries(mapping)) { const {score = 0, value:count = 0} = (plugins.reactions.list || {})[reaction] ?? {}; const pct = Math.round(score*100); const barLen = Math.round((score || 0) * 20); const bar = '█'.repeat(barLen).padEnd(20, ' '); %>
-<%= emoji %>  <%= reaction.padEnd(12, ' ') %>  <%= `${count}`.padStart(4, ' ') %>  <%= `${pct}%`.padStart(4, ' ') %>  | <span style="color:#ffd33d"><%= bar %></span>
-<% if (Array.isArray(plugins.reactions.details) && plugins.reactions.details.length) { const [primary, secondary] = plugins.reactions.details; %>
-  Details: <% if (primary === 'count') { %><%= count %><% } else { %><%= pct %>%<% } %><% if (secondary) { %> (<% if (secondary === 'count') { %><%= count %><% } else { %><%= pct %>%<% } %>)<% } %>
+<% if (plugins["reactions"]) { %>
+<% if (plugins["reactions"].error) { %>
+<p class="error"><%= plugins["reactions"].error.message %></p>
+<% } else { %>
+<p><%= plugins.reactions.total %> reactions from <%= plugins.reactions.comments %> comments</p>
+<div class="terminal-table">
+<% for (const [key, label] of Object.entries({HEART:"Heart", THUMBS_UP:"Thumbs up", THUMBS_DOWN:"Thumbs down", LAUGH:"Laugh", CONFUSED:"Confused", EYES:"Eyes", ROCKET:"Rocket", HOORAY:"Hooray"})) { const {percentage = 0, value = 0} = plugins.reactions.list[key] || {} %>
+<div class="terminal-table__row"><span><%= label %></span><span><%= plugins.reactions.details.map(detail => detail === "count" ? f(value) : f.percentage(percentage)).join(" · ") %></span></div>
+<% } %>
+</div>
 <% } %>
 <% } %>
-<% } -%>
-</div><% } %>

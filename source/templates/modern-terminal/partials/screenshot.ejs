@@ -1,15 +1,11 @@
-<% if (plugins.screenshot) { %>
-<div class="stdin"><%- meta.$ %> screenshot</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.screenshot.error) { -%>
-  <span class="error"><%= plugins.screenshot.error.message %></span><%# -%>
-<% } else if (plugins.screenshot.image) { %>
-  <%= "Image:".padEnd(12) %><span style="color:gray">[base64 image data]</span>
-  <%= "Size:".padEnd(12) %><%= plugins.screenshot.width %>x<%= plugins.screenshot.height %>
-  <%= "Source:".padEnd(12) %><%= plugins.screenshot.title || plugins.screenshot.url || "-" %>
-<% } else if (plugins.screenshot.content) { %>
-  <%= "Content:".padEnd(12) %><span style="color:gray"><%= plugins.screenshot.content %></span>
+<% if (plugins["screenshot"]) { %>
+<% if (plugins["screenshot"].error) { %>
+<p class="error"><%= plugins["screenshot"].error.message %></p>
 <% } else { %>
-  No screenshot available
+<p class="terminal-subtitle"><%= plugins.screenshot.title %></p>
+<% if (plugins.screenshot.image) { %>
+<img class="report-image" src="<%= plugins.screenshot.image %>" width="<%= plugins.screenshot.width %>" height="<%= plugins.screenshot.height %>" alt="<%= plugins.screenshot.title %>"/>
+<% } else if (plugins.screenshot.content) { %><pre><%= plugins.screenshot.content %></pre>
+<% } else { %><p class="empty">No content captured from the configured source.</p><% } %>
 <% } %>
-</div><% } %>
+<% } %>

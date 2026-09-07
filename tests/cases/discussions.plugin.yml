@@ -1,5 +1,5 @@
 - name: 💬 Discussions - GitHub Discussions
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     plugin_discussions: 'yes'

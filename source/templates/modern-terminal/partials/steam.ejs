@@ -1,27 +1,18 @@
-<% if (plugins.steam) { %>
-<div class="stdin"><%- meta.$ %> steam</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.steam.error) { -%>
-  <span class="error"><%= plugins.steam.error.message %></span><%# -%>
-<% } else { -%>
-  <% if (plugins.steam.player) { -%>
-<%= ("Player:").padEnd(12) + String(plugins.steam.player.name || "").padEnd(32) %>
-<%= ("Games:").padEnd(12) + String(plugins.steam.games?.count ?? 0).padStart(4) + ("  Playtime:").padStart(14) + String(f(parseInt(plugins.steam.games?.playtime ?? 0))).padStart(6) + " h" %>
-<%= ("Level:").padEnd(12) + String(plugins.steam.player.level ?? "-").padStart(4) %>
-  <% } -%>
-  <% for (const section of ["most-played","recently-played"]) { if (plugins.steam.sections?.includes(section)) { -%>
-<%= ("-- " + (section === "most-played" ? "Most played" : "Recently played") + " --").padEnd(60) %>
-    <% for (const g of plugins.steam.games?.[section] ?? []) { -%>
-<%= String(g.name || "").slice(0,36).padEnd(36)
-     + (g.genres ? ("  " + g.genres.join(", ")).padStart(24) : "".padStart(24))
-     + (g.playtime ? ("  " + f(parseInt(g.playtime)) + "h").padStart(10) : "".padStart(10)) %>
-    <% if (g.played) { %>
-<%= "  Last played:" .padEnd(16) + f.date(g.played*1000, {date:true, timeZone:config.timezone?.name}) %>
-    <% } %>
-    <% if (g.rate) { %>
-<%= "  Achievements:" .padEnd(16) + (String(g.rate.achieved) + " / " + String(g.rate.total)) %>
-    <% } %>
-    <% } -%>
-  <% } } -%>
-<% } -%>
-</div><% } %>
+<% if (plugins["steam"]) { %>
+<% if (plugins["steam"].error) { %>
+<p class="error"><%= plugins["steam"].error.message %></p>
+<% } else { %>
+<% if (plugins.steam.sections.includes("player") && plugins.steam.player) { %>
+<p class="identity"><%= plugins.steam.player.name %></p><p><%= plugins.steam.games.count %> games · <%= f(parseInt(plugins.steam.games.playtime)) %> hours played · level <%= plugins.steam.player.level %></p>
+<% } %>
+<% for (const section of ["most-played", "recently-played"]) { if (!plugins.steam.sections.includes(section)) continue; const games = plugins.steam.games[section] %>
+<h3><%= section === "most-played" ? "Most played" : "Recently played" %></h3>
+<% if (games.length) { %><ul class="terminal-list">
+<% for (const game of games) { %><li><b><%= game.name %></b><p class="terminal-subtitle"><%= game.genres.join(", ") %></p><p><%= f(parseInt(game.playtime)) %> hours played<% if (game.played) { %> · last played <%= f.date(game.played * 1000, {date:true, timeZone:config.timezone?.name}) %><% } %></p>
+<% if (game.rate?.total) { %><p><%= game.rate.achieved %>/<%= game.rate.total %> achievements unlocked</p><% } %>
+<% if (game.achievements?.length) { %><ul><% for (const achievement of game.achievements.filter(({achieved}) => achieved)) { %><li><%= achievement.name %> · <%= achievement.description %><p class="terminal-subtitle"><%= f.date(achievement.unlocked * 1000, {date:true, timeZone:config.timezone?.name}) %></p></li><% } %></ul><% } %>
+</li><% } %>
+</ul><% } else { %><p class="empty">No games in this period.</p><% } %>
+<% } %>
+<% } %>
+<% } %>

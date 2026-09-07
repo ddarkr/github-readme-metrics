@@ -9,7 +9,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 </td></tr>
   <tr>
     <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>
-    <td><a href="/source/templates/classic/README.md"><code>📗 Classic template</code></a> <a href="/source/templates/modern-terminal/README.md"><code>💻 Modern Terminal Template</code></a> <a href="/source/templates/repository/README.md"><code>📘 Repository template</code></a></td>
+    <td><a href="/source/templates/classic/README.md"><code>📗 Classic template</code></a> <a href="/source/templates/modern-terminal/README.md"><code>Modern Terminal</code></a> <a href="/source/templates/repository/README.md"><code>📘 Repository template</code></a></td>
   </tr>
   <tr>
     <td><code>👤 Users</code> <code>👥 Organizations</code> <code>📓 Repositories</code></td>
@@ -41,8 +41,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>boolean</code>
+    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> no<br></td>
   </tr>
@@ -56,8 +55,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>array</code>
+    <td nowrap="nowrap"><b>type:</b> <code>array</code>
 <i>(comma-separated)</i>
 <br>
 <b>default:</b> repositories<br>
@@ -69,8 +67,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-🌐 Web instances must configure <code>settings.json</code>:
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
 <ul>
 <li><i>metrics.api.github.overuse</i></li>
 </ul>
@@ -84,8 +81,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>boolean</code>
+    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> yes<br></td>
   </tr>
@@ -105,7 +101,7 @@ It helps knowing whether repositories are also maintained by other users and giv
 <!--examples-->
 ```yaml
 name: Opened on user's repositories
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   filename: metrics.plugin.followup.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -115,7 +111,7 @@ with:
 ```
 ```yaml
 name: Opened by user
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   filename: metrics.plugin.followup.user.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -126,7 +122,7 @@ with:
 ```
 ```yaml
 name: Indepth analysis
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   filename: metrics.plugin.followup.indepth.svg
   token: ${{ secrets.METRICS_TOKEN }}
@@ -137,7 +133,7 @@ with:
 ```
 ```yaml
 name: Exclude Archived
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   filename: metrics.plugin.followup.archived.svg
   token: ${{ secrets.METRICS_TOKEN }}

@@ -1,20 +1,16 @@
-<% if (plugins.skyline) { %>
-<div class="stdin"><%- meta.$ %> skyline render</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.skyline.error) { -%>
-<span class="error"><%= plugins.skyline.error.message %></span><%# -%>
-<% } else { -%>
-  <% if (plugins.skyline.compatibility) { -%>
-    <% const n = plugins.skyline.animation?.length || 0; -%>
-    Skyline frames: <%= n %> frame<%= n===1 ? '' : 's' %>
-    Width: <%= plugins.skyline.width %>px, Height: <%= plugins.skyline.height %>px
-    <% if (n) { -%>
-      <% for (let i=0;i<n;i++) { -%>
-        frame <%= String(i+1).padStart(2,' ') %>: <%= plugins.skyline.animation[i] %>
-      <% } -%>
-    <% } -%>
-  <% } else { -%>
-    single skyline image: <%= plugins.skyline.animation %>
-  <% } -%>
-<% } -%>
-</div><% } %>
+<% if (plugins["skyline"]) { %>
+<% if (plugins["skyline"].error) { %>
+<p class="error"><%= plugins["skyline"].error.message %></p>
+<% } else { %>
+<% if (plugins.skyline.compatibility && plugins.skyline.animation.length) { const frames = plugins.skyline.animation %>
+<div class="skyline" style="--frames:<%= frames.length %>">
+<% for (const [index, frame] of frames.entries()) { %>
+<img class="skyline-frame <%= index === 0 ? 'skyline-first' : '' %>" src="<%= frame %>" width="<%= plugins.skyline.width %>" height="<%= plugins.skyline.height %>" alt="<%= index === 0 ? 'Contribution skyline' : '' %>" style="--frame:<%= index %>"/>
+<% } %>
+</div>
+<style>@keyframes skyline-frame { 0% { opacity: 1; } <%= 100 / frames.length %>%, 100% { opacity: 0; } }</style>
+<% } else if (!plugins.skyline.compatibility && plugins.skyline.animation) { %>
+<img class="report-image" src="<%= plugins.skyline.animation %>" width="<%= plugins.skyline.width %>" height="<%= plugins.skyline.height %>" alt="Contribution skyline"/>
+<% } else { %><p class="empty">No skyline frames captured.</p><% } %>
+<% } %>
+<% } %>

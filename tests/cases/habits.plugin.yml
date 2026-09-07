@@ -1,5 +1,5 @@
 - name: 💡 Coding habits and activity - Mildly interesting facts
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     plugin_habits: 'yes'
@@ -9,7 +9,7 @@
     use_mocked_data: 'yes'
     verify: 'yes'
 - name: 💡 Coding habits and activity - Recent activity charts
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     plugin_habits: 'yes'

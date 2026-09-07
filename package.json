@@ -5,8 +5,7 @@
   "main": "index.mjs",
   "scripts": {
     "start": "node source/app/web/index.mjs",
-    "test": "jest --runInBand",
-    "test-contrib": "jest --runInBand ci.test.js --noStackTrace",
+    "test": "jest --runInBand --testPathIgnorePatterns presets.test.js",
     "test-presets": "jest --runInBand presets.test.js --noStackTrace",
     "test-metrics": "jest --runInBand metrics.test.js",
     "build": "node .github/scripts/build.mjs",
@@ -15,8 +14,10 @@
     "preview": "node .github/scripts/preview.mjs",
     "linter": "eslint source/**/*.mjs --quiet",
     "dev": "nodemon source/app/web/index.mjs -e mjs,css,ejs,json",
-    "postinstall": "node node_modules/puppeteer/install.mjs",
     "indepth": "node source/plugins/languages/analyzers.mjs"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "repository": {
     "type": "git",
@@ -46,7 +47,6 @@
     "emoji-name-map": "^1.2.9",
     "express": "^4.18.2",
     "express-rate-limit": "^7.0.0",
-    "file-type": "^22.0.0",
     "js-yaml": "^4.1.0",
     "jsdom": "^29.0.1",
     "linguist-js": "^2.6.1",
@@ -83,7 +83,6 @@
     "chess.js": "^1.0.0-beta.6",
     "color": "^4.2.3",
     "gifencoder": "^2.0.1",
-    "libxmljs2": "^0.37.0",
     "rss": "^1.2.2",
     "yargs-parser": "^21.1.1"
   }

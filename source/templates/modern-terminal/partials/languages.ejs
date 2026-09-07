@@ -1,19 +1,23 @@
-<% if (plugins.languages) { %>
-<div class="stdin"><%- meta.$ %> languages</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.languages.error) { -%>
-  <span class="error"><%= plugins.languages.error.message %></span><%# -%>
-<% } else { -%>
-  <%= "Summary:".padEnd(18) %><b><%= plugins.languages.unique %></b><%= s(plugins.languages.unique) %>
-  <% for (const section of (plugins.languages.sections ?? ["most-used"])) { const list = {"most-used":plugins.languages.favorites, "recently-used":plugins.languages.recent}[section] %>
-    <%= (section === "most-used" ? "Most used:" : "Recently used:").padEnd(18) %>
-    <% if (list && list.length) { %>
-      <% for (const {name, value, lines = 0, size} of list) { %>
-        <%= name.padEnd(24) %><%= (typeof f.percentage === 'function' ? f.percentage(value) : (Math.round((value||0)*100) + "%")).toString().padStart(8) %><% if ((plugins.languages.details ?? []).includes("lines")) { %>  <span style="color:gray"><%= ("(" + f(lines) + " lines)").padStart(14) %></span><% } %>
-      <% } %>
-    <% } else { %>
-      No data
-    <% } %>
-  <% } %>
-<% } -%>
-</div><% } %>
+<% if (plugins["languages"]) { %>
+<% if (plugins["languages"].error) { %>
+<p class="error"><%= plugins["languages"].error.message %></p>
+<% } else { const details = plugins.languages.details; const showPercentage = details.includes("percentage"); const showLines = details.includes("lines"); const showSize = details.includes("bytes-size"); %>
+<p><%= plugins.languages.unique %> unique languages</p>
+<% for (const section of plugins.languages.sections) { const list = {"most-used":plugins.languages.favorites, "recently-used":plugins.languages.recent}[section]; const stats = section === "recently-used" ? plugins.languages["stats.recent"] : plugins.languages %>
+<h3><%= section === "most-used" ? "Most used" : "Recently used" %></h3>
+<% if (list.length) { %>
+<table class="tui-table tui-table--languages">
+<thead><tr><th scope="col">Language</th><% if (showLines) { %><th scope="col" class="tui-number">Lines</th><% } %><% if (showSize) { %><th scope="col" class="tui-number">Size</th><% } %><% if (showPercentage) { %><th scope="col" class="tui-number">Share</th><th scope="col">Usage</th><% } %></tr></thead>
+<tbody>
+<% for (const {name, value, lines, size, color} of list) { const hasFraction = Number.isFinite(value); const filled = hasFraction ? Math.round(Math.max(0, Math.min(1, value)) * 10) : 0; %>
+<tr><th scope="row" class="language-name" style="--data-color:<%= color %>"><%= name %></th><% if (showLines) { %><td class="tui-number"><%= f(lines) %></td><% } %><% if (showSize) { %><td class="tui-number"><%= f.bytes(size) %></td><% } %><% if (showPercentage) { %><td class="tui-number"><%= f.percentage(value) %></td><td><% if (hasFraction) { %><span class="tui-bar" aria-hidden="true"><span><%= "█".repeat(filled) %></span><span class="tui-bar-empty"><%= "░".repeat(10 - filled) %></span></span><% } %></td><% } %></tr>
+<% } %>
+</tbody>
+</table>
+<% if ((section === "recently-used" || plugins.languages.indepth) && stats) { %><p class="terminal-subtitle">Estimated from <%= f.bytes(stats.total) %>, <%= stats.files %> files and <%= stats.commits %> commits<% if (section === "recently-used") { %> over <%= stats.latest ?? stats.days %> days<% } %>.</p><% } %>
+<% } else { %><p class="empty">No languages matching the configured filters.</p><% } %>
+<% if (section === "most-used" && plugins.languages.verified?.signature) { %><p class="terminal-subtitle"><%= plugins.languages.verified.signature %> GPG-verified commits</p><% } %>
+<% if (stats?.partial?.global || stats?.partial?.repositories) { %><p class="warnings">Analysis is partial; some repositories or commits could not be processed.</p><% } %>
+<% } %>
+<% } %>
+<% } %>

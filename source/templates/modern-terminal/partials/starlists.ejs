@@ -1,31 +1,27 @@
 <% if (plugins.starlists) { %>
-<div class="stdin"><%- meta.$ %> starlists</div><%# -%>
-<div class="stdout"><%# -%>
 <% if (plugins.starlists.error) { -%>
 <span class="error"><%= plugins.starlists.error.message %></span><%# -%>
 <% } else { -%>
+<ul class="terminal-list">
 <% for (const {name, description, count, repositories = [], languages = null} of plugins.starlists.lists) { %>
-<%# list header %>
-<%= ("* " + (name || "Unnamed list")).padEnd(36) + (String(count) + " repos").padStart(12) %>
-<% if (description) { %>
-<%= description %>
-<% } %>
+<li><div><%= name || "Unnamed list" %> <span class="tui-status"><%= count %> repos</span></div>
+<% if (description) { %><div class="tui-detail"><%= description %></div><% } %>
 <% if (languages) { %>
-<% for (const {name: langName, value} of languages) { %>
-<%= (langName || "").padEnd(20) + f.percentage(value/count).padStart(8) + ("  " + f(value) + "★").padStart(8) %>
+<div class="tui-detail">Languages</div>
+<table class="tui-table"><thead><tr><th scope="col">Language</th><th scope="col">Share</th><th scope="col">Stars</th></tr></thead><tbody>
+<% for (const {name: langName, value} of languages) { %><tr><td><%= langName || "" %></td><td class="tui-number"><%= f.percentage(value/count) %></td><td class="tui-number"><%= f(value) %>★</td></tr><% } %>
+</tbody></table>
 <% } %>
-<% } %>
-<% if (repositories.length) { %>
+<% if (repositories.length) { %><ul class="terminal-list">
 <% for (const repo of repositories) { %>
-<%= (repo.name || "").padEnd(36)
-     + (repo.language?.name ? repo.language.name.padStart(12) : "".padStart(12))
-     + (Number.isFinite(repo.stargazers) ? ("  " + f(repo.stargazers) + "★").padStart(10) : "")
-     + (Number.isFinite(repo.forks) ? ("  forks:" + f(repo.forks)).padStart(10) : "") %>
-<% if (repo.description) { %>
-<%= "  " + repo.description %>
+<li><div><%= repo.name || "" %><% if (Number.isFinite(repo.stargazers)) { %> <span class="tui-status">★ <%= f(repo.stargazers) %></span><% } %><% if (Number.isFinite(repo.forks)) { %> <span class="tui-status">forks <%= f(repo.forks) %></span><% } %></div>
+<% if (repo.language?.name) { %><div class="tui-detail"><%= repo.language.name %></div><% } %>
+<% if (repo.description) { %><div class="tui-detail"><%= repo.description %></div><% } %>
+</li>
 <% } %>
+</ul><% } %>
+</li>
 <% } %>
-<% } %>
-<% } %>
+</ul>
 <% } -%>
-</div><% } %>
+<% } %>

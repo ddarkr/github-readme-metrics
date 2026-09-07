@@ -1,23 +1,13 @@
-<% if (plugins.achievements) { %>
-  <div class="stdin"><%- meta.$ %> gh achievement list --user <%= user.login %></div>
-  <div class="stdout">
-  <% if (plugins.achievements.error) { -%>
-    <span class="error"><%= plugins.achievements.error.message %></span>
-  <% } else { -%>
-    <% const list = plugins.achievements.list ?? [];
-       const RANK_W = 4;
-       const TITLE_W = 48;
-       const VALUE_W = 8;
-       const TOTAL_W = RANK_W + 1 + TITLE_W + 1 + VALUE_W;
-       const lines = [];
-       // Header
-       lines.push('Rk'.padEnd(RANK_W) + ' ' + 'Title'.padEnd(TITLE_W) + ' ' + 'Value'.padStart(VALUE_W));
-       // Rows
-       for (const {prefix = '', title = '', rank = '?', value = ''} of list) {
-         const displayTitle = prefix && prefix.length ? (prefix + ' ' + title.charAt(0).toUpperCase() + title.slice(1)) : title;
-         const displayValue = (typeof value === 'number') ? Math.floor(value) : (value ? value : '?');
-         lines.push(String(rank).padEnd(RANK_W) + ' ' + String(displayTitle).padEnd(TITLE_W) + ' ' + String(displayValue).padStart(VALUE_W));
-       }
-    %><pre><%= lines.join('\n') %></pre><% } -%>
-  </div>
+<% if (plugins["achievements"]) { %>
+<% if (plugins["achievements"].error) { %>
+<p class="error"><%= plugins["achievements"].error.message %></p>
+<% } else { %>
+<% if (plugins.achievements.list.length) { %><ul class="terminal-list">
+<% for (const achievement of plugins.achievements.list) { %>
+<li><div><%= achievement.prefix %> <%= achievement.title %> <span class="tui-status">rank <%= achievement.rank %></span><% if (plugins.achievements.display === "compact") { %> <span class="tui-status"><%= typeof achievement.value === "number" ? Math.floor(achievement.value) : achievement.value ? "Unlocked" : "Locked" %></span><% } %></div>
+<div class="tui-detail"><%= achievement.text %></div>
+<% if (achievement.leaderboard) { %><div class="tui-detail">ranked <%= f(achievement.leaderboard.user) %> of <%= f(achievement.leaderboard.total) %> <%= achievement.leaderboard.type %></div><% } %>
+<% if (achievement.unlock) { %><div class="tui-detail">unlocked <%= achievement.unlock %></div><% } %>
+</li><% } %></ul><% } else { %><p class="empty">No achievements matching the configured filters.</p><% } %>
+<% } %>
 <% } %>

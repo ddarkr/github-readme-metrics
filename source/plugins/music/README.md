@@ -10,7 +10,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 </td></tr>
   <tr>
     <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>
-    <td><a href="/source/templates/classic/README.md"><code>📗 Classic template</code></a> <a href="/source/templates/modern-terminal/README.md"><code>💻 Modern Terminal Template</code></a></td>
+    <td><a href="/source/templates/classic/README.md"><code>📗 Classic template</code></a> <a href="/source/templates/modern-terminal/README.md"><code>Modern Terminal</code></a></td>
   </tr>
   <tr>
     <td><code>👤 Users</code> <code>👥 Organizations</code></td>
@@ -41,8 +41,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-🌐 Web instances must configure <code>settings.json</code>:
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
 <ul>
 <li><i>metrics.run.puppeteer.scrapping</i></li>
 </ul>
@@ -64,8 +63,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>string</code>
+    <td nowrap="nowrap"><b>type:</b> <code>string</code>
 <br>
 <b>allowed values:</b><ul><li>apple</li><li>spotify</li><li>lastfm</li><li>youtube</li><li>koito</li></ul></td>
   </tr>
@@ -78,13 +76,12 @@ All product and company names are trademarks™ or registered® trademarks of th
 <li><code>spotify</code>: &quot;client_id, client_secret, refresh_token&quot;</li>
 <li><code>lastfm</code>: &quot;api_key&quot;</li>
 <li><code>youtube</code>: &quot;cookie&quot;</li>
-<li><code>koito</code>: &quot;api_key&quot; (optional for public instances)</li>
+<li><code>koito</code>: API key sent as <code>Authorization: Token …</code> (optional for public instances)</li>
 </ul>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
     <td nowrap="nowrap">🔐 Token<br>
-✨ On <code>master</code>/<code>main</code><br>
 🌐 Web instances must configure <code>settings.json</code>:
 <ul>
 <li><i>metrics.api.music.any</i></li>
@@ -94,16 +91,15 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_music_user</code></h4></td>
-    <td rowspan="2"><p>Music provider username or Koito instance URL</p>
+    <td rowspan="2"><p>Music provider username or Koito instance base URL</p>
 <ul>
 <li>For Spotify, Last.fm, YouTube: username</li>
-<li>For Koito: instance URL (e.g., <a href="https://music-stats.doda.im">https://music-stats.doda.im</a>)</li>
+<li>For Koito: HTTP(S) instance base URL (e.g., <a href="https://music-stats.doda.im">https://music-stats.doda.im</a>)</li>
 </ul>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
     <td nowrap="nowrap">⏯️ Cannot be preset<br>
-✨ On <code>master</code>/<code>main</code><br>
 <b>type:</b> <code>string</code>
 <br>
 <b>default:</b> <code>→ User login</code><br></td>
@@ -120,8 +116,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>string</code>
+    <td nowrap="nowrap"><b>type:</b> <code>string</code>
 <br>
 <b>allowed values:</b><ul><li>playlist</li><li>recent</li><li>top</li></ul></td>
   </tr>
@@ -133,7 +128,6 @@ All product and company names are trademarks™ or registered® trademarks of th
   </tr>
   <tr>
     <td nowrap="nowrap">⏯️ Cannot be preset<br>
-✨ On <code>master</code>/<code>main</code><br>
 <b>type:</b> <code>string</code>
 <br></td>
   </tr>
@@ -143,8 +137,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>number</code>
+    <td nowrap="nowrap"><b>type:</b> <code>number</code>
 <i>(1 ≤
 𝑥
 ≤ 100)</i>
@@ -157,8 +150,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>boolean</code>
+    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> no<br></td>
   </tr>
@@ -173,8 +165,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>string</code>
+    <td nowrap="nowrap"><b>type:</b> <code>string</code>
 <br>
 <b>default:</b> short<br>
 <b>allowed values:</b><ul><li>short</li><li>medium</li><li>long</li></ul></td>
@@ -189,8 +180,7 @@ All product and company names are trademarks™ or registered® trademarks of th
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>string</code>
+    <td nowrap="nowrap"><b>type:</b> <code>string</code>
 <br>
 <b>default:</b> tracks<br>
 <b>allowed values:</b><ul><li>tracks</li><li>artists</li></ul></td>
@@ -331,35 +321,33 @@ https://music.youtube.com/playlist?list=********
 
 ## 🎵 Koito
 
-### 🗝️ Obtaining a token
+### 🗝️ Configuration
 
-1. Login to your Koito instance (e.g., `https://music-stats.doda.im`)
-2. Go to Settings → API Keys
-3. Create a new API key and copy it
+1. Set `plugin_music_user` to your Koito HTTP(S) instance base URL (for example, `https://music-stats.doda.im`).
+2. If the instance requires authentication, create an API key in Settings → API Keys and set `plugin_music_token`.
 
-**Configuration**:
-- `plugin_music_user`: Koito instance URL (e.g., `https://music-stats.doda.im`)
-- `plugin_music_token`: API key (optional for public instances)
+The token is optional for public instances. When set, the plugin sends it as `Authorization: Token <api_key>`; otherwise it does not send an authentication header.
 
 ### 📊 Supported modes
 
 - `recent`: Recently listened tracks
 - `top`: Top artists/tracks
-- `playlist`: Not supported (embed URLs not available)
+- `playlist`: Not supported (Koito does not expose embeddable playlists)
 
 ### ⚠️ Notes
 
-- Koito is a self-hosted ListenBrainz-compatible scrobbler
-- Image URLs follow the pattern: `/image/{uuid}`
-- API responses are in Koito's own format (not ListenBrainz format)
-- Public instances may have rate limiting
+- Koito is a self-hosted ListenBrainz-compatible scrobbler, but this plugin uses its own web API response format.
+- Instance URLs are normalized before requests; query strings, fragments, and trailing slashes are not part of the instance base URL.
+- Artwork uses Koito's returned `image.small` URL, resolved against the configured instance.
+- Top ranges use Koito's month, explicit six-month, and all-time timeframes.
+- Public instances may have rate limiting.
 
 ## ℹ️ Examples workflows
 
 <!--examples-->
 ```yaml
 name: Apple Music - Random track from playlist
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   filename: metrics.plugin.music.playlist.svg
   token: NOT_NEEDED
@@ -371,7 +359,7 @@ with:
 ```
 ```yaml
 name: Spotify - Random track from playlist
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   filename: metrics.plugin.music.playlist.spotify.svg
   token: NOT_NEEDED
@@ -382,7 +370,7 @@ with:
 ```
 ```yaml
 name: Spotify - Recently listed
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   filename: metrics.plugin.music.recent.svg
   token: NOT_NEEDED
@@ -396,7 +384,7 @@ with:
 ```
 ```yaml
 name: Spotify - Top tracks
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -410,7 +398,7 @@ with:
 ```
 ```yaml
 name: Spotify - Top artists
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -424,7 +412,7 @@ with:
 ```
 ```yaml
 name: Youtube Music - Random track from playlist
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -435,7 +423,7 @@ with:
 ```
 ```yaml
 name: Youtube Music - Recently listed
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -447,7 +435,7 @@ with:
 ```
 ```yaml
 name: Last.fm  - Recently listed
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   token: NOT_NEEDED
   base: ""
@@ -455,6 +443,44 @@ with:
   plugin_music: yes
   plugin_music_provider: lastfm
   plugin_music_user: RJ
+
+```
+```yaml
+name: Koito - Recently listened
+uses: ddarkr/metrics@master
+with:
+  token: NOT_NEEDED
+  base: ""
+  plugin_music: yes
+  plugin_music_provider: koito
+  plugin_music_mode: recent
+  plugin_music_user: https://music-stats.doda.im
+
+```
+```yaml
+name: Koito - Top tracks
+uses: ddarkr/metrics@master
+with:
+  token: NOT_NEEDED
+  base: ""
+  plugin_music: yes
+  plugin_music_provider: koito
+  plugin_music_mode: top
+  plugin_music_user: https://music-stats.doda.im
+  plugin_music_top_type: tracks
+
+```
+```yaml
+name: Koito - Top artists
+uses: ddarkr/metrics@master
+with:
+  token: NOT_NEEDED
+  base: ""
+  plugin_music: yes
+  plugin_music_provider: koito
+  plugin_music_mode: top
+  plugin_music_user: https://music-stats.doda.im
+  plugin_music_top_type: artists
 
 ```
 <!--/examples-->

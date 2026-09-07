@@ -8,14 +8,11 @@ import url from "url"
 //Defined categories
 const categories = ["core", "github", "social", "community"]
 
-//Previous descriptors
-let previous = null
-
 //Environment
 const env = {ghactions: `${process.env.GITHUB_ACTIONS}` === "true"}
 
 /**Metadata descriptor parser */
-export default async function metadata({log = true, diff = false} = {}) {
+export default async function metadata({log = true} = {}) {
   //Paths
   const __metrics = path.join(path.dirname(url.fileURLToPath(import.meta.url)), "../../..")
   const __templates = path.join(__metrics, "source/templates")
@@ -25,16 +22,6 @@ export default async function metadata({log = true, diff = false} = {}) {
 
   //Init
   const logger = log ? console.debug : () => null
-
-  //Diff with latest version
-  if (diff) {
-    try {
-      previous = yaml.load(await fetch("https://raw.githubusercontent.com/ddarkr/metrics/latest/action.yml").then(response => response.text()))
-    }
-    catch (error) {
-      logger(error)
-    }
-  }
 
   //Load plugins metadata
   let Plugins = {}
@@ -479,8 +466,6 @@ metadata.plugin = async function({__plugins, __templates, name, logger}) {
             cell.push("⏯️ Cannot be preset<br>")
           if (o.testing)
             cell.push("🔧 For development<br>")
-          if (!Object.keys(previous?.inputs ?? {}).includes(option))
-            cell.push("✨ On <code>master</code>/<code>main</code><br>")
           if (o.extras) {
             cell.push("🌐 Web instances must configure <code>settings.json</code>:")
             cell.push("<ul>")

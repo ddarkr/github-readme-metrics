@@ -1,20 +1,17 @@
-<% if (plugins.followup) { %>
-<div class="stdin"><%- meta.$ %> followup</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.followup.error) { -%>
-<span class="error"><%= plugins.followup.error.message %></span><%# -%>
-<% } else { -%>
-// Follow-up summary
-<% for (const name of plugins.followup.sections) { const section = {repositories:plugins.followup, user:plugins.followup?.user}[name]; const title = {repositories:`On ${user.name ?? user.login}'s repositories`, user:`Created by ${user.name ?? user.login}`}[name]; %>
-<%= (title||"Section").padEnd(40) %>
-Issues:  open <%= `${section.issues?.open ?? 0}`.padStart(4) %>  closed <%= `${section.issues?.closed ?? 0}`.padStart(4) %>  drafts <%= `${section.issues?.drafts ?? 0}`.padStart(4) %>  skipped <%= `${section.issues?.skipped ?? 0}`.padStart(4) %>
-<% if ((plugins.followup.indepth)&&(section.issues?.collaborators)) { %>
-collab: open <%= `${section.issues.collaborators.open ?? 0}`.padStart(4) %>  closed <%= `${section.issues.collaborators.closed ?? 0}`.padStart(4) %>  drafts <%= `${section.issues.collaborators.drafts ?? 0}`.padStart(4) %>
-<% } %>
-PRs:     open <%= `${section.pr?.open ?? 0}`.padStart(4) %>  merged <%= `${section.pr?.merged ?? 0}`.padStart(4) %>  closed <%= `${section.pr?.closed ?? 0}`.padStart(4) %>  drafts <%= `${section.pr?.drafts ?? 0}`.padStart(4) %>
-<% if ((plugins.followup.indepth)&&(section.pr?.collaborators)) { %>
-collab: merged <%= `${section.pr.collaborators.merged ?? 0}`.padStart(4) %>  open <%= `${section.pr.collaborators.open ?? 0}`.padStart(4) %>  closed <%= `${section.pr.collaborators.closed ?? 0}`.padStart(4) %>
+<% if (plugins["followup"]) { %>
+<% if (plugins["followup"].error) { %>
+<p class="error"><%= plugins["followup"].error.message %></p>
+<% } else { %>
+<% for (const name of plugins.followup.sections) { const section = {repositories:plugins.followup, user:plugins.followup.user}[name]; if (!section) continue %>
+<h3><%= name === "repositories" ? "On owned repositories" : "Created by this user" %></h3>
+<% for (const [key, title, fields] of [["issues", "Issues", ["open", "closed", "drafts", "skipped"]], ["pr", "Pull requests", ["open", "merged", "closed", "drafts"]]]) { %>
+<table class="tui-table">
+<thead><tr><th scope="col"><%= title %></th><% for (const field of fields) { %><th scope="col" class="tui-number"><%= field %></th><% } %></tr></thead>
+<tbody>
+<tr><th scope="row">Total</th><% for (const field of fields) { %><td class="tui-number"><%= section[key][field] %></td><% } %></tr>
+<% if (plugins.followup.indepth && section[key].collaborators) { %><tr><th scope="row">Self + collaborators</th><% for (const field of fields) { %><td class="tui-number"><%= section[key].collaborators[field] %></td><% } %></tr><% } %>
+</tbody></table>
 <% } %>
 <% } %>
-<% } -%>
-</div><% } %>
+<% } %>
+<% } %>

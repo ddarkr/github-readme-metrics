@@ -1,28 +1,22 @@
 <% if (plugins.discussions) { %>
-  <div class="stdin"><%- meta.$ %> gh discussion list --user <%= user.login %></div>
-  <div class="stdout">
+
   <% if (plugins.discussions.error) { -%>
     <span class="error"><%= plugins.discussions.error.message %></span>
-  <% } else { -%>
-    <% 
-      const started = plugins.discussions.started ?? 0;
-      const comments = plugins.discussions.comments ?? 0;
-      const answers = plugins.discussions.answers ?? 0;
-      const upvDiscussions = plugins.discussions.upvotes?.discussions ?? 0;
-      const upvComments = plugins.discussions.upvotes?.comments ?? 0;
-      const categories = (plugins.discussions.categories && plugins.discussions.categories.stats) ? plugins.discussions.categories.stats : {};
-      const catLimit = plugins.discussions.display && plugins.discussions.display.categories ? (plugins.discussions.display.categories.limit || Object.keys(categories).length) : 0;
-    %>
-    Discussions: <%= started %> started
-    Comments: <%= comments %>  Answers: <%= answers %>
-    Upvotes (discussions): <%= upvDiscussions %>  Upvotes (comments): <%= upvComments %>
-
-    <% if (catLimit && Object.keys(categories).length) { %>
-      Categories:
-      <% for (const [name, count] of Object.entries(categories).slice(0, catLimit)) { %>
-        - <%= name %>: <%= count %>
-      <% } %>
-    <% } %>
+  <% } else { const categories = plugins.discussions.categories?.stats ?? {}; const limit = plugins.discussions.display?.categories?.limit || Object.keys(categories).length -%>
+    <div class="terminal-kv">
+      <span class="terminal-kv__key">Started</span><span class="terminal-kv__value"><%= plugins.discussions.started ?? 0 %></span>
+      <span class="terminal-kv__key">Comments</span><span class="terminal-kv__value"><%= plugins.discussions.comments ?? 0 %></span>
+      <span class="terminal-kv__key">Answers</span><span class="terminal-kv__value"><%= plugins.discussions.answers ?? 0 %></span>
+      <span class="terminal-kv__key">Upvotes</span><span class="terminal-kv__value"><%= plugins.discussions.upvotes?.discussions ?? 0 %> discussions · <%= plugins.discussions.upvotes?.comments ?? 0 %> comments</span>
+    </div>
+    <% if (plugins.discussions.display.categories && Object.keys(categories).length) { -%>
+      <div class="terminal-subtitle">Categories</div>
+      <div class="terminal-table">
+      <% for (const [name, count] of Object.entries(categories).slice(0, limit)) { -%>
+        <div class="terminal-table__row"><span class="terminal-table__label"><%= name %></span><span class="terminal-table__value"><%= count %></span></div>
+      <% } -%>
+      </div>
+    <% } -%>
   <% } -%>
-  </div>
+
 <% } %>

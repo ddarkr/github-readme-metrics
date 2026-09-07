@@ -1,5 +1,5 @@
 - name: 🗳️ Leetcode - LeetCode
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: NOT_NEEDED
     plugin_leetcode: 'yes'

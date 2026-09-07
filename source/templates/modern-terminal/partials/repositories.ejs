@@ -1,24 +1,18 @@
 <% if (plugins.repositories) { %>
-<div class="stdin"><%- meta.$ %> ls -l featured-repos</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.repositories.error) { -%>
-<span class="error"><%= plugins.repositories.error.message %></span><%# -%>
-<% } else { -%>
-  <% if (plugins.repositories.list && plugins.repositories.list.length) { -%>
-    <% for (const repository of plugins.repositories.list) { -%>
-      <% const name = String(repository.nameWithOwner || "").padEnd(32); -%>
-      <% const created = String(repository.created || "").padEnd(12); -%>
-      <% const lang = String(repository.primaryLanguage?.name || "-").padEnd(10); -%>
-      <% const stars = String(f(repository.stargazerCount)).padStart(6); -%>
-      <% const forks = String(f(repository.forkCount)).padStart(6); -%>
-%>
-<b><%= name %></b> <%= created %> <span style="color:<%= repository.primaryLanguage?.color ?? '#888' %>"><%= lang %></span> ★<%= stars %> ⑂<%= forks %>
-<% if (repository.description) { -%>
-  <%= String(repository.description).trim() %>
-<% } -%>
+  <% if (plugins.repositories.error) { -%>
+    <span class="error"><%= plugins.repositories.error.message %></span>
+  <% } else { const list = plugins.repositories.list ?? [] -%>
+    <% if (list.length) { -%>
+      <ul class="terminal-list">
+      <% for (const repository of list) { -%>
+        <li><div><%= repository.nameWithOwner || repository.name || "unknown" %> <span class="tui-status">★ <%= f(repository.stargazerCount) %></span> <span class="tui-status">⑂ <%= f(repository.forkCount) %></span></div>
+        <% if (repository.description) { %><div class="tui-detail"><%= String(repository.description).trim() %></div><% } %>
+        <% if (repository.primaryLanguage?.name) { %><div class="tui-detail"><span style="--data-color:<%= repository.primaryLanguage.color ?? 'var(--color-muted)' %>;color:var(--data-color)"><%= repository.primaryLanguage.name %></span></div><% } %>
+        </li>
+      <% } -%>
+      </ul>
+    <% } else { -%>
+      <p class="empty">No featured repositories configured</p>
     <% } -%>
-  <% } else { -%>
-    no featured repositories configured
   <% } -%>
-<% } -%>
-</div><% } %>
+<% } %>

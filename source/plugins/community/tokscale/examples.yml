@@ -1,5 +1,5 @@
 - name: Tokscale statistics
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     filename: metrics.plugin.tokscale.svg
     token: NOT_NEEDED

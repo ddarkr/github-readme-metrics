@@ -1,5 +1,5 @@
 - name: News from hackernews
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     filename: metrics.plugin.rss.svg
     token: NOT_NEEDED

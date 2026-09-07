@@ -7,7 +7,6 @@ import crypto from "crypto"
 import { minify as csso } from "csso"
 import * as d3 from "d3"
 import emoji from "emoji-name-map"
-import { fileTypeFromBuffer } from "file-type"
 import fss from "fs"
 import fs from "fs/promises"
 import { JSDOM } from "jsdom"
@@ -437,66 +436,163 @@ export const filters = {
 }
 
 /**Image to base64 */
-export async function imgb64(image, {width, height, fallback = true} = {}) {
-  //Ignore already encoded-base 64
-  if ((typeof image === "string") && (image.startsWith("data:image/png;base64")))
+const fallbackImage = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOcOnfpfwAGfgLYttYINwAAAABJRU5ErkJggg=="
+
+function imageMime(format) {
+  return {
+    jpg: "image/jpeg",
+    png: "image/png",
+    svg: "image/svg+xml",
+  }[format] ?? `image/${format}`
+}
+
+async function imageBuffer(image) {
+  if (typeof image !== "string")
     return image
-  //Undefined image
+  if (/^https?:\/\//i.test(image)) {
+    const response = await fetch(image)
+    const status = Number(response?.status)
+    if ((!response) || (response.ok === false) || (Number.isFinite(status) && ((status < 200) || (status >= 300))))
+      throw new Error(`Image download failed${response?.status ? ` (${response.status})` : ""}`)
+    return Buffer.from(await response.arrayBuffer())
+  }
+  if (image.startsWith("data:")) {
+    const matched = image.match(/^data:image\/[a-z0-9.+-]+;base64,(?<data>.+)$/i)
+    if ((!matched) || (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(matched.groups.data)))
+      throw new Error("Invalid image data URI")
+    return Buffer.from(matched.groups.data, "base64")
+  }
+  return fs.readFile(image)
+}
+
+export async function imgb64(image, {width, height, fallback = true} = {}) {
   if (!image)
-    return fallback ? "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOcOnfpfwAGfgLYttYINwAAAABJRU5ErkJggg==" : null
-  //SVG image
-  if ((typeof image === "string") && (image.endsWith(".svg")))
-    return `data:image/svg+xml;base64,${Buffer.from(await fetch(image).then(response => response.arrayBuffer())).toString("base64")}`
-  //Load, resize and encode image
-  let ext = "png"
+    return fallback ? fallbackImage : null
   try {
-    if (image.startsWith("http://") || image.startsWith("https://")) {
-      const buffer = Buffer.from(await fetch(image).then(response => response.arrayBuffer()))
-      ext = (await fileTypeFromBuffer(buffer))?.ext ?? ext
-      image = sharp(buffer)
-    }
-    else {
-      image = sharp(image)
-    }
-
-    //Resize image
-    if ((width) && (height))
-      image = image.resize({width: width > 0 ? width : null, height: height > 0 ? height : null})
-
-    return `data:image/${ext};base64,${(await image.toBuffer()).toString("base64")}`
+    const dataImage = typeof image === "string" ? image.match(/^data:(?<mime>image\/[a-z0-9.+-]+);base64,/i) : null
+    const buffer = await imageBuffer(image)
+    let renderer = sharp(buffer)
+    const {format} = await renderer.metadata()
+    if (!format)
+      throw new Error("Unsupported image format")
+    const resize = (width) && (height)
+    if ((!resize) && (dataImage?.groups.mime.toLocaleLowerCase() === imageMime(format)))
+      return image
+    if ((format === "svg") && (!resize))
+      return `data:${imageMime(format)};base64,${buffer.toString("base64")}`
+    if (resize)
+      renderer = renderer.resize({width: width > 0 ? width : null, height: height > 0 ? height : null})
+    if (format === "svg")
+      renderer = renderer.png()
+    const {data, info} = await renderer.toBuffer({resolveWithObject: true})
+    return `data:${imageMime(info.format ?? format)};base64,${data.toString("base64")}`
   }
   catch (error) {
     console.debug(`metrics/imgb64 > error > ${error}${fallback ? " (using fallback image instead)" : ""}`)
-    return imgb64(null, {fallback})
+    return fallback ? fallbackImage : null
   }
+}
+
+let svgBrowserLaunch = null
+
+async function healthySvgBrowser(browser) {
+  try {
+    await browser.version()
+    return true
+  }
+  catch {
+    return false
+  }
+}
+
+async function closeSvgBrowser(browser, context) {
+  if (typeof browser?.close === "function")
+    await browser.close().catch(error => console.debug(`metrics/svg/${context} > failed to close browser: ${error}`))
+}
+
+async function discardSvgBrowser(browser, context) {
+  if (svg.resize.browser !== browser)
+    return
+  svg.resize.browser = null
+  await closeSvgBrowser(browser, context)
+}
+
+async function launchSvgBrowser(context) {
+  if (svg.resize.browser)
+    return svg.resize.browser
+  if (!svgBrowserLaunch) {
+    svgBrowserLaunch = (async () => {
+      let browser
+      try {
+        browser = await puppeteer.launch()
+        const version = await browser.version()
+        if (svg.resize.browser) {
+          await closeSvgBrowser(browser, context)
+          return svg.resize.browser
+        }
+        svg.resize.browser = browser
+        console.debug(`metrics/svg/${context} > started ${version}`)
+        return browser
+      }
+      catch (error) {
+        await closeSvgBrowser(browser, context)
+        throw error
+      }
+      finally {
+        svgBrowserLaunch = null
+      }
+    })()
+  }
+  return svgBrowserLaunch
+}
+
+async function restartSvgBrowser(browser, context) {
+  await discardSvgBrowser(browser, context)
+  return svg.resize.browser ?? launchSvgBrowser(context)
 }
 
 /**SVG utils */
 export const svg = {
   /**Get a healthy browser page */
   async page(context) {
-    if (svg.resize.browser) {
+    let {browser} = svg.resize
+    let recovered = false
+    if (browser) {
       try {
-        await svg.resize.browser.version()
+        await browser.version()
       }
       catch (error) {
         console.debug(`metrics/svg/${context} > browser unavailable: ${error} (restarting)`)
-        svg.resize.browser = null
+        recovered = true
+        browser = await restartSvgBrowser(browser, context)
       }
     }
-    if (!svg.resize.browser) {
-      svg.resize.browser = await puppeteer.launch()
-      console.debug(`metrics/svg/${context} > started ${await svg.resize.browser.version()}`)
+    else {
+      browser = await launchSvgBrowser(context)
     }
     try {
-      return await svg.resize.browser.newPage()
+      return await browser.newPage()
     }
     catch (error) {
-      console.debug(`metrics/svg/${context} > failed to create page: ${error} (restarting)`)
-      await svg.resize.browser?.close().catch(() => null)
-      svg.resize.browser = await puppeteer.launch()
-      console.debug(`metrics/svg/${context} > restarted ${await svg.resize.browser.version()}`)
-      return svg.resize.browser.newPage()
+      if (await healthySvgBrowser(browser)) {
+        console.debug(`metrics/svg/${context} > failed to create page: ${error}`)
+        throw error
+      }
+      if (recovered) {
+        await discardSvgBrowser(browser, context)
+        throw error
+      }
+      console.debug(`metrics/svg/${context} > browser became unavailable while creating page: ${error} (restarting)`)
+      recovered = true
+      browser = await restartSvgBrowser(browser, context)
+      try {
+        return await browser.newPage()
+      }
+      catch (retryError) {
+        if (!await healthySvgBrowser(browser))
+          await discardSvgBrowser(browser, context)
+        throw retryError
+      }
     }
   },
   /**Render as pdf */
@@ -553,7 +649,7 @@ export const svg = {
     console.debug("metrics/svg/resize > loading svg")
     const page = await svg.page("resize")
     try {
-      page.setViewport({width: 980, height: 980})
+      await page.setViewport({width: 980, height: 980})
       page
         .on("console", message => console.debug(`metrics/svg/resize > puppeteer > ${message.text()}`))
         .on("pageerror", error => console.debug(`metrics/svg/resize > puppeteer > ${error.message}`))
@@ -576,34 +672,44 @@ export const svg = {
               console.debug(`an error occurred while evaluating script: ${error}`)
             }
           }
-          //Disable animations
-          const animated = !document.querySelector("svg").classList.contains("no-animations")
+          //Disable animations while waiting for all assets and layout to settle
+          const root = document.querySelector("svg")
+          const animated = !root.classList.contains("no-animations")
           if (animated)
-            document.querySelector("svg").classList.add("no-animations")
+            root.classList.add("no-animations")
           console.debug(`animations are ${animated ? "enabled" : "disabled"}`)
-          await new Promise(solve => setTimeout(solve, 2400))
-          //Get bounds and resize
-          let {y: height, width} = document.querySelector("svg #metrics-end").getBoundingClientRect()
-          console.debug(`bounds width=${width}, height=${height}`)
-          height = Math.max(1, Math.ceil(height * padding.height + padding.absolute.height))
-          width = Math.max(1, Math.ceil(width * padding.width + padding.absolute.width))
-          console.debug(`bounds after applying padding width=${width} (*${padding.width}+${padding.absolute.width}), height=${height} (*${padding.height}+${padding.absolute.height})`)
-          //Resize svg
-          if (document.querySelector("svg").getAttribute("height") === "auto")
-            console.debug('skipped height resizing because it was set to "auto"')
-          else
-            document.querySelector("svg").setAttribute("height", height)
-          //Enable animations
-          if (animated)
-            document.querySelector("svg").classList.remove("no-animations")
+          let height, width
+          try {
+            await document.fonts?.ready
+            await Promise.allSettled([...document.images].map(image => image.decode?.()))
+            await new Promise(resolve => window.requestAnimationFrame(() => window.requestAnimationFrame(resolve))) //Get bounds and resize
+            ;({y: height, width} = document.querySelector("svg #metrics-end").getBoundingClientRect())
+            console.debug(`bounds width=${width}, height=${height}`)
+            height = Math.max(1, Math.ceil(height * padding.height + padding.absolute.height))
+            width = Math.max(1, Math.ceil(width * padding.width + padding.absolute.width))
+            console.debug(`bounds after applying padding width=${width} (*${padding.width}+${padding.absolute.width}), height=${height} (*${padding.height}+${padding.absolute.height})`)
+            //Resize svg
+            if (root.getAttribute("height") === "auto")
+              console.debug('skipped height resizing because it was set to "auto"')
+            else {
+              root.setAttribute("height", height)
+              if (!root.hasAttribute("viewBox"))
+                root.setAttribute("viewBox", `0 0 ${root.getBoundingClientRect().width} ${height}`)
+            }
+          }
+          finally {
+            if (animated)
+              root.classList.remove("no-animations")
+          }
           //Result
-          return {resized: new XMLSerializer().serializeToString(document.querySelector("svg")), height, width}
+          return {resized: new XMLSerializer().serializeToString(root), height, width}
         },
         padding,
         scripts,
       ))
       //Convert if required
       if (convert) {
+        await page.evaluate(() => document.querySelector("svg").classList.add("no-animations"))
         console.debug(`metrics/svg/resize > convert to ${convert}`)
         resized = await page.screenshot({type: convert, clip: {x: 0, y: 0, width, height}, omitBackground: true})
         mime = `image/${convert}`

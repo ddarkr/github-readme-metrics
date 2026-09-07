@@ -1,16 +1,18 @@
-<% if (plugins.music) { %>
-<div class="stdin"><%- meta.$ %> music <%= plugins.music.mode %></div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.music.error) { -%>
-<span class="error"><%= plugins.music.error.message %></span><%# -%>
-<% } else if (plugins.music.tracks && plugins.music.tracks.length) { -%>
-From: <%= plugins.music.provider || "unknown" %>
-<% const NUM_COL = 3;
-   const NAME_COL = 42;
-   for (const [i, {name = "", artist = ""}] of plugins.music.tracks.entries()) { -%>
-<%= `${i+1}`.padStart(NUM_COL) %>  <%= (name || "Untitled").slice(0, NAME_COL).padEnd(NAME_COL) %>  <%= artist || "Unknown Artist" %>
-<% } -%>
-<% } else { -%>
-No music recently listened
-<% } -%>
-</div><% } %>
+<% if (plugins["music"]) { %>
+<% if (plugins["music"].error) { %>
+<p class="error"><%= plugins["music"].error.message %></p>
+<% } else { %>
+<h3><%= plugins.music.mode %><% if (plugins.music.provider) { %> · <%= plugins.music.provider %><% } %></h3>
+<% if (plugins.music.tracks.length) { %>
+<table class="tui-table">
+<thead><tr><th scope="col" class="tui-index">#</th><th scope="col">Track</th><th scope="col">Artist</th></tr></thead>
+<tbody>
+<% for (const [index, {name, artist, played_at}] of plugins.music.tracks.entries()) { %>
+<tr><td class="tui-number"><%= index + 1 %></td><td><%= name %></td><td><%= artist %></td></tr>
+<% if (plugins.music.played_at && played_at) { %><tr><td></td><td colspan="2" class="terminal-subtitle">played: <%= played_at %></td></tr><% } %>
+<% } %>
+</tbody>
+</table>
+<% } else { %><p class="empty">No tracks in the selected listening history.</p><% } %>
+<% } %>
+<% } %>

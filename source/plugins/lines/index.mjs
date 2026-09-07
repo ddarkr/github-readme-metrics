@@ -82,36 +82,38 @@ export default async function({login, data, imports, rest, q, account}, {enabled
       if (weeks.length) {
         //Generate SVG
         const height = 315, width = 480
-        const margin = 5, offset = 34
+        const margin = {top: 12, right: 12, bottom: 52, left: 52}
         const {d3} = imports
         const d3n = new imports.D3node()
-        const svg = d3n.createSVG(width, height)
+        const svg = d3n.createSVG(width, height).attr("viewBox", `0 0 ${width} ${height}`)
 
         //Time range
         const start = new Date(weeks.at(0).date)
         const end = new Date(weeks.at(-1).date)
         const x = d3.scaleTime()
           .domain([start, end])
-          .range([margin + offset, width - (offset + margin)])
+          .range([margin.left, width - margin.right])
         svg.append("g")
-          .attr("transform", `translate(0,${height - (offset + margin)})`)
-          .call(d3.axisBottom(x))
+          .attr("transform", `translate(0,${height - margin.bottom})`)
+          .call(d3.axisBottom(x).ticks(5))
+          .attr("font-family", "inherit")
           .selectAll("text")
           .attr("transform", "translate(-5,5) rotate(-45)")
           .style("text-anchor", "end")
-          .style("font-size", 20)
+          .style("font-size", "12px")
 
         //Diff range
         const points = weeks.flatMap(({added, deleted, changed}) => [added + changed, deleted + changed])
         const extremum = Math.max(...points)
         const y = d3.scaleLinear()
           .domain([extremum, -extremum])
-          .range([margin, height - (offset + margin)])
+          .range([margin.top, height - margin.bottom])
         svg.append("g")
-          .attr("transform", `translate(${margin + offset},0)`)
+          .attr("transform", `translate(${margin.left},0)`)
           .call(d3.axisLeft(y).ticks(7).tickFormat(d3.format(".2s")))
+          .attr("font-family", "inherit")
           .selectAll("text")
-          .style("font-size", 20)
+          .style("font-size", "12px")
 
         //Generate history
         for (const {type, sign, fill} of [{type: "added", sign: +1, fill: "rgb(63, 185, 80)"}, {type: "deleted", sign: -1, fill: "rgb(218, 54, 51)"}]) {

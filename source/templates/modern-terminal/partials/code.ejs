@@ -1,18 +1,14 @@
-<% if (plugins.code) { %>
-  <div class="stdin"><%- meta.$ %> cat code snippet</div>
-  <div class="stdout">
-  <% if (plugins.code.error) { -%>
-    <span class="error"><%= plugins.code.error.message %></span>
-  <% } else { -%>
-    <% const snippet = plugins.code.snippet ?? null;
-       const lines = plugins.code.lines ?? (snippet ? (snippet.patch ? String(snippet.patch).split('\n') : []) : []);
-       const lang = plugins.code.lang ?? (snippet ? snippet.language : 'text');
-    %>
-    <% if (!lines || lines.length === 0) { %>
-      <span class="error">No code available</span>
-    <% } else { %>
-      <pre class="code"><code class="language-<%= lang %>"><%- lines.join('\n') %></code></pre>
-    <% } %>
-  <% } -%>
-  </div>
+<% if (plugins["code"]) { %>
+<% if (plugins["code"].error) { %>
+<p class="error"><%= plugins["code"].error.message %></p>
+<% } else { %>
+<% const {snippet} = plugins.code %>
+<% if (snippet) { %>
+<p><b><%= snippet.repo %></b> · <%= snippet.sha %></p>
+<p class="terminal-subtitle"><%= f.date(snippet.created, {date:true, time:true, timeZone:config.timezone?.name}) %></p>
+<p><%= snippet.message %></p>
+<p><%= snippet.filename %> · <span class="diff">+<%= snippet.additions %></span> · <span class="deleted">-<%= snippet.deletions %></span></p>
+<pre class="code"><code class="language-diff"><%- snippet.patch %></code></pre>
+<% } else { %><p class="empty">No code matching the configured filters.</p><% } %>
+<% } %>
 <% } %>

@@ -1,15 +1,13 @@
-<% if (plugins.support) { %>
-<div class="stdin"><%- meta.$ %> support</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.support.error) { -%>
-<span class="error"><%= plugins.support.error.message %></span><%# -%>
-<% } else { -%>
-<% const stats = plugins.support.stats || {} %>
-<% const badges = plugins.support.badges || {} %>
-<%= ("Hearts:").padEnd(12) + String(stats.hearts || 0).padStart(6) + "  received" %><%# -%>
-<%= ("Topics:").padEnd(12) + String(stats.topics || 0).padStart(6) + "  created" %><%# -%>
-<%= ("Posts:").padEnd(12) + String(stats.posts || 0).padStart(6) %><%# -%>
-<%= ("Badges:").padEnd(12) + String(badges.count || 0).padStart(6) %><%# -%>
-<%= ("Solutions:").padEnd(12) + String(stats.solutions || 0).padStart(6) %><%# -%>
-<% } -%>
-</div><% } %>
+<% if (plugins["support"]) { %>
+<% if (plugins["support"].error) { %>
+<p class="error"><%= plugins["support"].error.message %></p>
+<% } else { %>
+<dl class="terminal-kv">
+<dt>Hearts received</dt><dd><%= f(plugins.support.stats.hearts) %></dd>
+<dt>Topics created</dt><dd><%= f(plugins.support.stats.topics) %></dd>
+<dt>Posts</dt><dd><%= f(plugins.support.stats.posts) %></dd>
+<dt>Solutions</dt><dd><%= f(plugins.support.stats.solutions) %></dd>
+<dt>Badges</dt><dd><%= f(plugins.support.badges.count) %></dd>
+</dl>
+<% } %>
+<% } %>

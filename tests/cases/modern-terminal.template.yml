@@ -1,8 +1,65 @@
-- name: 💻 Modern Terminal Template - Example
-  uses: ddarkr/metrics@latest
+- name: Modern Terminal - Dark profile report
+  uses: ddarkr/metrics@master
   with:
     template: modern-terminal
     token: MOCKED_TOKEN
-    base: header, metadata
+    base: header, activity, community, repositories, metadata
+    plugin_languages: yes
+    plugin_languages_details: percentage, bytes-size
+    plugin_activity: yes
+    plugin_activity_limit: 12
+    plugin_calendar: yes
+    config_terminal_theme: warp-dark
+    config_terminal_density: comfortable
+    config_terminal_dividers: yes
+    use_mocked_data: yes
+    verify: yes
+- name: Modern Terminal - Light compact profile report
+  uses: ddarkr/metrics@master
+  with:
+    template: modern-terminal
+    token: MOCKED_TOKEN
+    base: header, repositories, metadata
+    plugin_languages: yes
+    plugin_achievements: yes
+    config_terminal_theme: warp-light
+    config_terminal_density: compact
+    config_terminal_dividers: no
+    config_terminal_animations: no
+    use_mocked_data: yes
+    verify: yes
+- name: Modern Terminal - Light repository report
+  uses: ddarkr/metrics@master
+  with:
+    template: modern-terminal
+    token: MOCKED_TOKEN
+    repo: metrics
+    base: header, repositories, metadata
+    plugin_contributors: yes
+    plugin_contributors_head: master
+    plugin_contributors_contributions: yes
+    plugin_licenses: yes
+    plugin_licenses_ratio: yes
+    plugin_licenses_legal: yes
+    config_terminal_theme: warp-light
+    config_terminal_density: comfortable
+    config_terminal_dividers: yes
+    config_terminal_animations: no
+    use_mocked_data: yes
+    verify: yes
+- name: Modern Terminal - Dark compact repository report
+  uses: ddarkr/metrics@master
+  with:
+    template: modern-terminal
+    token: MOCKED_TOKEN
+    repo: metrics
+    base: header, repositories, metadata
+    plugin_followup: yes
+    plugin_followup_sections: repositories
+    plugin_traffic: yes
+    config_terminal_theme: warp-dark
+    config_terminal_density: compact
+    config_terminal_dividers: no
+    config_terminal_animations: no
     use_mocked_data: yes
     verify: yes

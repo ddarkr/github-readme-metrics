@@ -1,5 +1,5 @@
 - name: WakaTime
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     filename: metrics.plugin.wakatime.svg
     token: NOT_NEEDED

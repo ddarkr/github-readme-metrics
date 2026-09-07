@@ -1,30 +1,17 @@
-<% if (plugins.stargazers) { %>
-<div class="stdin"><%- meta.$ %> stargazers</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.stargazers.error) { -%>
-<span class="error"><%= plugins.stargazers.error.message %></span><%# -%>
-<% } else { -%>
-<% const s = plugins.stargazers %>
-<% const total = s.total?.count || 0 %>
-<%= ("TOTAL".padEnd(12) + String(total).padStart(8)) %>
-<% if (s.increments && s.increments.max != null) { %>
-<%= ("MAX/INCR".padEnd(12) + String(s.increments.max || 0).padStart(8)) %>
+<% if (plugins["stargazers"]) { %>
+<% if (plugins["stargazers"].error) { %>
+<p class="error"><%= plugins["stargazers"].error.message %></p>
+<% } else { %>
+<p><%= f(computed.repositories.stargazers) %> stargazers · last <%= plugins.stargazers.days %> days</p>
+<% if (plugins.stargazers.charts) { %>
+<% if (Array.isArray(plugins.stargazers.charts)) { %>
+<% for (const [index, chart] of plugins.stargazers.charts.entries()) { %><h3><%= index === 0 ? "Total stargazers" : "New stargazers" %></h3><div class="report-chart"><%- chart %></div><% } %>
+<% } else { %>
+<div class="terminal-table"><div class="terminal-table__row terminal-subtitle"><span>Date</span><span>Total · new</span></div>
+<% for (const [date, value] of Object.entries(plugins.stargazers.total.dates)) { %><div class="terminal-table__row"><span><%= date %></span><span><%= f(value) %> · +<%= f(plugins.stargazers.increments.dates[date]) %></span></div><% } %>
+</div>
 <% } %>
-<% if (s.months) { %>
-<%= ("MONTHS".padEnd(12) + Object.keys(s.months).length.toString().padStart(8)) %>
 <% } %>
-
-<% if (s.charts && Array.isArray(s.charts)) { %>
-<%= ("CHARTS".padEnd(12) + "rendered".padStart(8)) %>
-<% } else if (s.total && s.total.dates) { %>
-<%= ("CHART".padEnd(12) + "ascii".padStart(8)) %>
-<% let prev=null; for (const [date,value] of Object.entries(s.total.dates)) { const bar = "#".repeat(Math.min(50, Math.round(50*((value - (s.total.min||0))/((s.total.max||1)-(s.total.min||0)||1)))) ) %>
-<%= (date.padEnd(12) + String(value).padStart(6) + " " + bar) %>
-<% prev = value } %>
+<% if (plugins.stargazers.worldmap) { %><h3>Stargazer locations</h3><div class="report-chart"><%- plugins.stargazers.worldmap %></div><% } %>
 <% } %>
-
-<% if (s.worldmap) { %>
-<%= ("ORIGINS".padEnd(12) + "available".padStart(8)) %>
 <% } %>
-<% } -%>
-</div><% } %>

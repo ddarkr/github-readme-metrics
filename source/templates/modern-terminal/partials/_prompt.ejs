@@ -1,0 +1,5 @@
+<div class="powerline-prompt">
+  <span class="prompt-segment prompt-account"><%- await include('partials/_icon.ejs', {name:'mark-github'}) %><span><%= user.login %></span></span>
+  <span class="prompt-segment prompt-directory"><%- await include('partials/_icon.ejs', {name:'file-directory'}) %><span>~<%= q.repo ? `/${q.repo}` : '' %></span></span>
+  <span class="prompt-segment prompt-context"><%- await include('partials/_icon.ejs', {name:q.repo ? 'repo' : 'person'}) %><span><%= q.repo ? 'repository' : account === 'organization' ? 'organization' : 'profile' %></span></span>
+</div>

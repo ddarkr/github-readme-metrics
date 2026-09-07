@@ -1,5 +1,5 @@
 - name: 📗 Classic template - Example
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     base: header, repositories

@@ -1,48 +1,34 @@
-<% if (plugins.splatoon) { %>
-<div class="stdin"><%- meta.$ %> splatoon status</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.splatoon.error) { -%>
-<span class="error"><%= plugins.splatoon.error.message %></span><%# -%>
-<% } else { -%>
-  <% if (plugins.splatoon.sections.includes("player")) { -%>
-    <% const p = plugins.splatoon.player || {}; -%>
-    <% const name = String(p.byname || p.name || 'player').padEnd(20); -%>
-    <% const lvl = String(p.level ?? '-').padStart(3); -%>
-    <% const rank = String(p.rank?.current ?? '-').padStart(6); -%>
-%>
-<b><%= name %></b> lvl:<%= lvl %> rank:<%= rank %>
-playing since <%= f.date(new Date(p.started), {time:true, date:true, timeZone:config.timezone?.name}) %>
-badges: <%= (p.badges || []).map((b,i)=> b ? `#${i+1}` : '-').join(' ') %>
-weapons: <%= p.equipment?.weapon?.name ?? '-' %> / <%= p.equipment?.sub?.name ?? '-' %> / <%= p.equipment?.special?.name ?? '-' %>
-  <% } -%>
-
-  <% if (plugins.splatoon.sections.includes("versus")) { -%>
-    <% const matches = plugins.splatoon.vs?.matches || []; -%>
-    Matches: <%= matches.length %>
-    <% for (const match of matches) { -%>
-      <% const date = f.date(new Date(match.date), {time:true, date:true, timeZone:config.timezone?.name}); -%>
-      <% const mode = String(match.mode?.name ?? '-').padEnd(12); -%>
-      <% const stage = String(match.stage?.name ?? '-').padEnd(24); -%>
-      <% const result = String(match.result ?? '-').padEnd(6); -%>
-      <% const player = (match.teams||[]).map(t=>t.players||[]).flat().find(p=>p.self) || {}; -%>
-      <% const kills = String(player.result?.kill ?? 0).padStart(3); -%>
-      <% const deaths = String(player.result?.death ?? 0).padStart(3); -%>
-      <% const paint = String(player.result?.paint ?? 0).padStart(4); -%>
-%>
-<%= date.padEnd(22) %> <%= mode %> <%= stage %> <%= result %> — k:<%= kills %> d:<%= deaths %> p:<%= paint %>
-    <% } -%>
-  <% } -%>
-
-  <% if (plugins.splatoon.sections.includes("salmon-run")) { -%>
-    <% const shifts = plugins.splatoon.salmon?.matches || []; -%>
-    Salmon-run shifts: <%= shifts.length %>
-    <% for (const m of shifts) { -%>
-      <% const date = f.date(new Date(m.date), {time:true, date:true, timeZone:config.timezone?.name}); -%>
-      <% const hazard = String(m.hazard ?? '-').padStart(3); -%>
-      <% const eggs = (m.eggs && `${m.eggs.regular}/${m.eggs.golden}`) || '-'; -%>
-%>
-<%= date.padEnd(22) %> hazard:<%= hazard %>% eggs:<%= eggs %>
-    <% } -%>
-  <% } -%>
-<% } -%>
-</div><% } %>
+<% if (plugins["splatoon"]) { %>
+<% if (plugins["splatoon"].error) { %>
+<p class="error"><%= plugins["splatoon"].error.message %></p>
+<% } else { %>
+<% const player = plugins.splatoon.player %>
+<% if (plugins.splatoon.sections.includes("player")) { %>
+<p class="identity"><%= player.name %></p><p><%= player.byname %></p><p class="terminal-subtitle">Playing since <%= f.date(new Date(player.started), {date:true, timeZone:config.timezone?.name}) %></p>
+<p><%= player.equipment.weapon.name %> · <%= player.equipment.sub.name %> · <%= player.equipment.special.name %></p>
+<ul class="terminal-list"><% for (const gear of player.equipment.gears) { %><li><%= gear.name %><p class="terminal-subtitle"><%= gear.abilities.map(({name}) => name).join(", ") %></p></li><% } %></ul>
+<% } %>
+<% if (plugins.splatoon.sections.includes("versus")) { %>
+<h3>Versus</h3><p>Level <%= player.level %> · rank <%= player.rank.current %> · <%= player.battles.wins %> wins · <%= f(player.painted) %> points inked</p>
+<% if (plugins.splatoon.vs.matches.length) { %><ul class="terminal-list">
+<% for (const match of plugins.splatoon.vs.matches) { const self = match.teams.flatMap(({players}) => players).find(({self}) => self) %>
+<li><b><%= match.result %> · <%= match.mode.name %></b><p><%= match.stage.name %><% if (match.rank) { %> · rank <%= match.rank %><% } %></p><p class="terminal-subtitle"><%= f.date(new Date(match.date), {date:true, time:true, timeZone:config.timezone?.name}) %></p>
+<p>Score: <%= match.teams.map(({score}) => score == null ? "Unavailable" : score).join(" / ") %><% if (match.knockout) { %> · knockout <%= match.knockout %><% } %></p>
+<% if (self) { %><p><%= self.result.kill %> kills · <%= self.result.assist %> assists · <%= self.result.death %> deaths · <%= self.result.special %> specials · <%= self.result.paint %> points inked</p><p><%= self.weapon.name %></p><% } %>
+<% if (match.awards.length) { %><p class="terminal-subtitle"><%= match.awards.map(({name}) => name).join(" · ") %></p><% } %>
+</li><% } %></ul><% } else { %><p class="empty">No versus matches in the selected history.</p><% } %>
+<% } %>
+<% if (plugins.splatoon.sections.includes("salmon-run")) { %>
+<h3>Salmon run</h3><p><%= player.salmon.grade.name %> +<%= player.salmon.grade.points %> · <%= player.salmon.played %> shifts · <%= f(player.salmon.points) %> points</p>
+<p><%= player.salmon.eggs.regular %> eggs · <%= player.salmon.eggs.golden %> golden eggs · <%= player.salmon.rescues %> rescues</p>
+<% if (plugins.splatoon.salmon.matches.length) { %><ul class="terminal-list">
+<% for (const match of plugins.splatoon.salmon.matches) { %><li><b><%= match.stage.name %></b><p class="terminal-subtitle"><%= f.date(new Date(match.date), {date:true, time:true, timeZone:config.timezone?.name}) %></p>
+<p>Hazard <%= match.hazard %>% · <%= match.eggs.regular %> eggs · <%= match.eggs.golden %> golden eggs · <%= match.rescues %> rescues · <%= match.rescued %> times rescued</p>
+<p><%= match.waves.map(({delivered, quota}, index) => `Wave ${index + 1}: ${delivered}/${quota}`).join(" · ") %></p>
+<% if (match.boss) { %><p><%= match.boss.name %> · <%= match.boss.defeated ? "defeated" : "not defeated" %></p><% } %>
+<p><%= match.weapons.map(({name}) => name).join(" · ") %> · <%= match.special.name %></p>
+<p class="terminal-subtitle"><%= match.defeated.filter(({count}) => count).map(({name, count}) => `${name} ×${count}`).join(" · ") %></p>
+</li><% } %></ul><% } else { %><p class="empty">No Salmon run shifts in the selected history.</p><% } %>
+<% } %>
+<% } %>
+<% } %>

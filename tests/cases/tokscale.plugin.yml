@@ -1,5 +1,5 @@
 - name: 🎯 Tokscale - Tokscale statistics
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: NOT_NEEDED
     plugin_tokscale: 'yes'

@@ -64,6 +64,8 @@ To solve this, metrics now spawns a [puppeteer](https://github.com/puppeteer/pup
 
 Additional bonus of using puppeteer is that it can take screenshots, making it easy to convert SVGs to PNG output.
 
+The SVG renderer shares one browser and serializes browser launch/recovery. Each render owns its page and closes it in `finally`. Sizing waits for fonts, image decoding, and animation-disabled layout frames rather than a fixed delay. Generated SVGs without an authored `viewBox` receive one for proportional embedding; raster captures keep animations disabled.
+
 ### 💬 Gathering external data from GitHub APIs and Third-Party services
 
 *metrics* mostly use GitHub APIs since it is its primary target. Most of the time, data are retrieved through GraphQL to save APIs requests, but it sometimes fallback on REST for other features. Octokit SDKs are used to make it easier.
@@ -107,7 +109,7 @@ Below is a list of used packages.
   * To display server application
 * [puppeteer/puppeteer](https://github.com/puppeteer/puppeteer)
   * To scrape the web
-* [marudor/libxmljs2](https://github.com/marudor/libxmljs2) and [chrisbottin/xml-formatter](https://github.com/chrisbottin/xml-formatter)
+* [jsdom/jsdom](https://github.com/jsdom/jsdom) and [chrisbottin/xml-formatter](https://github.com/chrisbottin/xml-formatter)
   * To format, test and verify SVG validity
 * [facebook/jest](https://github.com/facebook/jest) and [nodeca/js-yaml](https://github.com/nodeca/js-yaml)
   * For unit testing

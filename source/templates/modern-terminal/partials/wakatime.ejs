@@ -1,29 +1,47 @@
-<% if (plugins.wakatime && !plugins.wakatime.error) { %>
-<div class="stdin"><%- meta.$ %> wakatime status</div><%# -%>
-<div class="stdout"><%# -%>
-<% const range = plugins.wakatime?.days ? {7:"week",30:"month",180:"6 months",365:"year"}[plugins.wakatime.days] : null %>
-WakaTime<%= range ? ` (over last ${range})` : "" %>
-<% if ((plugins.wakatime.sections?.includes("time")) ?? false) { %>
+<% if (plugins.wakatime) { -%>
+<%
+const labels = {7: "week", 30: "month", 180: "6 months", 365: "year"}
+const range = labels[plugins.wakatime.days]
+const enabledSections = new Set(plugins.wakatime.sections ?? [])
+-%>
 
-Total coding:           ~<%= String(Math.ceil(plugins.wakatime.time?.total || 0)).padStart(6) %> hour<%= s(plugins.wakatime.time?.total || 0) %>
-Per day:                ~<%= String(Math.ceil(plugins.wakatime.time?.daily || 0)).padStart(6) %> hour<%= s(plugins.wakatime.time?.daily || 0) %>/day<% } %>
-<% if (((plugins.wakatime.sections?.includes("projects")) ?? false) && (plugins.wakatime.projects?.length)) { %>
-Working on:             <%= String(f.ellipsis(plugins.wakatime.projects[0]?.name || '-', {length:40})) %><% } %>
-<% if (((plugins.wakatime.sections?.includes("languages")) ?? false) && (plugins.wakatime.languages?.length)) { %>
-Main language:          <%= String(plugins.wakatime.languages[0]?.name || '-') %><% } %>
-<% if (((plugins.wakatime.sections?.includes("editors")) ?? false) && (plugins.wakatime.editors?.length)) { %>
-Editor:                 <%= String(plugins.wakatime.editors[0]?.name || '-') %><% } %>
-<% if (((plugins.wakatime.sections?.includes("os")) ?? false) && (plugins.wakatime.os?.length)) { %>
-OS:                     <%= String(plugins.wakatime.os[0]?.name || '-') %><% } %>
-<% const sections = plugins.wakatime.sections?.filter(x => /-graphs$/.test(x)).map(x => x.replace(/-graphs$/, "")) ?? []; const slots = 2 + (large || 0) %>
-<% for (let i = 0; i < sections.length; i += slots) { %>
-  <% for (let j = 0; j < slots; j++) { const key = sections[i+j]; const section = plugins.wakatime[key]; if (!key) continue %>
-Activity - <%= {languages:"Languages", projects:"Projects", editors:"Editors", os:"OS"}[key] || key %>
-<% if (section?.length) { %><% for (const e of section) { %>
-<%= String(e.name).padEnd(26) %> <%= String(Math.round(100*(e.percent||0))).padStart(3) %>%<% } %>
-<% } else { %>
-No activity<% } %>
-  <% } %>
-<% } %>
-</div><%# -%>
+  <% if (plugins.wakatime.error) { -%>
+    <span class="error"><%= plugins.wakatime.error.message %></span>
+  <% } else { -%>
+    <% if (range) { %><p class="terminal-subtitle">Last <%= range %></p><% } %>
+    <div class="terminal-kv">
+    <% if (enabledSections.has("time")) { -%>
+      <span class="terminal-kv__key">Total coding</span><span class="terminal-kv__value">~<%= Math.ceil(plugins.wakatime.time?.total ?? 0) %> hour<%= s(plugins.wakatime.time?.total ?? 0) %></span>
+      <span class="terminal-kv__key">Daily average</span><span class="terminal-kv__value">~<%= Math.ceil(plugins.wakatime.time?.daily ?? 0) %> hour<%= s(plugins.wakatime.time?.daily ?? 0) %>/day</span>
+    <% } -%>
+    <% if (enabledSections.has("projects") && plugins.wakatime.projects?.length) { -%>
+      <span class="terminal-kv__key">Top project</span><span class="terminal-kv__value"><%= plugins.wakatime.projects[0].name %></span>
+    <% } -%>
+    <% if (enabledSections.has("languages") && plugins.wakatime.languages?.length) { -%>
+      <span class="terminal-kv__key">Main language</span><span class="terminal-kv__value"><%= plugins.wakatime.languages[0]?.name ?? "-" %></span>
+    <% } -%>
+    <% if (enabledSections.has("editors") && plugins.wakatime.editors?.length) { -%>
+      <span class="terminal-kv__key">Editor</span><span class="terminal-kv__value"><%= plugins.wakatime.editors[0]?.name ?? "-" %></span>
+    <% } -%>
+    <% if (enabledSections.has("os") && plugins.wakatime.os?.length) { -%>
+      <span class="terminal-kv__key">Operating system</span><span class="terminal-kv__value"><%= plugins.wakatime.os[0]?.name ?? "-" %></span>
+    <% } -%>
+    </div>
+    <% for (const section of enabledSections) { if (!section.endsWith("-graphs")) continue; const key = section.replace(/-graphs$/, ""); const entries = plugins.wakatime[key] -%>
+      <h3><%= {languages: "Languages", projects: "Projects", editors: "Editors", os: "Operating systems"}[key] ?? key %></h3>
+      <% if (entries?.length) { -%>
+      <table class="tui-table tui-table--wakatime">
+      <thead><tr><th scope="col">Name</th><th scope="col" class="tui-number">Share</th><th scope="col">Usage</th></tr></thead>
+      <tbody>
+        <% for (const entry of entries) { const fraction = entry.percent; const hasFraction = Number.isFinite(fraction); const filled = hasFraction ? Math.round(Math.max(0, Math.min(1, fraction)) * 10) : 0 -%>
+          <tr><th scope="row"><%= entry.name ?? "-" %></th><td class="tui-number"><%= hasFraction ? `${Math.round(100 * fraction)}%` : "Unavailable" %></td><td><% if (hasFraction) { %><span class="tui-bar" aria-hidden="true"><span><%= "█".repeat(filled) %></span><span class="tui-bar-empty"><%= "░".repeat(10 - filled) %></span></span><% } %></td></tr>
+        <% } -%>
+      </tbody>
+      </table>
+      <% } else { -%>
+        <p class="empty">No activity</p>
+      <% } -%>
+    <% } -%>
+  <% } -%>
+
 <% } %>

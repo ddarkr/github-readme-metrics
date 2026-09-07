@@ -1,43 +1,29 @@
-<% if (plugins.activity) { %>
-  <div class="stdin"><%- meta.$ %> gh activity feed --user <%= user.login %></div>
-  <div class="stdout">
-    <% if (plugins.activity.error) { %>
-      <span class="error"><%= plugins.activity.error.message %></span>
-    <% } else { %>
-      <% const max = 8;
-         const events = (plugins.activity.events || []).slice(0, max);
-         const typeW = 10; const repoW = 30; const actorW = 15;
-      %>
-      <% if (!events.length) { %>
-        <pre>// No recent activity</pre>
-      <% } else { %>
-        <% for (const ev of events) {
-             const {actor, type, repo, timestamp, ...event} = ev;
-             const ts = plugins.activity.timestamps ? (f.date(timestamp, {time:true, date:true, timeZone:config.timezone?.name}) || "").padEnd(20) : "";
-             const t = (type || "").toLowerCase();
-             let label = "";
-             switch (t) {
-               case "pr": label = (event.action || "").toUpperCase() + " PR #" + (event.number||""); break;
-               case "issue": label = (event.action || "").toUpperCase() + " ISSUE #" + (event.number||""); break;
-               case "push": label = "PUSH " + (event.size||0) + " commit" + ((event.size||0) !== 1 ? "s" : "") + (event.branch ? " on " + event.branch : ""); break;
-               case "ref": label = (/create/.test(type) ? "CREATED" : "DELETED") + " " + (event.ref?.type||"ref") + (event.ref && event.ref.name ? ":" + event.ref.name : ""); break;
-               case "comment": label = "COMMENT " + (event.on === "pr" ? "PR" : event.on === "issue" ? "ISSUE" : "") + (event.number ? " #" + event.number : ""); break;
-               case "wiki": label = "WIKI " + ((event.pages && event.pages.length) || 0) + " page" + ((event.pages && event.pages.length) !== 1 ? "s" : ""); break;
-               case "fork": label = "FORK " + (event.forked ? (repo + " -> " + event.forked) : repo); break;
-               case "public": label = "PUBLIC " + repo; break;
-               case "review": label = "REVIEW " + (event.number ? "#" + event.number : ""); break;
-               case "release": label = "RELEASE " + (event.name || ""); break;
-               case "star": label = "STAR " + repo; break;
-               case "member": label = "MEMBER " + (event.user || ""); break;
-               default: label = (t || "EVENT").toUpperCase();
-             }
-             const typeCol = (t || "").toUpperCase().padEnd(typeW);
-             const repoCol = (repo || "").padEnd(repoW);
-             const actorCol = (actor || "").padEnd(actorW);
-        %>
-          <pre><%= ts %><%= typeCol %><%= repoCol %><%= actorCol %>  <%- label %></pre>
-        <% } %>
-      <% } %>
-    <% } %>
-  </div>
+<% if (plugins["activity"]) { %>
+<% if (plugins["activity"].error) { %>
+<p class="error"><%= plugins["activity"].error.message %></p>
+<% } else { %>
+<% if (plugins.activity.events.length) { %>
+<ul class="terminal-list activity-list">
+<% for (const {actor, type, repo, timestamp, ...event} of plugins.activity.events) { const label = event.action ? `${type}/${event.action}` : type; const hasDetails = actor || event.ref || event.number != null || event.review || event.files || event.forked || type === "member" || event.size != null || event.commits?.length || event.pages?.length || type === "release" || event.content; %>
+<li>
+<div><span class="tui-status">[<%= label %>]</span> <%= repo %><% if (plugins.activity.timestamps) { %> <span class="tui-detail"><%= f.date(timestamp, {date:true, time:true, timeZone:config.timezone?.name}) %></span><% } %></div>
+<% if (hasDetails) { %><ul class="terminal-list">
+<% if (actor) { %><li><div class="tui-detail">actor: <%= actor %></div></li><% } %>
+<% if (event.ref) { %><li><div class="tui-detail">reference: <%= event.ref.type %> <%= event.ref.name %></div></li><% } %>
+<% if (event.number != null) { %><li><div class="tui-detail">#<%= event.number %> <%= event.title %><% if (event.user) { %> · <%= event.user %><% } %></div></li><% } %>
+<% if (event.review) { %><li><div class="tui-detail">review: <%= event.review %></div></li><% } %>
+<% if (event.files) { %><li><div class="tui-detail"><%= event.files.changed %> files changed · <span class="diff">+<%= event.lines.added %></span> <span class="deleted">-<%= event.lines.deleted %></span></div></li><% } %>
+<% if (event.forked) { %><li><div class="tui-detail">forked to <%= event.forked %></div></li><% } %>
+<% if (type === "member") { %><li><div class="tui-detail">added collaborator <%= event.user %></div></li><% } %>
+<% if (event.size != null) { %><li><div class="tui-detail"><%= event.size %> commits<% if (event.branch) { %> on <%= event.branch %><% } %></div></li><% } %>
+<% for (const commit of event.commits || []) { %><li><div class="tui-detail">commit <%= commit.sha %> <%= commit.message %></div></li><% } %>
+<% for (const page of event.pages || []) { %><li><div class="tui-detail"><%= page %></div></li><% } %>
+<% if (type === "release") { %><li><div class="tui-detail"><%= event.draft ? "Draft" : event.prerelease ? "Pre-release" : "Release" %>: <%= event.name %></div></li><% } %>
+<% if (event.content) { %><li><div class="tui-detail prose"><%- event.content %></div></li><% } %>
+</ul><% } %>
+</li>
+<% } %>
+</ul>
+<% } else { %><p class="empty">No recent activity matching the configured filters.</p><% } %>
+<% } %>
 <% } %>

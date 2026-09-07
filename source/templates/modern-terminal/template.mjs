@@ -1,17 +1,16 @@
-/**Template processor */
-export default async function({q}, _, {imports}) {
-  //Core
-  await imports.plugins.core(...arguments)
-
-  //Enable modern terminal features
-  q.raw = true
-  q.terminalTheme = "modern-dark"
-
-  //Add custom properties for modern terminal
-  q.terminal = {
-    cursorBlink: true,
-    fontSize: "14px",
-    lineHeight: "1.5",
-    padding: "20px"
+/**Terminal report processor. Public presentation inputs are defined by core metadata. */
+export default async function({q}, {data, account}, {imports}) {
+  const inputs = imports.metadata.plugins.core.inputs({data, account, q})
+  data.terminal = {
+    theme: inputs["config.terminal.theme"],
+    density: inputs["config.terminal.density"],
+    dividers: inputs["config.terminal.dividers"],
+    animations: inputs["config.terminal.animations"],
   }
+  q.raw = true
+
+  if (q.repo)
+    await imports.templates.repository(...arguments)
+  else
+    await imports.plugins.core(...arguments)
 }

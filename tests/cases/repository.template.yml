@@ -1,5 +1,5 @@
 - name: 📘 Repository template - Example
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     template: repository
     token: MOCKED_TOKEN

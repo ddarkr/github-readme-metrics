@@ -1,1 +1,10 @@
-<%# Included in base.repositories.ejs %>
+<% if (plugins["traffic"]) { %>
+<% if (plugins["traffic"].error) { %>
+<p class="error"><%= plugins["traffic"].error.message %></p>
+<% } else { %>
+<dl class="terminal-kv">
+<dt>Views in the last two weeks</dt><dd><%= f(plugins.traffic.views.count) %></dd>
+<dt>Unique visitors</dt><dd><%= f(plugins.traffic.views.uniques) %></dd>
+</dl>
+<% } %>
+<% } %>

@@ -1,6 +1,5 @@
 <% if (plugins.introduction) { %>
-<div class="stdin"><%- meta.$ %> introduction</div><%# -%>
-<div class="stdout"><%# -%>
+<div class="terminal-text"><%# -%>
 <% if (plugins.introduction.error) { -%>
 <span class="error"><%= plugins.introduction.error.message %></span><%# -%>
 <% } else { -%>

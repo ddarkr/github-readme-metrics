@@ -1,5 +1,5 @@
 - name: 🧠 16personalities - MBTI Personality profile
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     plugin_16personalities: 'yes'

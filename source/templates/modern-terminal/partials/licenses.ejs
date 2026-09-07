@@ -1,0 +1,32 @@
+<% if (plugins.licenses) { %>
+
+  <% if (plugins.licenses.error) { -%>
+    <span class="error"><%= plugins.licenses.error.message %></span>
+  <% } else { -%>
+    <div class="terminal-kv">
+      <span class="terminal-kv__key">Primary license</span><span class="terminal-kv__value"><%= plugins.licenses.default ? f.license(plugins.licenses.default) : "No license provided" %></span>
+      <span class="terminal-kv__key">Dependencies</span><span class="terminal-kv__value"><%= plugins.licenses.dependencies?.length || 0 %></span>
+      <span class="terminal-kv__key">Known licenses</span><span class="terminal-kv__value"><%= plugins.licenses.known || 0 %></span>
+      <span class="terminal-kv__key">Unknown licenses</span><span class="terminal-kv__value"><%= plugins.licenses.unknown || 0 %></span>
+    </div>
+    <% if (plugins.licenses.ratio && plugins.licenses.list.length) { -%>
+      <div class="terminal-subtitle">Detected licenses</div>
+      <div class="terminal-table">
+      <% for (const license of plugins.licenses.list) { -%>
+        <div class="terminal-table__row"><span class="terminal-table__label"><span style="--data-color:<%= license.color || 'var(--color-text)' %>;color:var(--data-color)"><%= license.name %></span></span><span class="terminal-table__value"><%= license.count %> · <%= Math.round((license.value || 0) * 100) %>%</span></div>
+      <% } -%>
+      </div>
+    <% } -%>
+    <% if (plugins.licenses.legal) { -%>
+      <% for (const [title, entries] of [["Permissions", plugins.licenses.permissions], ["Limitations", plugins.licenses.limitations], ["Conditions", plugins.licenses.conditions]]) { if (!entries?.length) continue -%>
+        <div class="terminal-subtitle"><%= title %></div>
+        <div class="terminal-table">
+        <% for (const entry of entries) { -%>
+          <div class="terminal-table__row"><span class="terminal-table__label"><%= entry.text %></span><span class="terminal-table__value"><%= entry.inherited ? "inherited" : "" %></span></div>
+        <% } -%>
+        </div>
+      <% } -%>
+    <% } -%>
+  <% } -%>
+
+<% } %>

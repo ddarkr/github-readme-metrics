@@ -1,13 +1,15 @@
-name: 💻 Modern Terminal Template
+name: Modern Terminal
 description: |
-  A modern terminal-inspired template with dark/light themes, 
-  customizable colors, and enhanced terminal aesthetics.
+  A Warp-inspired terminal theme with Powerline prompts and embedded vector icons.
+  Compact key/value rows, aligned data tables, text distributions, and activity trees
+  inside command/output blocks, with dark/light themes and configurable density.
 examples:
-  default: https://via.placeholder.com/480x200?text=Modern+Terminal+Template
+  default: https://github.com/ddarkr/metrics/blob/examples/metrics.modern-terminal.svg
 index: 3
 supports:
   - user
   - organization
+  - repository
 formats:
   - svg
   - png

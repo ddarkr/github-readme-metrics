@@ -26,22 +26,22 @@ export default async function({login, q, imports, data, account}, {enabled = fal
     console.debug(`metrics/compute/${login}/plugins > wakatime > querying api`)
     const {data: {data: stats}} = await imports.axios.get(`${url}/api/v1/users/${user}/stats/${range}?api_key=${token}`)
 
-    //Deduplicate entries from WakaTime API that share the same name
+    //Aggregate WakaTime's duplicated names before normalizing its 0–100 percentages
     const deduplicate = entries => {
-      if (!entries)
+      if (!Array.isArray(entries))
         return undefined
-      const map = new Map()
+      const grouped = new Map()
       for (const {name, percent, total_seconds: total} of entries) {
-        const existing = map.get(name)
-        if (existing) {
-          existing.percent += percent / 100
-          existing.total += total
-        }
-        else {
-          map.set(name, {name, percent: percent / 100, total})
-        }
+        const entry = grouped.get(name) ?? {name, percent: 0, total: 0}
+        const percentage = Number(percent)
+        const seconds = Number(total)
+        entry.percent += Number.isFinite(percentage) ? percentage : 0
+        entry.total += Number.isFinite(seconds) ? seconds : 0
+        grouped.set(name, entry)
       }
-      return [...map.values()].sort((a, b) => b.percent - a.percent)
+      return [...grouped.values()]
+        .map(({name, percent, total}) => ({name, percent: percent / 100, total}))
+        .sort((a, b) => b.percent - a.percent)
     }
 
     const projectStats = deduplicate(stats.projects)
@@ -71,6 +71,8 @@ export default async function({login, q, imports, data, account}, {enabled = fal
 
 async function pickOnlyGitHubPublicRepos({projects, axios, login, limit}) {
   const result = []
+  if (!projects?.length)
+    return undefined
 
   for await (const project of projects) {
     if (result.length >= limit)

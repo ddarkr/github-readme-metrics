@@ -1,29 +1,18 @@
-<% if (plugins.projects) { %>
-<div class="stdin"><%- meta.$ %> projects --count <%= plugins.projects.totalCount %></div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.projects.error) { -%>
-<span class="error"><%= plugins.projects.error.message %></span><%# -%>
-<% } else { -%>
-<b><%= plugins.projects.totalCount %></b> project<%= s(plugins.projects.totalCount) %>
-<% for (const {name, updated, progress = {}, items = [], description = ""} of plugins.projects.list || []) { %>
-<b><%= name %></b>
-Updated: <%= updated %>
-<% if (plugins.projects.descriptions && description) { %>
-  <span style="color:#9aa4b2"><%= description %></span>
+<% if (plugins["projects"]) { %>
+<% if (plugins["projects"].error) { %>
+<p class="error"><%= plugins["projects"].error.message %></p>
+<% } else { %>
+<div class="terminal-kv"><span class="terminal-kv__key">Projects</span><span class="terminal-kv__value tui-number"><%= plugins.projects.totalCount %></span></div>
+<% if (plugins.projects.list.length) { %>
+<ul class="terminal-list">
+<% for (const {name, updated, description, progress, items = []} of plugins.projects.list) { %>
+<li><div><%= name %> <span class="tui-status">updated <%= updated %></span></div>
+<% if (plugins.projects.descriptions && description) { %><div class="tui-detail"><%= description %></div><% } %>
+<% if (progress.enabled) { %><div class="tui-detail"><span class="tui-status"><%= progress.done %> done</span> <span class="tui-status"><%= progress.doing %> in progress</span> <span class="tui-status"><%= progress.todo %> to do</span></div><% } %>
+<% if (items.length) { %><ul class="terminal-list"><% for (const {type, text} of items) { %><li><span class="tui-status"><%= type.toLowerCase().replaceAll("_", " ") %></span> <%= text %></li><% } %></ul><% } %>
+</li>
 <% } %>
-<% if (progress.enabled) { const total = progress.total || 1; const done = progress.done || 0; const pct = Math.round((done/total)*100); const barLen = Math.round((done/total)*20); const bar = '█'.repeat(barLen).padEnd(20, ' '); %>
-Progress: <%= `${done}/${total}` %> (<%= pct %>%) | <span style="color:#238636"><%= bar %></span>
-<% if (progress.done || progress.doing || progress.todo) { %>
-  <%= [progress.done ? `${progress.done} done` : "", progress.doing ? `${progress.doing} doing` : "", progress.todo ? `${progress.todo} todo` : ""].filter(Boolean).join(' · ') %>
-<% } %>
-<% } %>
-<% if (items.length) { %>
-Items:
-<% for (const {type, text} of items) { %>
- - <%= type %>: <%= text %>
+</ul>
+<% } else { %><p class="empty">No projects matching the configured selection.</p><% } %>
 <% } %>
 <% } %>
----
-<% } %>
-<% } -%>
-</div><% } %>

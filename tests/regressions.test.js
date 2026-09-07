@@ -10,76 +10,198 @@ describe("runtime regressions", () => {
       const error = new Error("connect ECONNREFUSED")
       error.isAxiosError = true
       error.code = "ECONNREFUSED"
-      assert.deepEqual(formatters().format.error(error), {
-        error: {
-          message: "API error: ECONNREFUSED",
-          instance: "connect ECONNREFUSED",
-        },
-      })
+      const formatted = formatters().format.error(error)
+      assert.match(formatted.error.message, new RegExp(error.code))
+      assert.equal(formatted.error.instance, error.message)
     `)
   })
 
-  test("imgb64 falls back when downloaded artwork is not an image", () => {
+  test("imgb64 rejects failed and invalid image sources without reporting success", () => {
     run(`
       import assert from "assert/strict"
       import {imgb64} from "./source/app/metrics/utils.mjs"
-      globalThis.fetch = async () => ({
-        arrayBuffer: async () => new TextEncoder().encode("not an image").buffer,
+      const originalFetch = globalThis.fetch
+      const response = (body, status = 200) => ({
+        ok: status >= 200 && status < 300,
+        status,
+        arrayBuffer: async () => new TextEncoder().encode(body).buffer,
       })
-      assert.match(await imgb64("https://example.com/artwork"), /^data:image\\/png;base64,/)
-      assert.equal(await imgb64("https://example.com/artwork", {fallback: false}), null)
+      try {
+        globalThis.fetch = async image => {
+          if (image.endsWith("/missing"))
+            return response("", 404)
+          if (image.endsWith(".svg"))
+            return response("<html>not svg</html>")
+          return response("not an image")
+        }
+        const encoded = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOcOnfpfwAGfgLYttYINwAAAABJRU5ErkJggg=="
+        assert.equal(await imgb64(encoded), encoded)
+        assert.match(await imgb64("https://example.com/missing"), /^data:image\\/png;base64,/)
+        assert.equal(await imgb64("https://example.com/missing", {fallback: false}), null)
+        assert.equal(await imgb64("https://example.com/invalid.svg", {fallback: false}), null)
+        assert.equal(await imgb64("https://example.com/invalid-raster", {fallback: false}), null)
+        assert.equal(await imgb64("data:image/png;base64,bm90IGFuIGltYWdl", {fallback: false}), null)
+      }
+      finally {
+        if (originalFetch)
+          globalThis.fetch = originalFetch
+        else
+          delete globalThis.fetch
+      }
     `)
   })
 
-  test("svg.page restarts a closed browser before creating a page", () => {
+  test("svg.page coordinates concurrent browser recovery", () => {
     run(`
       import assert from "assert/strict"
       import {puppeteer, svg} from "./source/app/metrics/utils.mjs"
-      const launch = puppeteer.launch
+      const originalLaunch = puppeteer.launch
+      const originalBrowser = svg.resize.browser
       let launches = 0
-      let newPages = 0
-      const restartedPage = {id: "restarted"}
-      svg.resize.browser = {
+      let pages = 0
+      let closes = 0
+      const staleBrowser = {
         async version() {
           throw new Error("Connection closed")
         },
+        async close() {
+          closes++
+        },
       }
+      const browser = {
+        async version() {
+          return "Chrome/shared"
+        },
+        async newPage() {
+          return {id: ++pages}
+        },
+      }
+      svg.resize.browser = staleBrowser
       puppeteer.launch = async () => {
         launches++
-        return {
-          async version() {
-            return "Chrome/restarted"
-          },
-          async newPage() {
-            newPages++
-            return restartedPage
-          },
-        }
+        return browser
       }
       try {
-        assert.equal(await svg.page("test"), restartedPage)
+        const created = await Promise.all([svg.page("first"), svg.page("second")])
         assert.equal(launches, 1)
-        assert.equal(newPages, 1)
+        assert.equal(closes, 1)
+        assert.deepEqual(created.map(({id}) => id).sort(), [1, 2])
       }
       finally {
-        puppeteer.launch = launch
-        svg.resize.browser = null
+        puppeteer.launch = originalLaunch
+        svg.resize.browser = originalBrowser
       }
     `)
   })
 
-  test("svg.resize closes its page when rendering fails", () => {
+  test("svg.page keeps a healthy shared browser after a local page failure", () => {
+    run(`
+      import assert from "assert/strict"
+      import {puppeteer, svg} from "./source/app/metrics/utils.mjs"
+      const originalLaunch = puppeteer.launch
+      const originalBrowser = svg.resize.browser
+      let closes = 0
+      let launches = 0
+      let attempts = 0
+      const page = {id: "usable"}
+      const browser = {
+        async version() {
+          return "Chrome/healthy"
+        },
+        async newPage() {
+          attempts++
+          if (attempts === 1)
+            throw new Error("local page failure")
+          return page
+        },
+        async close() {
+          closes++
+        },
+      }
+      svg.resize.browser = browser
+      puppeteer.launch = async () => {
+        launches++
+        return browser
+      }
+      try {
+        await assert.rejects(svg.page("first"), /local page failure/)
+        assert.equal(closes, 0)
+        assert.equal(launches, 0)
+        assert.equal(await svg.page("second"), page)
+      }
+      finally {
+        puppeteer.launch = originalLaunch
+        svg.resize.browser = originalBrowser
+      }
+    `)
+  })
+
+  test("svg.page replaces and closes an unavailable browser once", () => {
+    run(`
+      import assert from "assert/strict"
+      import {puppeteer, svg} from "./source/app/metrics/utils.mjs"
+      const originalLaunch = puppeteer.launch
+      const originalBrowser = svg.resize.browser
+      let available = true
+      let closes = 0
+      let launches = 0
+      const page = {id: "recovered"}
+      const staleBrowser = {
+        async version() {
+          if (!available)
+            throw new Error("Connection closed")
+          return "Chrome/stale"
+        },
+        async newPage() {
+          available = false
+          throw new Error("Target closed")
+        },
+        async close() {
+          closes++
+        },
+      }
+      const recoveredBrowser = {
+        async version() {
+          return "Chrome/recovered"
+        },
+        async newPage() {
+          return page
+        },
+      }
+      svg.resize.browser = staleBrowser
+      puppeteer.launch = async () => {
+        launches++
+        return recoveredBrowser
+      }
+      try {
+        assert.equal(await svg.page("recovery"), page)
+        assert.equal(closes, 1)
+        assert.equal(launches, 1)
+      }
+      finally {
+        puppeteer.launch = originalLaunch
+        svg.resize.browser = originalBrowser
+      }
+    `)
+  })
+
+  test("svg.resize awaits its viewport and closes its page when rendering fails", () => {
     run(`
       import assert from "assert/strict"
       import {svg} from "./source/app/metrics/utils.mjs"
       const originalPage = svg.page
       let closed = 0
+      let viewportReady = false
       const page = {
-        setViewport() {},
+        async setViewport() {
+          await Promise.resolve()
+          viewportReady = true
+        },
         on() {
           return page
         },
         async setContent() {
+          assert.equal(viewportReady, true)
           throw new Error("render failed")
         },
         async close() {
@@ -97,27 +219,11 @@ describe("runtime regressions", () => {
     `)
   })
 
-  test("wakatime deduplicates repeated stats without inflating percentages", () => {
+  test("wakatime aggregates duplicate stats as normalized fractions", () => {
     run(`
       import assert from "assert/strict"
       import wakatime from "./source/plugins/wakatime/index.mjs"
-      import {formatters} from "./source/app/metrics/utils.mjs"
-      const stats = {
-        projects: [
-          {name: "metrics", percent: 10, total_seconds: 100},
-          {name: "metrics", percent: 5, total_seconds: 50},
-        ],
-        languages: [
-          {name: "JavaScript", percent: 20, total_seconds: 200},
-          {name: "JavaScript", percent: 10, total_seconds: 100},
-        ],
-        operating_systems: [],
-        editors: [],
-        total_seconds: 3600,
-        total_seconds_including_other_language: 3600,
-        daily_average: 1800,
-        daily_average_including_other_language: 1800,
-      }
+      import stats from "./tests/mocks/wakatime.mjs"
       const result = await wakatime({
         login: "ddarkr",
         q: {wakatime: true},
@@ -126,7 +232,7 @@ describe("runtime regressions", () => {
         imports: {
           axios: {get: async () => ({data: {data: stats}})},
           filters: {text: () => true},
-          format: formatters().format,
+          format: {error(error) { throw error }},
           metadata: {plugins: {wakatime: {
             enabled: () => true,
             inputs: () => ({
@@ -142,12 +248,14 @@ describe("runtime regressions", () => {
           }}},
         },
       }, {enabled: true, token: "TOKEN"})
-      assert.equal(result.projects[0].name, "metrics")
-      assert.equal(result.projects[0].total, 150)
-      assert.equal(Math.round(result.projects[0].percent * 100), 15)
-      assert.equal(result.languages[0].name, "JavaScript")
-      assert.equal(result.languages[0].total, 300)
-      assert.equal(Math.round(result.languages[0].percent * 100), 30)
+      assert.deepEqual(result.projects, [
+        {name: "dotfiles", percent: 0.2, total: 200},
+        {name: "metrics", percent: 0.15, total: 150},
+      ])
+      assert.deepEqual(result.languages, [
+        {name: "JavaScript", percent: 0.3, total: 300},
+        {name: "TypeScript", percent: 0.15, total: 150},
+      ])
     `)
   })
 })

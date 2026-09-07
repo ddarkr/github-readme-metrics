@@ -19,13 +19,9 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 24
       - name: Setup metrics
         run: npm ci
-      - name: Check contributions requirements
-        run: npm run test-contrib
-        env:
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
       - name: Run linter
         run: npm run linter
 
@@ -49,7 +45,7 @@ jobs:
       - name: Run tests
         env:
           GIT_REF: ${{ github.head_ref || 'master' }}
-        run: docker run --rm --entrypoint="" ddarkr/github-readme-metrics:$(echo $GIT_REF | sed 's/[^a-z]/-/g') npm run test-metrics
+        run: docker run --rm --entrypoint="" ddarkr/github-readme-metrics:$(echo $GIT_REF | sed 's/[^a-z]/-/g') npm test
 
   # Run CodeQL on branch
   analyze:

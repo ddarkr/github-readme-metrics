@@ -1,6 +1,5 @@
 <% if (plugins.tweets) { %>
-<div class="stdin"><%- meta.$ %> tweets show</div><%# -%>
-<div class="stdout"><%# -%>
+<div class="terminal-text"><%# -%>
 <% if (plugins.tweets.error) { -%>
 <span class="error"><%= plugins.tweets.error.message %></span><%# -%>
 <% } else { -%>
@@ -13,7 +12,7 @@ User: <%= String(userLine).padEnd(24) %> <%= plugins.tweets.profile ? (plugins.t
   <% for (const t of plugins.tweets.list) { %>
     <%= String(t.createdAt || '').padEnd(20) %> <%- (t.text || '').replace(/\n/g, ' ') %>
     <% if (t.attachments?.length) { %>
-      <span style="color:var(--muted)">[attachments: <%= t.attachments.length %>]</span>
+      <span style="color:var(--color-muted)">[attachments: <%= t.attachments.length %>]</span>
     <% } %>
   <% } %>
 <% } else { %>

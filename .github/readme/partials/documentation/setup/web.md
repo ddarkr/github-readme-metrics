@@ -21,7 +21,7 @@ No additional scopes are required.
 
 Fetch a copy of [`settings.example.json`](/settings.example.json) and rename it `settings.json`
 ```shell
-wget https://raw.githubusercontent.com/lowlighter/metrics/master/settings.example.json
+wget https://raw.githubusercontent.com/ddarkr/metrics/master/settings.example.json
 mv settings.example.json settings.json
 ```
 
@@ -124,12 +124,12 @@ If a plugin is used without sufficient permissions, it will result in an error.
 
 ## 3️ Start docker container
 
-Docker images are published on [GitHub Container Registry](https://github.com/lowlighter/metrics/pkgs/container/metrics).
+Docker images are published on [GitHub Container Registry](https://github.com/ddarkr/metrics/pkgs/container/github-readme-metrics).
 
 Configure the following variables (or hardcode them in the command in the next block):
 ```shell
 # Select an existing docker image tag
-VERSION=latest
+VERSION=master
 # Path to configured `settings.json`
 SETTINGS=/path/to/settings.json
 # Port used internally (use the same one than in `settings.json`)
@@ -140,8 +140,10 @@ PUBLISHED_PORT=80
 
 And start the container using the following command:
 ```shell
-docker run --rm --entrypoint="" -p=127.0.0.1:$PUBLISHED_PORT:$SERVICE_PORT --volume=$SETTINGS:/metrics/settings.json ghcr.io/lowlighter/metrics:$VERSION npm start
+docker run --rm --entrypoint="" -p=127.0.0.1:$PUBLISHED_PORT:$SERVICE_PORT --volume=$SETTINGS:/metrics/settings.json:ro ghcr.io/ddarkr/github-readme-metrics:$VERSION npm start
 ```
+
+Local settings and environment files are excluded from the build context. Keep credentials in the mounted settings file rather than baking them into an image.
 
 ## 4️ Add images to your profile `README.md`
 

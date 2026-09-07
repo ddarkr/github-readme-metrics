@@ -1,5 +1,5 @@
 - name: Default metrics
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     filename: metrics.base.svg
     token: ${{ secrets.METRICS_TOKEN }}

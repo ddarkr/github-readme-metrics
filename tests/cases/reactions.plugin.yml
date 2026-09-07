@@ -1,5 +1,5 @@
 - name: 🎭 Comment reactions - Comment reactions
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     plugin_reactions: 'yes'

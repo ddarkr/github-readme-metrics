@@ -1,5 +1,5 @@
 - name: MBTI Personality profile
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     filename: metrics.plugin.16personalities.svg
     token: ${{ secrets.METRICS_TOKEN }}

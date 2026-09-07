@@ -1,19 +1,18 @@
 <% if (plugins["16personalities"]) { %>
-<div class="stdin"><%- meta.$ %> personality</div><%# -%>
-<div class="stdout"><%# -%>
+<div class="terminal-text"><%# -%>
 <% if (plugins["16personalities"].error) { -%>
 <span class="error"><%= plugins["16personalities"].error.message %></span><%# -%>
 <% } else { -%>
-// Type: <%= plugins["16personalities"].type || "Unknown" %>
-// Source: 16personalities
+Type: <%= plugins["16personalities"].type || "Unknown" %>
+Source: 16personalities
 <% if ((plugins["16personalities"].sections.includes("personality"))||(plugins["16personalities"].sections.includes("profile"))) { -%>
-// Personality profile
+Personality profile
 <% for (const {category, value, text} of plugins["16personalities"].personality) { if (((!plugins["16personalities"].sections.includes("personality"))&&(/personality/i.test(category)))||((!plugins["16personalities"].sections.includes("profile"))&&(!/personality/i.test(category)))) continue %>
-<%= (value + ' ' + category).padEnd(30) %> - <span style="color:<%= plugins["16personalities"].color %>"><%= value %></span>  <%= text %>
+<%= (value + ' ' + category).padEnd(30) %> - <span style="--data-color:<%= plugins["16personalities"].color %>;color:var(--data-color)"><%= value %></span>  <%= text %>
 <% } -%>
 <% } -%>
 <% if (plugins["16personalities"].sections.includes("traits")) { -%>
-// Traits
+Traits
 <% for (const {category, value, score, text} of plugins["16personalities"].traits) { -%>
 <% const scoreText = Number.isNaN(score) ? "n/a" : Math.round(score*100) + "%" %>
 <%= (category + ' ' + value).padEnd(30) %> <%= scoreText.padStart(6) %>  <%= text %>

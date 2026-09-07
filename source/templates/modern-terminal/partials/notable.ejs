@@ -1,19 +1,17 @@
-<% if (plugins.notable) { %>
-<div class="stdin"><%- meta.$ %> notable</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.notable.error) { -%>
-<span class="error"><%= plugins.notable.error.message %></span><%# -%>
-<% } else { -%>
-  <% const list = plugins.notable.contributions || []; -%>
-  <% if (list.length) { -%>
-// Notable contributions:
-  <% for (const item of list) { -%>
-  <% const name = item.name || item.user?.login || 'unknown'; -%>
-  <% const commits = item.user?.commits || 0; const stars = item.user?.stars || 0; const issues = item.user?.issues || 0; const pulls = item.user?.pulls || 0; -%>
-<%= ('- ' + ('@' + name).padEnd(20)) + (' commits:' + String(commits).padStart(4)) + (' stars:' + String(stars).padStart(4)) + (' issues:' + String(issues).padStart(4)) + (' prs:' + String(pulls).padStart(4)) %>
-  <% } -%>
-  <% } else { -%>
-<span>No recent notable contributions found</span>
-  <% } -%>
-<% } -%>
-</div><% } %>
+<% if (plugins["notable"]) { %>
+<% if (plugins["notable"].error) { %>
+<p class="error"><%= plugins["notable"].error.message %></p>
+<% } else { %>
+<% if (plugins.notable.contributions.length) { %>
+<ul class="terminal-list">
+<% for (const {name, user: contribution} of plugins.notable.contributions) { %>
+<li><div><%= name %><% if (contribution?.maintainer) { %> <span class="tui-status">maintainer</span><% } %></div>
+<% if (contribution) { %>
+<div class="tui-detail"><%= ["commits", "stars", "issues", "pulls"].filter(key => Number.isFinite(contribution[key])).map(key => `${f(contribution[key])} ${key === "pulls" ? "pull requests" : key}`).join(" · ") %></div>
+<% } %>
+</li>
+<% } %>
+</ul>
+<% } else { %><p class="empty">No recent contributions matching the configured filters.</p><% } %>
+<% } %>
+<% } %>

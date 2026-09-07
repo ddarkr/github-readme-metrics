@@ -1,37 +1,24 @@
-<% if (plugins.pagespeed) { %>
-<div class="stdin"><%- meta.$ %> pagespeed --url "<%= plugins.pagespeed.url %>"</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.pagespeed.error) { -%>
-  <span class="error"><%= plugins.pagespeed.error.message %></span><%# -%>
-<% } else { -%>
-  <%= "URL:".padEnd(12) %><span style="color:gray"><%= plugins.pagespeed.url %></span>
-  <% for (const {score, title} of plugins.pagespeed.scores) { %>
-    <%= title.padEnd(20) %><% if (!Number.isNaN(score)) { %><%= Math.round(score*100).toString().padStart(3) + "%" %><% } else { %>-<% } %>
-  <% } %>
-
-  <% if (plugins.pagespeed.detailed) { %>
-    <%= "\nMetrics:" %>
-    <% for (const {score, suffix = "", threshold} of [
-      {score:plugins.pagespeed.metrics.firstContentfulPaint/1000, suffix:"s", threshold:[2.336, 4]},
-      {score:plugins.pagespeed.metrics.largestContentfulPaint/1000, suffix:"s", threshold:[2.5, 4]},
-      {score:+plugins.pagespeed.metrics.cumulativeLayoutShift, threshold:[.1, .25]}
-    ]) { %>
-      <%= (suffix ? (suffix + " ") : "").padEnd(4) %>
-      <% if (!Number.isNaN(score)) { %>
-        <%= score.toFixed(2).replace(/[.]0+$/, "").toString().padStart(8) %> <%= suffix %>
-      <% } else { %>
-        <%= "N/A".padStart(8) %>
-      <% } %>
-      <% if (!Number.isNaN(score)) { %>
-        <% if (score <= threshold[0]) { %>
-          <span style="color:green">  good</span>
-        <% } else if (score <= threshold[1]) { %>
-          <span style="color:orange">  avg</span>
-        <% } else { %>
-          <span style="color:red">  poor</span>
-        <% } %>
-      <% } %>
-    <% } %>
-  <% } %>
-<% } -%>
-</div><% } %>
+<% if (plugins["pagespeed"]) { %>
+<% if (plugins["pagespeed"].error) { %>
+<p class="error"><%= plugins["pagespeed"].error.message %></p>
+<% } else { %>
+<p><%= plugins.pagespeed.url %></p>
+<table class="tui-table tui-table--pagespeed">
+<thead><tr><th scope="col">Category</th><th scope="col" class="tui-number">Score</th><th scope="col">Distribution</th></tr></thead>
+<tbody>
+<% for (const {score, title} of plugins.pagespeed.scores) { const hasScore = Number.isFinite(score); const filled = hasScore ? Math.round(Math.max(0, Math.min(1, score)) * 10) : 0; %>
+<tr><th scope="row"><%= title %></th><td class="tui-number"><%= hasScore ? `${Math.round(score * 100)}%` : "Unavailable" %></td><td><% if (hasScore) { %><span class="tui-bar" aria-hidden="true"><span><%= "█".repeat(filled) %></span><span class="tui-bar-empty"><%= "░".repeat(10 - filled) %></span></span><% } %></td></tr>
+<% } %>
+</tbody>
+</table>
+<% if (plugins.pagespeed.detailed) { %>
+<h3>Performance metrics</h3>
+<dl class="terminal-kv">
+<% for (const [key, label, divisor, unit] of [["interactive", "Time to interactive", 1000, "s"], ["speedIndex", "Speed index", 1000, "s"], ["totalBlockingTime", "Total blocking time", 1, "ms"], ["firstContentfulPaint", "First contentful paint", 1000, "s"], ["largestContentfulPaint", "Largest contentful paint", 1000, "s"], ["cumulativeLayoutShift", "Cumulative layout shift", 1, ""]]) { const value = plugins.pagespeed.metrics[key] %>
+<dt><%= label %></dt><dd><%= Number.isFinite(value) ? `${f(value / divisor, {fixed:2})} ${unit}` : "Unavailable" %></dd>
+<% } %>
+</dl>
+<% } %>
+<% if (plugins.pagespeed.screenshot) { %><img class="report-image" src="<%= plugins.pagespeed.screenshot %>" alt="PageSpeed page capture"/><% } %>
+<% } %>
+<% } %>

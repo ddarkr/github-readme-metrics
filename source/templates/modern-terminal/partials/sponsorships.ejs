@@ -1,20 +1,19 @@
-<% if (plugins.sponsorships) { %>
-  <div class="stdin"><%- meta.$ %> sponsorships</div><%# -%>
-  <div class="stdout"><%# -%>
-  <% if (plugins.sponsorships.error) { -%>
-    <span class="error"><%= plugins.sponsorships.error.message %></span><%# -%>
-  <% } else { -%>
-// Sponsorships total: <%= (new Intl.NumberFormat("en", {style:"currency", currency:"USD"}).format(plugins.sponsorships.amount || 0)).padStart(12) %>
-// Recipients: <%= String((plugins.sponsorships.list||[]).length).padStart(3) %> users/orgs
-    <% if (plugins.sponsorships.started) { -%>
-// Active since: <%= f.date(plugins.sponsorships.started, { date:true, timeZone:config.timezone?.name}) %>
-    <% } -%>
-    <% if (plugins.sponsorships.list && plugins.sponsorships.list.length) { -%>
-// Latest recipients:
-    <% for (const r of plugins.sponsorships.list.slice(0,8)) { -%>
-//  - <%= (r.name || r.login).padEnd(28) %> <span style="color:#7fffb1"><%= r.past ? 'past' : 'current' %></span>
-    <% } -%>
-    <% } -%>
-  <% } -%>
-  </div>
+<% if (plugins["sponsorships"]) { %>
+<% if (plugins["sponsorships"].error) { %>
+<p class="error"><%= plugins["sponsorships"].error.message %></p>
+<% } else { %>
+<% for (const section of plugins.sponsorships.sections) { %>
+<% if (section === "amount") { %>
+<p>Total given: <b><%= Number.isFinite(plugins.sponsorships.amount) ? new Intl.NumberFormat("en", {style:"currency", currency:"USD"}).format(plugins.sponsorships.amount) : "Unavailable" %></b></p>
+<% if (plugins.sponsorships.started) { %><p class="terminal-subtitle">Since <%= f.date(plugins.sponsorships.started, {date:true, timeZone:config.timezone?.name}) %></p><% } %>
+<% } else if (section === "sponsorships") { %>
+<p><%= plugins.sponsorships.list.length %> recipients</p>
+<ul class="terminal-list">
+<% for (const recipient of plugins.sponsorships.list) { %>
+<li><%= recipient.login %><span class="terminal-subtitle"> · <%= recipient.past ? "past" : "current" %></span></li>
+<% } %>
+</ul>
+<% } %>
+<% } %>
+<% } %>
 <% } %>

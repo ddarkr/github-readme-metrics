@@ -1,6 +1,6 @@
 # 📊 Metrics [<img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=280144&theme=dark" alt="" align="right" width="190" height="41">](https://www.producthunt.com/posts/github-metrics?utm_source=badge-featured&utm_medium=badge&utm_source=badge-github-metrics)
 
-[![Continuous integration](https://github.com/lowlighter/metrics/actions/workflows/ci.yml/badge.svg)](https://github.com/lowlighter/metrics/actions/workflows/ci.yml)
+[![Continuous integration](https://github.com/ddarkr/metrics/actions/workflows/ci.yml/badge.svg)](https://github.com/ddarkr/metrics/actions/workflows/ci.yml)
 
 Generate metrics that can be embedded everywhere, including your GitHub profile readme! Supports users, organizations, and even repositories!
 
@@ -19,7 +19,7 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
   </tr>
   <tr>
     <th colspan="2" align="center">
-      <h3><a href="/README.md#-plugins">🧩 Customizable with 48 plugins and 339 options!</a></h3>
+      <h3><a href="/README.md#-plugins">🧩 Customizable with 48 plugins and 343 options!</a></h3>
     </th>
   </tr>
   <tr>
@@ -412,12 +412,12 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
       </td>
   </tr>
   <tr>
-    <th><a href="/source/templates/modern-terminal/README.md">💻 Modern Terminal Template</a></th>
+    <th><a href="/source/templates/modern-terminal/README.md">Modern Terminal</a></th>
     <th><a href="/source/templates//README.md"></a></th>
   </tr>
   <tr>
         <td  align="center">
-        <img alt="" width="400" src="https://via.placeholder.com/480x200?text=Modern+Terminal+Template" alt=""></img>
+        <img alt="" width="400" src="https://github.com/ddarkr/metrics/blob/examples/metrics.modern-terminal.svg" alt=""></img>
         <img width="900" height="1" alt="">
       </td>
     <td align="center"><img width="900" height="1" alt=""></td>
@@ -452,7 +452,7 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
   <tr>
     <td align="center" colspan="2">
       <b>Power user?</b><br>
-      <a href="https://github.com/lowlighter/metrics/fork">Fork this repository</a> and edit HTML, CSS, JS and <a href="https://github.com/mde/ejs">EJS</a> for even more customization!
+      <a href="https://github.com/ddarkr/metrics/fork">Fork this repository</a> and edit HTML, CSS, JS and <a href="https://github.com/mde/ejs">EJS</a> for even more customization!
     </td>
   </tr>
 </table>
@@ -460,9 +460,7 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
 
 # 📚 Documentation
 
-
-> <sup>*⚠️ This is the documentation of **v3.35-beta** (`@master`/`@main` branches) which includes [unreleased features](https://github.com/lowlighter/metrics/compare/latest...master) planned for next release. See documentation for current released version [**v3.34** (`@latest` branch) here](https://github.com/lowlighter/metrics/blob/latest/README.md).* </sup>
-
+This fork is maintained on `master`. Examples and generated option reference describe the code in this checkout.
 
 
 ## 🦮 Setup
@@ -496,7 +494,7 @@ Templates lets you change general appearance of rendered metrics.
 * [📘 Repository template <sub>`repository`</sub>](/source/templates/repository/README.md)
 * [📙 Terminal template <sub>`terminal`</sub>](/source/templates/terminal/README.md)
 * [📒 Markdown template <sub>`markdown`</sub>](/source/templates/markdown/README.md)
-* [💻 Modern Terminal Template <sub>`modern-terminal`</sub>](/source/templates/modern-terminal/README.md)
+* [Modern Terminal <sub>`modern-terminal`</sub>](/source/templates/modern-terminal/README.md)
 * [📕 Community templates <sub>`community`</sub>](/source/templates/community/README.md)
 
 ## 🧩 Plugins

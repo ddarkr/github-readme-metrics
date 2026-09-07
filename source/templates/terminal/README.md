@@ -28,7 +28,7 @@
 <!--examples-->
 ```yaml
 name: Example
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   template: terminal
   filename: metrics.terminal.svg

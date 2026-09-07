@@ -212,7 +212,7 @@
     <td nowrap="nowrap" align="center" data-plugin="steam">✓</td>
   </tr>
   <tr>
-    <td nowrap="nowrap">💻 Modern Terminal Template</td>    
+    <td nowrap="nowrap">Modern Terminal</td>    
     <td nowrap="nowrap" align="center" data-plugin="base">✔️</td>
     <td nowrap="nowrap" align="center" data-plugin="isocalendar">✔️</td>
     <td nowrap="nowrap" align="center" data-plugin="languages">✔️</td>
@@ -220,9 +220,9 @@
     <td nowrap="nowrap" align="center" data-plugin="lines">✔️</td>
     <td nowrap="nowrap" align="center" data-plugin="topics">✔️</td>
     <td nowrap="nowrap" align="center" data-plugin="stars">✔️</td>
-    <td nowrap="nowrap" align="center" data-plugin="licenses">❌</td>
+    <td nowrap="nowrap" align="center" data-plugin="licenses">✔️</td>
     <td nowrap="nowrap" align="center" data-plugin="habits">✔️</td>
-    <td nowrap="nowrap" align="center" data-plugin="contributors">❌</td>
+    <td nowrap="nowrap" align="center" data-plugin="contributors">✔️</td>
     <td nowrap="nowrap" align="center" data-plugin="followup">✔️</td>
     <td nowrap="nowrap" align="center" data-plugin="reactions">✔️</td>
     <td nowrap="nowrap" align="center" data-plugin="people">✔️</td>
@@ -426,4 +426,4 @@
   </tr>
 </table>
 
-*Note: **markdown template** can actually render any kind of SVG metrics using [`embed` function](https://github.com/lowlighter/metrics/blob/master/source/templates/markdown/example.md#embedding-svg-metrics)*
+*Note: **markdown template** can render SVG metrics using the [`embed` function](https://github.com/ddarkr/metrics/blob/master/source/templates/markdown/example.md#embedding-svg-metrics).*

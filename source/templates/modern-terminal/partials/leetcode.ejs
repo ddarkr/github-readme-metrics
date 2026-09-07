@@ -1,26 +1,58 @@
 <% if (plugins.leetcode) { %>
-<div class="stdin"><%- meta.$ %> leetcode stats <%= user.login %></div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.leetcode.error) { -%>
-<span class="error"><%= plugins.leetcode.error.message %></span><%# -%>
-<% } else { -%>
-<% if (plugins.leetcode.sections.includes("solved")) { %>
-Solved problems:
-<% for (const difficulty of ["All", "Easy", "Medium", "Hard"]) { const problems = plugins.leetcode.problems[difficulty]; %>
-<%= difficulty.padEnd(6) %> <%= `${problems.solved}/${problems.count}`.padStart(8) %>
+<% if (plugins.leetcode.error) { %>
+<p class="error"><%= plugins.leetcode.error.message %></p>
+<% } else {
+const sections = new Set(plugins.leetcode.sections ?? [])
+const problems = plugins.leetcode.problems ?? {}
+const preferredDifficulties = ["All", "Easy", "Medium", "Hard"]
+const difficulties = [...preferredDifficulties.filter(name => Object.hasOwn(problems, name)), ...Object.keys(problems).filter(name => !preferredDifficulties.includes(name))].map(name => [name, problems[name]])
+const count = value => Number.isFinite(value) ? value.toLocaleString("en-US") : "Unavailable"
+const skills = Array.isArray(plugins.leetcode.skills) ? plugins.leetcode.skills : []
+const recent = Array.isArray(plugins.leetcode.recent) ? plugins.leetcode.recent : []
+-%>
+<% if (sections.has("solved")) { %>
+<h3>Solved overview</h3>
+<% const overall = problems.All; %>
+<dl class="terminal-kv">
+<dt>Problems solved</dt><dd><%= overall && Number.isFinite(overall.solved) ? count(overall.solved) : "Unavailable" %></dd>
+<dt>Available problems</dt><dd><%= overall && Number.isFinite(overall.count) ? count(overall.count) : "Unavailable" %></dd>
+</dl>
+<% if (difficulties.length) { %>
+<table class="tui-table">
+<thead><tr><th scope="col">Level</th><th scope="col" class="tui-number">Solved</th><th scope="col" class="tui-number">Total</th><th scope="col">Progress</th></tr></thead>
+<tbody>
+<% for (const [difficulty, problem] of difficulties) { const solved = problem?.solved; const total = problem?.count; const hasCompletion = Number.isFinite(solved) && Number.isFinite(total) && total > 0; const filled = hasCompletion ? Math.round(Math.max(0, Math.min(1, solved / total)) * 10) : 0; %>
+<tr><th scope="row"><%= difficulty %></th><td class="tui-number"><%= count(solved) %></td><td class="tui-number"><%= count(total) %></td><td><% if (hasCompletion) { %><span class="tui-bar" aria-hidden="true"><span><%= "█".repeat(filled) %></span><span class="tui-bar-empty"><%= "░".repeat(10 - filled) %></span></span><% } else { %><span class="tui-detail"><%= total === 0 ? "Not applicable" : "Unavailable" %></span><% } %></td></tr>
+<% } %>
+</tbody>
+</table>
+<% } else { %><p class="empty">No solved-problem statistics available.</p><% } %>
+<% } %>
+<% if (sections.has("skills")) { %>
+<h3>Skill categories</h3>
+<% if (skills.length) { %>
+<table class="tui-table">
+<thead><tr><th scope="col">Skill</th><th scope="col" class="tui-number">Solved</th></tr></thead>
+<% for (const category of new Set(skills.map(skill => skill.category))) { %>
+<tbody>
+<tr><th scope="rowgroup" colspan="2"><span class="terminal-subtitle"><%= category ? category[0].toUpperCase() + category.slice(1) : "Uncategorized" %></span></th></tr>
+<% for (const {name, solved} of skills.filter(skill => skill.category === category)) { %>
+<tr><th scope="row"><%= name ?? "Unnamed skill" %></th><td class="tui-number"><%= count(solved) %></td></tr>
+<% } %>
+</tbody>
+<% } %>
+</table>
+<% } else { %><p class="empty">No skill categories matching the configured filters.</p><% } %>
+<% } %>
+<% if (sections.has("recent")) { %>
+<h3>Recent accepted submissions</h3>
+<% if (recent.length) { %>
+<ul class="terminal-list">
+<% for (const {title, date} of recent) { const submitted = date instanceof Date ? date : new Date(date); const hasDate = !Number.isNaN(submitted.getTime()); %>
+<li><div><span class="tui-status">[accepted]</span> <%= title ?? "Untitled problem" %></div><div class="tui-detail"><%= hasDate ? `submitted ${f.date(submitted, {date:true, time:true, timeZone:config.timezone?.name})}` : "Submission time unavailable" %></div></li>
+<% } %>
+</ul>
+<% } else { %><p class="empty">No recent accepted submissions.</p><% } %>
 <% } %>
 <% } %>
-<% if (plugins.leetcode.sections.includes("skills")) { %>
-Skills:
-<% for (const {name, solved, category} of plugins.leetcode.skills) { %>
-<span class="<%= category %>">⬤</span> <%= name.padEnd(30) %> x<%= `${solved}`.padStart(3) %>
 <% } %>
-<% } %>
-<% if (plugins.leetcode.sections.includes("recent")) { %>
-Recent submissions:
-<% for (const {title, date} of plugins.leetcode.recent) { %>
-- <%= title %> (<%= f.date(new Date(date), {date:true, timeZone:config.timezone?.name}) %>)
-<% } %>
-<% } %>
-<% } -%>
-</div><% } %>

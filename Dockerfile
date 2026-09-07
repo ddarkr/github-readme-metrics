@@ -1,20 +1,19 @@
 # Base image
-FROM node:20-bookworm-slim
+FROM node:24-bookworm-slim
 
 # Copy repository
 COPY . /metrics
 WORKDIR /metrics
 
+# Use the system browser during installation and rendering.
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_BROWSER_PATH=/usr/bin/chromium
+
 # Setup
 RUN chmod +x /metrics/source/app/action/index.mjs \
-  # Install latest chrome dev package, fonts to support major charsets and skip chromium download on puppeteer install
-  # Based on https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
+  # Install Chromium from Debian for both amd64 and arm64.
   && apt-get update \
-  && apt-get install -y wget gnupg ca-certificates libgconf-2-4 \
-  && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-  && apt-get update \
-  && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 libx11-xcb1 libxtst6 lsb-release --no-install-recommends \
+  && apt-get install -y --no-install-recommends chromium ca-certificates fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf \
   # Install deno for miscellaneous scripts
   && apt-get install -y curl unzip \
   && curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh \
@@ -29,9 +28,6 @@ RUN chmod +x /metrics/source/app/action/index.mjs \
   && npm ci \
   && npm run build
 
-# Environment variables
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_BROWSER_PATH "google-chrome-stable"
 
 # Execute GitHub action
 ENTRYPOINT node /metrics/source/app/action/index.mjs

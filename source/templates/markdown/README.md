@@ -137,7 +137,7 @@ The `embed()` function takes two arguments:
 <!--examples-->
 ```yaml
 name: Example
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   template: markdown
   filename: metrics.markdown.md
@@ -149,7 +149,7 @@ with:
 ```
 ```yaml
 name: Example with plugins configuration for embed use
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   template: markdown
   filename: metrics.markdown.full.md
@@ -177,7 +177,7 @@ with:
 ```
 ```yaml
 name: Example (pdf output)
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   template: markdown
   filename: metrics.markdown.pdf

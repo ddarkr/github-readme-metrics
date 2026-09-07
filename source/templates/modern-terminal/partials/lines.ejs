@@ -1,18 +1,13 @@
-<% if ((plugins.lines)&&((plugins.lines.sections.includes("history"))||(plugins.lines.sections.includes("repositories")))) { %>
-<div class="stdin"><%- meta.$ %> git log --numstat --author=<%= user.login %></div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.lines.error) { -%>
-<span class="error"><%= plugins.lines.error.message %></span><%# -%>
-<% } else { -%>
-<% if (plugins.lines.sections?.includes("repositories")) { %>
-Repositories:
-<% for (const {handle, added, deleted, changed} of plugins.lines.repos) { %>
-<%= handle.padEnd(30) %> +<%= `${f(added+changed)}`.padStart(6) %> -<%= `${f(deleted+changed)}`.padStart(6) %>
+<% if (plugins["lines"] && (plugins.lines.error || plugins.lines.sections.some(section => section === "repositories" || section === "history"))) { %>
+<% if (plugins["lines"].error) { %>
+<p class="error"><%= plugins["lines"].error.message %></p>
+<% } else { %>
+<% if (plugins.lines.sections.includes("repositories")) { %>
+<h3>Repositories</h3>
+<% if (plugins.lines.repos.length) { %><div class="terminal-table"><% for (const {handle, added, deleted, changed} of plugins.lines.repos) { %><div class="terminal-table__row"><span><%= handle %></span><span><span class="diff">+<%= f(added + changed) %></span> <span class="deleted">-<%= f(deleted + changed) %></span></span></div><% } %></div><% } else { %><p class="empty">No repository line statistics.</p><% } %>
+<% } %>
+<% if (plugins.lines.sections.includes("history")) { %>
+<h3>History</h3><% if (plugins.lines.history) { %><p class="terminal-subtitle">Weekly totals · + additions above zero · − deletions below</p><div class="report-chart"><%- plugins.lines.history %></div><% } else { %><p class="empty">No line history in this period.</p><% } %>
 <% } %>
 <% } %>
-<% if ((plugins.lines.sections?.includes("history"))&&(plugins.lines.history)) { %>
-Diff history:
-<%- plugins.lines.history %>
 <% } %>
-<% } -%>
-</div><% } %>

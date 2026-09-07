@@ -1,43 +1,30 @@
-<% if (plugins.tokscale) { %>
-<div class="stdin"><%- meta.$ %> tokscale stats</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.tokscale.error) { -%>
-<span class="error"><%= plugins.tokscale.error.message %></span><%# -%>
-<% } else { -%>
-<%
-  const profile = plugins.tokscale.user?.username ? ` for ${plugins.tokscale.user.username}` : ""
-  const amount = value => `$${Number(value || 0).toFixed(2)}`
-  const integerAmount = value => `$${Number(value || 0).toFixed(0)}`
-  const clip = (value, length) => {
-    value = String(value || "")
-    return value.length > length ? `${value.slice(0, length - 1)}…` : value
-  }
-  const overview = [
-    ["Total tokens", f(plugins.tokscale.stats.totalTokens)],
-    ["Rank", `#${plugins.tokscale.user?.rank ?? "-"}`],
-    ["Total cost", amount(plugins.tokscale.stats.totalCost)],
-    ["Submissions", `${plugins.tokscale.stats.submissionCount || 0} (${plugins.tokscale.stats.activeDays || 0} days)`],
-  ]
-  const modelNameWidth = 30
-  const modelRows = (plugins.tokscale.models ?? []).map((model, index) => {
-    const name = clip(model.name, modelNameWidth).padEnd(modelNameWidth)
-    const percentage = `${((model.percentage || 0) * 100).toFixed(1)}%`.padStart(6)
-    const cost = integerAmount(model.cost).padStart(8)
-    return `${String(index + 1).padStart(2)}. ${name} ${percentage} ${cost}`
-  })
--%>
-Tokscale statistics<%= profile %>
-<% if (plugins.tokscale.sections.includes("overview")) { -%>
-<% for (const [label, value] of overview) { -%>
-<%= `${label}:`.padEnd(15) %> <%= value %>
-<% } -%>
-<% } -%>
-<% if ((plugins.tokscale.sections.includes("models")) && (modelRows.length)) { -%>
-
-Top models:
-<pre class="tokscale-table"><%= modelRows.join("\n") %></pre><% } %>
-<% if ((plugins.tokscale.sections.includes("recent")) && (plugins.tokscale.lastSubmit)) { -%>
-
-Last submission: <%= f.date(new Date(plugins.tokscale.lastSubmit), {date:true, timeZone:config.timezone?.name}) %><% } -%>
-<% } -%>
-</div><% } %>
+<% if (plugins["tokscale"]) { %>
+<% if (plugins["tokscale"].error) { %>
+<p class="error"><%= plugins["tokscale"].error.message %></p>
+<% } else { %>
+<% if (plugins.tokscale.user?.username) { %><p class="terminal-subtitle"><%= plugins.tokscale.user.username %></p><% } %>
+<% if (plugins.tokscale.sections.includes("overview")) { %>
+<dl class="terminal-kv">
+<dt>Total tokens</dt><dd><%= plugins.tokscale.stats.totalTokens == null ? "Unavailable" : f(plugins.tokscale.stats.totalTokens) %></dd>
+<dt>Rank</dt><dd><%= plugins.tokscale.user.rank == null ? "Unranked" : `#${plugins.tokscale.user.rank}` %></dd>
+<dt>Total cost</dt><dd><%= plugins.tokscale.stats.totalCost == null ? "Unavailable" : `$${plugins.tokscale.stats.totalCost.toFixed(2)}` %></dd>
+<dt>Submissions</dt><dd><%= plugins.tokscale.stats.submissionCount == null ? "Unavailable" : f(plugins.tokscale.stats.submissionCount) %></dd>
+<dt>Active days</dt><dd><%= plugins.tokscale.stats.activeDays == null ? "Unavailable" : f(plugins.tokscale.stats.activeDays) %></dd>
+</dl>
+<% } %>
+<% if (plugins.tokscale.sections.includes("models") && plugins.tokscale.models.length) { %>
+<h3>Models</h3>
+<table class="tui-table tui-table--models">
+<thead><tr><th scope="col">Model</th><th scope="col" class="tui-number">Tokens</th><th scope="col" class="tui-number">Share</th><th scope="col">Usage</th><th scope="col" class="tui-number">Cost</th></tr></thead>
+<tbody>
+<% for (const {name, tokens, percentage, cost} of plugins.tokscale.models) { const hasFraction = Number.isFinite(percentage); const filled = hasFraction ? Math.round(Math.max(0, Math.min(1, percentage)) * 10) : 0; %>
+<tr><th scope="row"><%= name %></th><td class="tui-number"><% if (tokens != null) { %><%= f(tokens) %><% } %></td><td class="tui-number"><% if (percentage != null) { %><%= f.percentage(percentage) %><% } %></td><td><% if (hasFraction) { %><span class="tui-bar" aria-hidden="true"><span><%= "█".repeat(filled) %></span><span class="tui-bar-empty"><%= "░".repeat(10 - filled) %></span></span><% } %></td><td class="tui-number"><% if (cost != null) { %>$<%= cost.toFixed(2) %><% } %></td></tr>
+<% } %>
+</tbody>
+</table>
+<% } %>
+<% if (plugins.tokscale.sections.includes("recent")) { %>
+<p class="terminal-subtitle"><% if (plugins.tokscale.lastSubmit) { %>Last submission <%= f.date(new Date(plugins.tokscale.lastSubmit), {date:true, timeZone:config.timezone?.name}) %><% } else { %>No submissions yet.<% } %></p>
+<% } %>
+<% } %>
+<% } %>

@@ -33,13 +33,14 @@
     //Load templates informations
     let {image, style, fonts, partials} = await load(`/.templates/${set.templates.selected}`)
     await Promise.all(partials.map(async partial => await load(`/.templates/${set.templates.selected}/partials/${escape(partial)}.ejs`)))
-    //Trap includes
-    image = image.replace(/<%-\s*await include[(](`.*?[.]ejs`)[)]\s*%>/g, (m, g) => `<%- await $include(${g}) %>`)
     //Faked data
     const options = set.plugins.options
+    const q = {...options}
+    const fixtureImage = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOcOnfpfwAGfgLYttYINwAAAABJRU5ErkJggg=="
     const data = {
       //Template elements
       style,
+      q,
       fonts,
       errors: [],
       warnings: [],
@@ -57,9 +58,9 @@
         return `${(sign) && (n > 0) ? "+" : ""}${n}`
       },
       //Trap for includes
-      async $include(path) {
+      async include(path, locals = {}) {
         const partial = await load(`/.templates/${set.templates.selected}/${escape(path)}`)
-        return await ejs.render(partial, data, {async: true, rmWhitespace: true})
+        return await ejs.render(partial, {...data, ...locals}, {async: true, rmWhitespace: true})
       },
       //Meta-data
       meta: {version: set.version, author: "lowlighter", generated: new Date().toGMTString().replace(/GMT$/g, "").trim()},
@@ -70,6 +71,12 @@
       columns: set.config.display === "columns",
       //Config
       config: set.config,
+      terminal: {
+        theme: set.config["terminal.theme"] || "warp-dark",
+        density: set.config["terminal.density"] || "comfortable",
+        dividers: !/^(?:false|off|no|0)$/i.test(`${set.config["terminal.dividers"] ?? true}`),
+        animations: false,
+      },
       //Extras
       extras: {css: options["extras.css"] ?? ""},
       //Base elements
@@ -358,6 +365,9 @@
                   score: faker.number.int(100) / 100,
                 },
               },
+              get total() {
+                return Object.values(this.list).reduce((sum, {value}) => sum + value, 0)
+              },
               comments: options["reactions.limit"],
               details: options["reactions.details"].split(",").map(x => x.trim()),
               days: options["reactions.days"],
@@ -412,7 +422,7 @@
                 status: "modified",
                 additions: faker.number.int(50),
                 deletions: faker.number.int(50),
-                patch: `<span class="token coord">@@ -0,0 +1,5 @@</span><br>  //Imports<br><span class="token inserted">+  import app from "./src/app.mjs"</span><br><span class="token deleted">-  import app from "./src/app.js"</span><br>  //Start app<br>  await app()<br>\\ No newline at end of file`,
+                patch: `<span class="token coord">@@ -0,0 +1,5 @@</span><br/>  //Imports<br/><span class="token inserted">+  import app from "./src/app.mjs"</span><br/><span class="token deleted">-  import app from "./src/app.js"</span><br/>  //Start app<br/>  await app()<br/>\\ No newline at end of file`,
                 repo: `${faker.lorem.word()}/${faker.lorem.word()}`,
                 created: faker.date.recent(),
               },
@@ -560,17 +570,20 @@
                 },
               },
               commits: {
+                get fetched() {
+                  return Object.entries(this.hours).filter(([key]) => /^\d+$/.test(key)).reduce((sum, [, count]) => sum + count, 0)
+                },
                 get hour() {
                   return Object.keys(this.hours).filter(key => /^\d+$/.test(key)).map(key => [key, this.hours[key]]).sort((a, b) => b[1] - a[1]).shift()?.[0]
                 },
                 hours: {
-                  [faker.number.int(24)]: faker.number.int(10),
-                  [faker.number.int(24)]: faker.number.int(10),
-                  [faker.number.int(24)]: faker.number.int(10),
-                  [faker.number.int(24)]: faker.number.int(10),
-                  [faker.number.int(24)]: faker.number.int(10),
-                  [faker.number.int(24)]: faker.number.int(10),
-                  [faker.number.int(24)]: faker.number.int(10),
+                  [faker.number.int(23)]: faker.number.int(10),
+                  [faker.number.int(23)]: faker.number.int(10),
+                  [faker.number.int(23)]: faker.number.int(10),
+                  [faker.number.int(23)]: faker.number.int(10),
+                  [faker.number.int(23)]: faker.number.int(10),
+                  [faker.number.int(23)]: faker.number.int(10),
+                  [faker.number.int(23)]: faker.number.int(10),
                   get max() {
                     return Object.keys(this).filter(key => /^\d+$/.test(key)).map(key => [key, this[key]]).sort((a, b) => b[1] - a[1]).shift()?.[1]
                   },
@@ -670,6 +683,208 @@
               {chance: .06, color: "#00CBB0", text: "ｷﾀ━━━━━━(ﾟ∀ﾟ)━━━━━━ !!!!"},
               {chance: 0.03, color: "#FD4D32", text: "Excellent Luck"},
             ]),
+          })
+          : null),
+        //16personalities
+        ...(set.plugins.enabled["16personalities"]
+          ? ({
+            "16personalities": {
+              sections: options["16personalities.sections"].split(",").map(x => x.trim()).filter(x => x),
+              color: "#88619a",
+              type: "INTJ",
+              personality: [
+                {category: "Personality", value: "Architect", image: fixtureImage, text: "Imaginative and strategic thinkers with a plan for everything."},
+                {category: "Role", value: "Analyst", image: fixtureImage, text: "Rational, impartial, and intellectually curious."},
+                {category: "Strategy", value: "Confident Individualism", image: fixtureImage, text: "Self-reliant and driven by independent thought."},
+              ],
+              traits: [
+                {category: "Mind", value: "Introverted", score: options["16personalities.scores"] ? .72 : NaN, text: "Prefer solitary reflection and focused work."},
+                {category: "Energy", value: "Intuitive", score: options["16personalities.scores"] ? .63 : NaN, text: "Focus on possibilities and patterns."},
+                {category: "Nature", value: "Thinking", score: options["16personalities.scores"] ? .68 : NaN, text: "Make decisions through objective analysis."},
+                {category: "Tactics", value: "Judging", score: options["16personalities.scores"] ? .59 : NaN, text: "Prefer structure and decisive planning."},
+                {category: "Identity", value: "Assertive", score: options["16personalities.scores"] ? .54 : NaN, text: "Remain self-assured under pressure."},
+              ],
+            },
+          })
+          : null),
+        //Contributors
+        ...(set.plugins.enabled.contributors
+          ? ({
+            contributors: {
+              head: options["contributors.head"],
+              base: options["contributors.base"] || "initial commit",
+              contributions: options["contributors.contributions"],
+              sections: options["contributors.sections"].split(",").map(x => x.trim()).filter(x => x),
+              ref: {
+                base: {abbreviatedOid: "4f8c3d1"},
+                head: {abbreviatedOid: "a2b91e7"},
+              },
+              list: {
+                "ada-lovelace": {avatar: fixtureImage, contributions: 42, pr: [101, 98]},
+                "grace-hopper": {avatar: fixtureImage, contributions: 27, pr: [104]},
+                "linus-torvalds": {avatar: fixtureImage, contributions: 15, pr: []},
+              },
+              categories: Object.fromEntries(
+                Object.keys(typeof options["contributors.categories"] === "string" ? JSON.parse(options["contributors.categories"]) : options["contributors.categories"])
+                  .map((category, index) => [category, new Set(index === 0 ? ["ada-lovelace", "grace-hopper"] : ["linus-torvalds"])]),
+              ),
+            },
+          })
+          : null),
+        //Crypto
+        ...(set.plugins.enabled.crypto
+          ? ({
+            crypto: {
+              chart: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" role="img" aria-label="Bitcoin price trend"><polyline fill="none" stroke="#f7931a" stroke-width="4" points="0,92 60,74 120,84 180,48 240,62 300,30 360,45 420,18 480,36"/></svg>`,
+              id: options["crypto.id"] || "bitcoin",
+              precision: options["crypto.precision"],
+              days: {"1": "Today", "14": "2 Weeks", "30": "1 Month", max: "All-time"}[options["crypto.days"]],
+              symbol: "btc",
+              name: "Bitcoin",
+              current_price: 67234.56,
+              price_change_percentage_24h: 2.38,
+              vs_currency: options["crypto.vs.currency"],
+              logo: fixtureImage,
+            },
+          })
+          : null),
+        //Licenses
+        ...(set.plugins.enabled.licenses
+          ? ({
+            licenses: {
+              ratio: options["licenses.ratio"],
+              legal: options["licenses.legal"],
+              default: {name: "MIT License"},
+              licensed: {available: true},
+              text: {},
+              used: {mit: 8, "apache-2.0": 3, isc: 1},
+              dependencies: ["ejs", "faker", "axios"],
+              known: 3,
+              unknown: 0,
+              list: [
+                {name: "MIT", key: "mit", count: 8, value: 8 / 12, x: 0, color: "#3fb950", order: 1},
+                {name: "Apache-2.0", key: "apache-2.0", count: 3, value: 3 / 12, x: 8 / 12, color: "#58a6ff", order: 1},
+                {name: "ISC", key: "isc", count: 1, value: 1 / 12, x: 11 / 12, color: "#d29922", order: 1},
+              ],
+              permissions: [
+                {key: "commercial-use", text: "Commercial use"},
+                {key: "modifications", text: "Modifications"},
+              ],
+              limitations: [
+                {key: "liability", text: "Liability", inherited: false},
+              ],
+              conditions: [
+                {key: "include-copyright", text: "License and copyright notice", inherited: false},
+              ],
+            },
+          })
+          : null),
+        //PoopMap
+        ...(set.plugins.enabled.poopmap
+          ? ({
+            poopmap: {
+              days: options["poopmap.days"],
+              poops: {7: 2, 8: 4, 12: 6, 13: 3, 18: 5, 19: 7, 22: 2, max: 7},
+            },
+          })
+          : null),
+        //Splatoon
+        ...(set.plugins.enabled.splatoon
+          ? ({
+            splatoon: {
+              sections: options["splatoon.sections"].split(",").map(x => x.trim()).filter(x => x),
+              player: {
+                level: 42,
+                rank: {current: "S+0", max: "S+10"},
+                painted: 128430,
+                battles: {wins: 96, count: 180},
+                started: "2023-08-15T12:00:00.000Z",
+                name: "Inkling",
+                byname: "The Data-driven",
+                badges: [fixtureImage, fixtureImage, null],
+                plate: {color: "#f8f8f8", icon: fixtureImage},
+                equipment: {
+                  weapon: {name: "Splattershot", icon: fixtureImage},
+                  special: {name: "Trizooka", icon: fixtureImage},
+                  sub: {name: "Suction Bomb", icon: fixtureImage},
+                  gears: [
+                    {name: "Painter's Mask", icon: fixtureImage, abilities: [{name: "Ink Saver (Main)", icon: fixtureImage}]},
+                    {name: "Forge Inkling Parka", icon: fixtureImage, abilities: [{name: "Run Speed Up", icon: fixtureImage}]},
+                    {name: "Red Hi-Tops", icon: fixtureImage, abilities: [{name: "Swim Speed Up", icon: fixtureImage}]},
+                  ],
+                },
+                salmon: {
+                  grade: {name: "Eggsecutive VP", points: 120},
+                  played: 84,
+                  rescues: 102,
+                  eggs: {golden: 1154, regular: 3021},
+                  points: 4280,
+                  kings: 4,
+                },
+              },
+              vs: options["splatoon.sections"].split(",").map(x => x.trim()).filter(x => x).includes("versus")
+                ? {
+                  matches: new Array(Number(options["splatoon.versus.limit"])).fill(null).map((_, index) => ({
+                    mode: {name: "Turf War", icon: fixtureImage},
+                    result: "WIN",
+                    knockout: null,
+                    teams: [
+                      {
+                        color: "#53c6ed",
+                        score: 54.8,
+                        players: [{
+                          name: "Inkling",
+                          byname: "The Data-driven",
+                          self: true,
+                          weapon: {name: "Splattershot", icon: fixtureImage},
+                          special: {name: "Trizooka", icon: fixtureImage},
+                          sub: {name: "Suction Bomb", icon: fixtureImage},
+                          result: {paint: 1321, kill: 9, death: 4, assist: 3, special: 2},
+                        }],
+                      },
+                      {color: "#f391b3", score: 45.2, players: []},
+                    ],
+                    awards: [{name: "Turf Inker", rank: "GOLD"}],
+                    date: `2025-01-${String(index + 10).padStart(2, "0")}T12:00:00.000Z`,
+                    duration: 180,
+                    rank: null,
+                    stage: {name: "Scorch Gorge", icon: fixtureImage},
+                  })),
+                }
+                : null,
+              salmon: options["splatoon.sections"].split(",").map(x => x.trim()).filter(x => x).includes("salmon-run")
+                ? {
+                  matches: new Array(Number(options["splatoon.salmon.limit"])).fill(null).map((_, index) => ({
+                    weapons: [
+                      {name: "Splattershot", icon: fixtureImage},
+                      {name: "Splat Roller", icon: fixtureImage},
+                      {name: "Splat Charger", icon: fixtureImage},
+                    ],
+                    special: {name: "Booyah Bomb", icon: fixtureImage},
+                    eggs: {golden: 24, regular: 112},
+                    defeated: [{name: "Chum", count: 38, icon: fixtureImage}, {name: "Steelhead", count: 4, icon: fixtureImage}],
+                    rescues: 3,
+                    rescued: 1,
+                    waves: [{quota: 20, delivered: 25}, {quota: 22, delivered: 27}, {quota: 24, delivered: 28}],
+                    failed: null,
+                    hazard: 156,
+                    boss: {defeated: true, name: "Cohozuna", icon: fixtureImage},
+                    stage: {name: "Sockeye Station", icon: fixtureImage},
+                    date: `2025-01-${String(index + 4).padStart(2, "0")}T18:00:00.000Z`,
+                    grade: "Eggsecutive VP",
+                  })),
+                }
+                : null,
+              icons: {
+                kills: fixtureImage,
+                deaths: fixtureImage,
+                eggs: fixtureImage,
+                golden_egg: fixtureImage,
+                rescues: fixtureImage,
+                rescued: fixtureImage,
+                medal_gold: fixtureImage,
+              },
+            },
           })
           : null),
         //Pagespeed
@@ -910,6 +1125,8 @@
               const dates = []
               let total = faker.number.int(1000)
               const result = {
+                days: 14,
+                charts: options["stargazers.charts"],
                 worldmap: this.__stargazers.worldmap,
                 total: {
                   dates: {},
@@ -978,6 +1195,7 @@
           ? ({
             anilist: {
               user: {
+                name: options["anilist.user"] || set.user,
                 stats: {
                   anime: {
                     count: faker.number.int(1000),
@@ -992,7 +1210,9 @@
                     genres: new Array(4).fill(null).map(_ => ({genre: faker.lorem.word()})),
                   },
                 },
-                genres: new Array(4).fill(null).map(_ => ({genre: faker.lorem.word()})),
+                get genres() {
+                  return [...new Set([...this.stats.anime.genres, ...this.stats.manga.genres].map(({genre}) => genre))]
+                },
               },
               get lists() {
                 const media = type => ({
@@ -1134,7 +1354,7 @@
             },
           })
           : null),
-        //Tokscae
+        //Tokscale
         ...(set.plugins.enabled.tokscale
           ? ({
             tokscale: {
@@ -1153,7 +1373,7 @@
                 submissionCount: faker.number.int({min: 100, max: 10000}),
                 activeDays: faker.number.int({min: 30, max: 365}),
               },
-              models: new Array(Number(options["tokscale.models.limit"]) || 5).fill(null).map(_ => ({
+              models: new Array(Number(options["tokscale.models.limit"] ?? 5)).fill(null).map(_ => ({
                 name: faker.helpers.arrayElement(["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo", "claude-3-opus", "claude-3-sonnet", "gemini-pro"]),
                 tokens: faker.number.int({min: 10000, max: 1000000}),
                 cost: faker.number.float({min: 0.1, max: 10}),
@@ -1208,6 +1428,7 @@
                 Black: faker.internet.userName(),
                 WhiteElo: faker.number.int(3000),
                 BlackElo: faker.number.int(3000),
+                Result: "*",
               },
               animation: {size: 40, delay: 3, duration: 0.6},
               result: {

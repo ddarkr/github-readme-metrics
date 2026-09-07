@@ -1,5 +1,5 @@
 - name: Example
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     template: repository
     filename: metrics.repository.svg

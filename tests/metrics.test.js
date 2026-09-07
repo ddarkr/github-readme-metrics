@@ -15,7 +15,7 @@ action.input = vars => Object.fromEntries([...Object.entries(action.defaults), .
 action.run = async vars =>
   await new Promise((solve, reject) => {
     let [stdout, stderr] = ["", ""]
-    const env = {...process.env, ...action.input(vars), GITHUB_REPOSITORY: "ddarkr/metrics"}
+    const env = {...process.env, ...action.input(vars), SANDBOX: true, GITHUB_REPOSITORY: "ddarkr/metrics"}
     const child = processes.spawn("node", ["source/app/action/index.mjs"], {env})
     child.stdout.on("data", data => stdout += data)
     child.stderr.on("data", data => stderr += data)
@@ -29,13 +29,32 @@ action.run = async vars =>
 
 //Web instance
 const web = {}
-web.run = async vars => (await axios.get(`http://localhost:3000/lowlighter?${new url.URLSearchParams(Object.fromEntries(Object.entries(vars).map(([key, value]) => [key.replace(/^plugin_/, "").replace(/_/g, "."), value])))}`)).status === 200
+web.run = async vars => (await axios.get(`http://127.0.0.1:${web.port}/lowlighter?${new url.URLSearchParams(Object.fromEntries(Object.entries(vars).map(([key, value]) => [key.replace(/^plugin_/, "").replace(/_/g, "."), value])))}`)).status === 200
 web.start = async () =>
-  new Promise(solve => {
-    let stdout = ""
-    web.instance = processes.spawn("node", ["source/app/web/index.mjs"], {env: {...process.env, SANDBOX: true}})
-    web.instance.stdout.on("data", data => (stdout += data, /Server ready !/.test(stdout) ? solve() : null))
-    web.instance.stderr.on("data", data => console.error(`${data}`))
+  new Promise((solve, reject) => {
+    let output = ""
+    web.instance = processes.spawn(process.execPath, ["source/app/web/index.mjs"], {env: {...process.env, SANDBOX: true, PORT: "0"}})
+    const timer = setTimeout(() => {
+      web.instance.kill("SIGKILL")
+      reject(new Error(`Sandbox did not become ready:\n${output}`))
+    }, 20000)
+    const fail = error => {
+      clearTimeout(timer)
+      reject(error)
+    }
+    web.instance.once("error", fail)
+    web.instance.once("exit", code => fail(new Error(`Sandbox exited (${code}):\n${output}`)))
+    web.instance.stdout.on("data", chunk => {
+      output += chunk
+      if (!output.includes("Server ready !"))
+        return
+      web.port = Number(output.match(/Listening on port\s+│\s+(\d+)/)?.[1])
+      clearTimeout(timer)
+      if (!web.port)
+        return reject(new Error(`Sandbox did not report its port:\n${output}`))
+      solve()
+    })
+    web.instance.stderr.on("data", chunk => output += chunk)
   })
 web.stop = async () => await web.instance.kill("SIGKILL")
 
@@ -48,23 +67,42 @@ placeholder.init({
   ejs,
   axios: {
     async get(url) {
-      return axios.get(`http://localhost:3000${url}`)
+      return axios.get(`http://127.0.0.1:${web.port}${url}`)
     },
   },
 })
+const boolean = value => /^(?:true|on|yes|1)$/i.test(`${value}`)
+const parsed = value => (typeof value === "string") && /^(?:true|on|yes|1|false|off|no|0)$/i.test(value) ? boolean(value) : value
 placeholder.run = async vars => {
-  const options = Object.fromEntries(Object.entries(vars).map(([key, value]) => [key.replace(/^plugin_/, "").replace(/_/g, "."), value]))
-  const enabled = Object.fromEntries(Object.entries(vars).filter(([key]) => /^plugin_[a-z]+$/.test(key)))
-  const config = Object.fromEntries(Object.entries(options).filter(([key]) => /^config[.]/.test(key)))
-  const base = Object.fromEntries(Object.entries(options).filter(([key]) => /^base[.]/.test(key)))
-  return typeof await placeholder({
+  const inputs = {
+    ...Object.fromEntries(Object.entries(metadata.inputs).filter(([_, input]) => "default" in input).map(([key, {default: value}]) => [key, value])),
+    ...vars,
+  }
+  const options = Object.fromEntries(Object.entries(inputs).map(([key, value]) => [
+    key.replace(/^plugin_/, "").replace(/_/g, "."),
+    metadata.inputs[key]?.type === "boolean" ? boolean(value) : metadata.inputs[key] ? value : parsed(value),
+  ]))
+  const enabled = Object.fromEntries(Object.entries(inputs)
+    .filter(([key]) => /^plugin_[\da-z]+$/i.test(key))
+    .map(([key, value]) => [key.replace(/^plugin_/, ""), boolean(value)]))
+  const config = Object.fromEntries(Object.entries(options).filter(([key]) => /^config[.]/.test(key)).map(([key, value]) => [key.replace(/^config[.]/, ""), value]))
+  const base = Object.fromEntries(
+    (Array.isArray(options.base) ? options.base : `${options.base ?? ""}`.split(","))
+      .map(part => part.trim())
+      .filter(part => metadata.inputs.base.values.includes(part))
+      .map(part => [part, true]),
+  )
+  for (const part of metadata.inputs.base.values)
+    if (`base.${part}` in options)
+      base[part] = boolean(options[`base.${part}`])
+  return await placeholder({
     templates: {selected: vars.template},
     plugins: {enabled: {...enabled, base}, options},
     config,
     version: "TEST",
     user: "lowlighter",
     avatar: "https://github.com/lowlighter.png",
-  }) === "string"
+  })
 }
 
 //Setup
@@ -88,7 +126,7 @@ const metadata = JSON.parse(`${
     "--input-type",
     "module",
     "--eval",
-    'import metadata from "./source/app/metrics/metadata.mjs";console.log(JSON.stringify(await metadata({log:false})))',
+    'import metadata from "./source/app/metrics/metadata.mjs";const loaded=await metadata({log:false});console.log(JSON.stringify({...loaded,inputs:metadata.inputs}))',
   ]).stdout
 }`)
 
@@ -99,7 +137,10 @@ for (const type of ["plugins", "templates"]) {
     const cases = yaml
       .load(fs.readFileSync(path.join(__dirname, "../tests/cases", `${name}.${type.replace(/s$/, "")}.yml`), "utf8"))
       ?.map(({name: test, with: inputs, modes = [], timeout}) => {
-        const skip = new Set(Object.entries(metadata.templates).filter(([_, {readme: {compatibility}}]) => !compatibility[name]).map(([template]) => template))
+        const target = inputs.template?.replace(/^@/, "") ?? name
+        const skip = new Set(type === "plugins"
+          ? Object.entries(metadata.templates).filter(([_, {readme: {compatibility}}]) => !compatibility[name]).map(([template]) => template)
+          : Object.keys(metadata.templates).filter(template => template !== target))
         if (!(metadata[type][name].supports?.includes("repository")))
           skip.add("repository")
         return [test, inputs, {skip: [...skip], modes, timeout}]
@@ -113,6 +154,7 @@ describe("GitHub Action", () =>
   describe.each([
     ["classic", {}],
     ["terminal", {}],
+    ["modern-terminal", {}],
     ["repository", {repo: "metrics"}],
   ])("Template : %s", (template, query) => {
     for (const [name, input, {skip = [], modes = [], timeout} = {}] of tests) {
@@ -127,6 +169,7 @@ describe("Web instance", () =>
   describe.each([
     ["classic", {}],
     ["terminal", {}],
+    ["modern-terminal", {}],
     ["repository", {repo: "metrics"}],
   ])("Template : %s", (template, query) => {
     for (const [name, input, {skip = [], modes = [], timeout} = {}] of tests) {
@@ -141,11 +184,15 @@ describe("Web instance (placeholder)", () =>
   describe.each([
     ["classic", {}],
     ["terminal", {}],
+    ["modern-terminal", {}],
   ])("Template : %s", (template, query) => {
     for (const [name, input, {skip = [], modes = [], timeout} = {}] of tests) {
-      if ((skip.includes(template)) || ((modes.length) && (!modes.includes("placeholder"))))
+      if ((skip.includes(template)) || input.repo || ((modes.length) && (!modes.includes("placeholder"))))
         test.skip(name, () => null)
       else
-        test(name, async () => expect(await placeholder.run({template, base: 0, ...query, ...input})).toBe(true), timeout)
+        test(name, async () => {
+          const rendered = await placeholder.run({template, ...query, ...input})
+          expect(rendered).toMatch(/<svg\b/)
+        }, timeout)
     }
   }))

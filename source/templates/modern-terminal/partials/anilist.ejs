@@ -1,39 +1,38 @@
 <% if (plugins.anilist) { %>
-<div class="stdin"><%- meta.$ %> anilist</div><%# -%>
-<div class="stdout"><%# -%>
+<div class="terminal-text"><%# -%>
 <% if (plugins.anilist.error) { -%>
 <span class="error"><%= plugins.anilist.error.message %></span><%# -%>
 <% } else { -%>
-// Anilist summary for <%= plugins.anilist.user?.name || "user" %>
-// Favorite genres: <%= (plugins.anilist.user?.genres || []).join(", ") %>
-// Anime minutes watched: <%= f(plugins.anilist.user?.stats?.anime?.minutesWatched || 0) %>
-// Manga chapters read: <%= f(plugins.anilist.user?.stats?.manga?.chaptersRead || 0) %>
+Anilist summary for <%= plugins.anilist.user?.name || "user" %>
+Favorite genres: <%= (plugins.anilist.user?.genres || []).join(", ") %>
+Anime minutes watched: <%= f(plugins.anilist.user?.stats?.anime?.minutesWatched || 0) %>
+Manga chapters read: <%= f(plugins.anilist.user?.stats?.manga?.chaptersRead || 0) %>
 
 <% for (const media of Object.keys(plugins.anilist.lists || {})) { -%>
   <% for (const list of plugins.anilist.sections || []) { -%>
     <% const items = plugins.anilist.lists?.[media]?.[list] || [] %>
     <% if (items.length) { -%>
-// <%= {favorites:`Favorites ${media}s`, watching:"Currently watching", reading:"Currently reading"}[list] %>
+<%= {favorites:`Favorites ${media}s`, watching:"Currently watching", reading:"Currently reading"}[list] %>
 <% for (const item of items) { -%>
   <% const name = item.name || ""; const type = item.type || ""; const release = item.release || ""; const status = item.status || ""; const genres = item.genres || []; const scores = item.scores || {}; const progress = item.progress; const released = item.released %>
-  <%= name.padEnd(36) %> <%= type.padEnd(6) %> <%= (release || "").padEnd(12) %> <%= status %>
+  <%= name.padEnd(36) %> <%= type.padEnd(6) %> <%= String(release || "").padEnd(12) %> <%= status %>
   <% if (scores.community) { -%>
-    // Community score: <%= scores.community %>%
+Community score: <%= scores.community %>%
   <% } -%>
   <% if (Number.isFinite(progress)) { -%>
-    // Progress: <%= type === "ANIME" ? "Episode" : type === "MANGA" ? "Chapter" : "" %> <%= progress %><%= released ? `/${released}` : "" %>
+Progress: <%= type === "ANIME" ? "Episode" : type === "MANGA" ? "Chapter" : "" %> <%= progress %><%= released ? `/${released}` : "" %>
   <% } else { -%>
-    // Release info: <%= progress %><%= released ? released : "" %>
+Release info: <%= progress %><%= released ? released : "" %>
   <% } -%>
   <% if (genres.length) { -%>
-    // Genres: <%= genres.join(", ") %>
+Genres: <%= genres.join(", ") %>
   <% } -%>
 <% } -%>
     <% } -%>
   <% } -%>
 <% } -%>
 <% if (plugins.anilist.sections.includes("characters")) { -%>
-// Favorite characters: <%= (plugins.anilist.characters || []).map(c=>c.name).join(", ") %>
+Favorite characters: <%= (plugins.anilist.characters || []).map(c=>c.name).join(", ") %>
 <% } -%>
 <% } -%>
 </div><% } %>

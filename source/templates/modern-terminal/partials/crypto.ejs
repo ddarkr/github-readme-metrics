@@ -1,12 +1,11 @@
 <% if (plugins.crypto) { %>
-<div class="stdin"><%- meta.$ %> crypto</div><%# -%>
-<div class="stdout"><%# -%>
+<div class="terminal-text"><%# -%>
 <% if (plugins.crypto.error) { -%>
 <span class="error"><%= plugins.crypto.error.message %></span><%# -%>
 <% } else { -%>
-// <%= (plugins.crypto.symbol || "").toUpperCase() %>  current price: <%= plugins.crypto.current_price.toFixed(plugins.crypto.precision || 2) %> <%= plugins.crypto.vs_currency?.toUpperCase() %>
-// Days tracked: <%= plugins.crypto.days %>
-// 24h change: <%= (plugins.crypto.price_change_percentage_24h ? plugins.crypto.price_change_percentage_24h.toFixed(2) : '0.00') %>%
-// Chart: (omitted in terminal view)
+<%= (plugins.crypto.symbol || "").toUpperCase() %>  current price: <%= plugins.crypto.current_price.toFixed(plugins.crypto.precision) %> <%= plugins.crypto.vs_currency?.toUpperCase() %>
+Days tracked: <%= plugins.crypto.days %>
+24h change: <%= (plugins.crypto.price_change_percentage_24h ? plugins.crypto.price_change_percentage_24h.toFixed(2) : '0.00') %>%
+<div class="report-chart"><%- plugins.crypto.chart %></div>
 <% } -%>
 </div><% } %>

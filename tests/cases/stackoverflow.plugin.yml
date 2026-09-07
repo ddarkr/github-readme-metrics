@@ -1,5 +1,5 @@
 - name: 🗨️ Stack Overflow - Top answers from stackoverflow
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: NOT_NEEDED
     plugin_stackoverflow: 'yes'

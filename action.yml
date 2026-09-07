@@ -141,6 +141,22 @@ inputs:
     description: Plugin order
     default: <default-value>
 
+  config_terminal_theme:
+    description: Terminal template color theme
+    default: <default-value>
+
+  config_terminal_density:
+    description: Terminal block density
+    default: <default-value>
+
+  config_terminal_dividers:
+    description: Display dividers between terminal blocks
+    default: <default-value>
+
+  config_terminal_animations:
+    description: Animate terminal blocks when rendering SVG output
+    default: <default-value>
+
   config_twemoji:
     description: Use twemojis
     default: <default-value>
@@ -1103,7 +1119,7 @@ inputs:
     default: <default-value>
 
   plugin_music_user:
-    description: Music provider username or Koito instance URL
+    description: Music provider username or Koito instance base URL
     default: <default-value>
 
   plugin_music_mode:

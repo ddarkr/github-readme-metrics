@@ -1,5 +1,5 @@
 - name: 📓 Featured repositories - Featured repositories
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     plugin_repositories: 'yes'
@@ -7,7 +7,7 @@
     use_mocked_data: 'yes'
     verify: 'yes'
 - name: 📓 Featured repositories - Pinned repositories
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     plugin_repositories: 'yes'

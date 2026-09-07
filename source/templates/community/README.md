@@ -55,7 +55,7 @@ Some templates may accept additional custom parameters that can be passed throug
 <!--examples-->
 ```yaml
 name: Using a community template
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   token: ${{ secrets.METRICS_TOKEN }}
   template: "@classic"
@@ -64,7 +64,7 @@ with:
 ```
 ```yaml
 name: Using a trusted community template
-uses: ddarkr/metrics@latest
+uses: ddarkr/metrics@master
 with:
   token: ${{ secrets.METRICS_TOKEN }}
   template: "@terminal"

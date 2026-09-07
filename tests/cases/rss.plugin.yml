@@ -1,5 +1,5 @@
 - name: 🗼 Rss feed - News from hackernews
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: NOT_NEEDED
     plugin_rss: 'yes'

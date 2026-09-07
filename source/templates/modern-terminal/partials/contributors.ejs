@@ -1,0 +1,24 @@
+<% if (plugins["contributors"]) { %>
+<% if (plugins["contributors"].error) { %>
+<p class="error"><%= plugins["contributors"].error.message %></p>
+<% } else { %>
+<p class="terminal-subtitle"><%= plugins.contributors.base %> → <%= plugins.contributors.head %></p>
+<% if (plugins.contributors.sections.includes("contributors")) { %>
+<% const contributors = Object.entries(plugins.contributors.list) %>
+<% if (contributors.length) { %>
+<table class="tui-table">
+<thead><tr><th scope="col">Contributor</th><th scope="col">Pull requests</th><% if (plugins.contributors.contributions) { %><th scope="col" class="tui-number">Contributions</th><% } %></tr></thead>
+<tbody>
+<% for (const [login, contributor] of contributors) { %>
+<tr><td><%= login %></td><td><%= contributor.pr.join(", ") || "—" %></td><% if (plugins.contributors.contributions) { %><td class="tui-number"><%= f(contributor.contributions) %></td><% } %></tr>
+<% } %>
+</tbody></table>
+<% } else { %><p class="empty">No contributors between these revisions.</p><% } %>
+<% } %>
+<% if (plugins.contributors.sections.includes("categories")) { %>
+<% for (const [category, members] of Object.entries(plugins.contributors.categories)) { %>
+<h3><%= category %></h3><p><%= [...members].join(", ") || "No matching contributions." %></p>
+<% } %>
+<% } %>
+<% } %>
+<% } %>

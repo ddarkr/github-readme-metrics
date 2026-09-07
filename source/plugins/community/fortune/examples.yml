@@ -1,5 +1,5 @@
 - name: Fortune
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     filename: metrics.plugin.fortune.svg
     token: NOT_NEEDED

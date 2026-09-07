@@ -1,10 +1,7 @@
-<% if (plugins.fortune) { %>
-<div class="stdin"><%- meta.$ %> fortune</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.fortune.error) { -%>
-<span class="error"><%= plugins.fortune.error.message %></span><%# -%>
-<% } else { -%>
-// Fortune (color preserved if provided)
-<span style="color:<%= plugins.fortune.color ?? 'inherit' %>"><b><%= (`Your fortune: ${plugins.fortune.text ?? ''}`).padStart(0) %></b></span>
-<% } -%>
-</div><% } %>
+<% if (plugins["fortune"]) { %>
+<% if (plugins["fortune"].error) { %>
+<p class="error"><%= plugins["fortune"].error.message %></p>
+<% } else { %>
+<p><b><%= plugins.fortune.text %></b></p>
+<% } %>
+<% } %>

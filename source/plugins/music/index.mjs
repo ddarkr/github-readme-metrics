@@ -321,35 +321,20 @@ export default async function({login, imports, data, q, account}, {enabled = fal
           }
           //Koito
           case "koito": {
-            //Prepare credentials
-            const koito_url = user
-            const api_key = token || null
+            const {url: koitoUrl, headers} = koitoCredentials({user, token})
 
-            //API call and parse tracklist
             try {
               console.debug(`metrics/compute/${login}/plugins > music > querying koito api`)
-              const headers = api_key ? {Authorization: `Token ${api_key}`} : {}
-
-              tracks = (await imports.axios.get(`${koito_url}/apis/web/v1/listens?limit=${limit}`, {
+              const {data: response} = await imports.axios.get(`${koitoUrl}/apis/web/v1/listens?limit=${limit}`, {
                 headers: {
                   ...headers,
                   "Content-Type": "application/json",
                 },
-              })).data.items.map(item => ({
-                name: item.track.title,
-                artist: item.track.artists?.[0]?.name ?? "Unknown",
-                artwork: item.track.image ? `${koito_url}/image/${item.track.image}` : null,
-                played_at: item.time ? `${imports.format.date(new Date(item.time), {time: true})} on ${imports.format.date(new Date(item.time), {date: true})}` : null,
-              }))
+              })
+              tracks = koitoItems(response).map((listen, index) => koitoRecentTrack(listen, {index, url: koitoUrl, format: imports.format}))
             }
-            //Handle errors
             catch (error) {
-              if (error.isAxiosError) {
-                const status = error.response?.status
-                const message = `Koito API returned ${status}`
-                throw {error: {message}, ...raw}
-              }
-              throw error
+              throw koitoError(error, raw)
             }
             break
           }
@@ -505,51 +490,25 @@ export default async function({login, imports, data, q, account}, {enabled = fal
           }
           //Koito
           case "koito": {
-            //Prepare credentials
-            const koito_url = user
-            const api_key = token || null
+            const {url: koitoUrl, headers} = koitoCredentials({user, token})
+            const query = koitoTopQuery({limit, timeRange: time_range})
+            const endpoint = top_type === "artists" ? "artists" : "tracks"
 
-            //API call and parse tracklist
             try {
               console.debug(`metrics/compute/${login}/plugins > music > querying koito api`)
-              const headers = api_key ? {Authorization: `Token ${api_key}`} : {}
-              const period = time_range === "short" ? "month" : time_range === "medium" ? "6month" : "year"
-
+              const {data: response} = await imports.axios.get(`${koitoUrl}/apis/web/v1/top/${endpoint}?${query}`, {
+                headers: {
+                  ...headers,
+                  "Content-Type": "application/json",
+                },
+              })
+              const items = koitoItems(response)
               tracks = top_type === "artists"
-                ? (
-                  await imports.axios.get(
-                    `${koito_url}/apis/web/v1/top-artists?period=${period}&limit=${limit}`,
-                    {
-                      headers: {
-                        ...headers,
-                        "Content-Type": "application/json",
-                      },
-                    },
-                  )
-                ).data.items.map(artist => ({
-                  name: artist.name,
-                  artist: `Play count: ${artist.listen_count}`,
-                  artwork: artist.image ? `${koito_url}/image/${artist.image}` : null,
-                }))
-                : (
-                  await imports.axios.get(
-                    `${koito_url}/apis/web/v1/top-tracks?period=${period}&limit=${limit}`,
-                    {
-                      headers: {
-                        ...headers,
-                        "Content-Type": "application/json",
-                      },
-                    },
-                  )
-                ).data.items.map(track => ({
-                  name: track.title,
-                  artist: track.artists?.[0]?.name ?? "Unknown",
-                  artwork: track.image ? `${koito_url}/image/${track.image}` : null,
-                }))
+                ? items.map((item, index) => koitoTopArtist(item, {index, url: koitoUrl}))
+                : items.map((item, index) => koitoTopTrack(item, {index, url: koitoUrl}))
             }
-            //Handle errors
             catch (error) {
-              throw imports.format.error(error)
+              throw koitoError(error, raw)
             }
             break
           }
@@ -600,4 +559,153 @@ function get_all_with_key(obj, key) {
       result.push(...get_all_with_key(obj[i], key))
   }
   return result
+}
+
+function koitoInvalid(field) {
+  throw {error: {message: `Koito API response is invalid: ${field}`}}
+}
+
+function koitoRecord(value, field) {
+  if ((!value) || (typeof value !== "object") || Array.isArray(value))
+    koitoInvalid(`${field} must be an object`)
+  return value
+}
+
+function koitoString(value, field) {
+  if ((typeof value !== "string") || (!value.trim()))
+    koitoInvalid(`${field} must be a non-empty string`)
+  return value.trim()
+}
+
+function koitoItems(response) {
+  const data = koitoRecord(response, "root")
+  if (!Array.isArray(data.items))
+    koitoInvalid("items must be an array")
+  return data.items
+}
+
+function koitoCredentials({user, token}) {
+  let instance
+  try {
+    instance = new URL(koitoString(user, "configured instance URL"))
+  }
+  catch {
+    koitoInvalid("configured instance URL must be an absolute HTTP(S) URL")
+  }
+  if ((!instance) || (!["http:", "https:"].includes(instance.protocol)))
+    koitoInvalid("configured instance URL must be an absolute HTTP(S) URL")
+  instance.username = ""
+  instance.password = ""
+  instance.search = ""
+  instance.hash = ""
+  const url = instance.href.replace(/\/+$/, "")
+  const apiKey = typeof token === "string" ? token.trim() : ""
+  return {url, headers: apiKey ? {Authorization: `Token ${apiKey}`} : {}}
+}
+
+function koitoTopQuery({limit, timeRange}) {
+  const query = new URLSearchParams({limit: `${limit}`})
+  switch (timeRange) {
+    case "short":
+      query.set("period", "month")
+      break
+    case "medium": {
+      const start = new Date()
+      start.setMonth(start.getMonth() - 6)
+      query.set("from", `${Math.floor(start.getTime() / 1000)}`)
+      break
+    }
+    case "long":
+      query.set("period", "all_time")
+      break
+    default:
+      koitoInvalid(`unsupported time range "${timeRange}"`)
+  }
+  return query
+}
+
+function koitoArtwork(image, {field, url}) {
+  if ((image === undefined) || (image === null))
+    return null
+  image = koitoRecord(image, field)
+  if ((image.small === undefined) || (image.small === null) || (image.small === ""))
+    return null
+  try {
+    return new URL(koitoString(image.small, `${field}.small`), `${url}/`).href
+  }
+  catch {
+    koitoInvalid(`${field}.small must be a valid URL path`)
+  }
+}
+
+function koitoArtist(artists, field) {
+  if ((artists === undefined) || (artists === null))
+    return "Unknown"
+  if (!Array.isArray(artists))
+    koitoInvalid(`${field} must be an array`)
+  if (!artists.length)
+    return "Unknown"
+  const artist = koitoRecord(artists[0], `${field}[0]`)
+  return koitoString(artist.name, `${field}[0].name`)
+}
+
+function koitoTrack(track, {field, url}) {
+  track = koitoRecord(track, field)
+  return {
+    name: koitoString(track.title, `${field}.title`),
+    artist: koitoArtist(track.artists, `${field}.artists`),
+    artwork: koitoArtwork(track.image, {field: `${field}.image`, url}),
+  }
+}
+
+function koitoRecentTrack(listen, {index, url, format}) {
+  listen = koitoRecord(listen, `items[${index}]`)
+  const track = koitoTrack(listen.track, {field: `items[${index}].track`, url})
+  if ((listen.time === undefined) || (listen.time === null) || (listen.time === ""))
+    return {...track, played_at: null}
+  const time = koitoString(listen.time, `items[${index}].time`)
+  if (!Number.isFinite(Date.parse(time)))
+    koitoInvalid(`items[${index}].time must be a valid date string`)
+  return {
+    ...track,
+    played_at: `${format.date(new Date(time), {time: true})} on ${format.date(new Date(time), {date: true})}`,
+  }
+}
+
+function koitoRankedItem(value, index) {
+  value = koitoRecord(value, `items[${index}]`)
+  return koitoRecord(value.item, `items[${index}].item`)
+}
+
+function koitoTopArtist(value, {index, url}) {
+  const artist = koitoRankedItem(value, index)
+  if ((!Number.isFinite(artist.listen_count)) || (artist.listen_count < 0))
+    koitoInvalid(`items[${index}].item.listen_count must be a non-negative finite number`)
+  return {
+    name: koitoString(artist.name, `items[${index}].item.name`),
+    artist: `Play count: ${artist.listen_count}`,
+    artwork: koitoArtwork(artist.image, {field: `items[${index}].item.image`, url}),
+  }
+}
+
+function koitoTopTrack(value, {index, url}) {
+  return koitoTrack(koitoRankedItem(value, index), {field: `items[${index}].item`, url})
+}
+
+function koitoError(error, raw) {
+  if (error?.error?.message)
+    return error
+  if (error?.isAxiosError) {
+    const {response} = error
+    const detail = response?.data?.error ?? response?.data?.message ?? response?.data?.error_description
+    const status = response?.status ?? "request failure"
+    return {
+      error: {
+        message: `Koito API returned ${status}${typeof detail === "string" && detail ? ` (${detail})` : ""}`,
+        instance: response?.data ?? error.message,
+      },
+      ...raw,
+    }
+  }
+  return error
 }

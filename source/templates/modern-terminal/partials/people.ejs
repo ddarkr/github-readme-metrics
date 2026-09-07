@@ -1,20 +1,20 @@
 <% if (plugins.people) { %>
-<div class="stdin"><%- meta.$ %> people</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.people.error) { -%>
-<span class="error"><%= plugins.people.error.message %></span><%# -%>
-<% } else { -%>
-  <% const types = plugins.people.types || []; -%>
-  <% for (const type of types) { -%>
-  <% const list = plugins.people[type] || []; -%>
-// <%= type %>: <%= (list.length || 0).toString().padStart(3) %>
-  <% if (list.length) { -%>
-    <% for (const u of list) { -%>
-<%= ('- ' + (u.login || u.name || 'unknown').padEnd(20)) + (' ' + (u.url || '')).padEnd(30) %>
+
+  <% if (plugins.people.error) { -%>
+    <span class="error"><%= plugins.people.error.message %></span>
+  <% } else { const types = plugins.people.types || [] -%>
+    <% for (const type of types) { const list = plugins.people[type] || [] -%>
+      <div class="terminal-subtitle"><%= type %> · <%= list.length %></div>
+      <div class="terminal-table">
+      <% if (list.length) { -%>
+        <% for (const person of list) { -%>
+          <div class="terminal-table__row"><span class="terminal-table__label"><%= person.login || person.name || "unknown" %></span><span class="terminal-table__value"><%= person.url || "" %></span></div>
+        <% } -%>
+      <% } else { -%>
+        <span style="color:var(--color-muted)">No entries</span>
+      <% } -%>
+      </div>
     <% } -%>
-  <% } else { -%>
-<span>No entries for <%= type %></span>
   <% } -%>
-  <% } -%>
-<% } -%>
-</div><% } %>
+
+<% } %>

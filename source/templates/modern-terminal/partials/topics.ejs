@@ -1,21 +1,18 @@
 <% if (plugins.topics) { %>
-<div class="stdin"><%- meta.$ %> gh topic list --mode <%= plugins.topics.mode %></div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.topics.error) { -%>
-<span class="error"><%= plugins.topics.error.message %></span><%# -%>
-<% } else { -%>
-<% const title = {starred:"Starred topics", labels:"Starred topics", icons:"Starred topics", mastered:"Mastered technologies and topics"}[plugins.topics.mode] %>
-<%= title %><%= plugins.topics.list.length ? ` (${plugins.topics.list.length} total)` : "" %>
 
-<% if (plugins.topics.list.length) { -%>
-<% const NUM_COL = 2;
-   const NAME_COL = 24;
-   const DESC_COL = 48;
-   for (const [i, item] of plugins.topics.list.entries()) { -%>
-<%= `${i+1}`.padStart(NUM_COL) %>. <span class="label"><%= (item.name || "").toLowerCase().padEnd(NAME_COL) %></span><% if (item.description) { %>  <span style="color:var(--muted)"><%= item.description.slice(0, DESC_COL) %></span><% } %>
-<% } -%>
-<% } else { -%>
-No starred topics
-<% } -%>
-<% } -%>
-</div><% } %>
+  <% if (plugins.topics.error) { -%>
+    <span class="error"><%= plugins.topics.error.message %></span>
+  <% } else { const list = plugins.topics.list || []; const title = {starred: "Starred topics", labels: "Starred topics", icons: "Starred topics", mastered: "Mastered technologies and topics"}[plugins.topics.mode] ?? "Topics" -%>
+    <div class="terminal-subtitle"><%= title %> · <%= list.length %></div>
+    <div class="terminal-table">
+    <% if (list.length) { -%>
+      <% for (const [index, item] of list.entries()) { -%>
+        <div class="terminal-table__row"><span class="terminal-table__label"><span style="color:var(--color-muted)"><%= index + 1 %>.</span> <%= (item.name || "").toLowerCase() %><% if (item.description) { %><br/><span style="color:var(--color-muted)"><%= item.description %></span><% } %></span><span class="terminal-table__value"></span></div>
+      <% } -%>
+    <% } else { -%>
+      <span style="color:var(--color-muted)">No topics found</span>
+    <% } -%>
+    </div>
+  <% } -%>
+
+<% } %>

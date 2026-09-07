@@ -1,5 +1,5 @@
 - name: 🗃️ Base content - Default metrics
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     base: header, activity, community, repositories, metadata

@@ -124,7 +124,7 @@ export default async function({login, q}, {conf, data, rest, graphql, plugins, q
   computed.calendar = data.user.calendar.contributionCalendar.weeks.flatMap(({contributionDays}) => contributionDays).slice(-14)
 
   //Avatar (base64)
-  computed.avatar = await avatar || "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+  computed.avatar = await avatar
 
   //Token scopes
   try {

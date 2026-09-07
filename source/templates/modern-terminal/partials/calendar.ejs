@@ -1,38 +1,19 @@
-<% if (plugins.calendar) { %>
-<div class="stdin"><%- meta.$ %> git log --oneline --since="1 year ago" | wc -l</div><%# -%>
-  <div class="stdout">
-    <% if (plugins.calendar.error) { -%>
-      <span class="error"><%= plugins.calendar.error.message %></span>
-    <% } else { -%>
-      <% /* Summarize contributions data into plain text lines */ %>
-      <% const years = Array.isArray(plugins.calendar.years) ? plugins.calendar.years : Object.values(plugins.calendar.years || {}); %>
-      <% if (years.length === 0) { %>
-        No contributions found in the provided calendar data.
-      <% } else { %>
-        <% let total = 0; %>
-        <% for (const y of years) { %>
-          <% if (y.weeks) { %>
-            <% for (const w of Object.values(y.weeks)) { %>
-              <% for (const d of Object.values(w.contributionDays || {})) { %>
-                <% total += Number(d.count || d.total || 0); %>
-              <% } %>
-            <% } %>
-          <% } %>
-        <% } %>
-        Total commits in the last year: <%= total %>
-        <% /* Per-year breakdown */ %>
-        <% for (const y of years) { %>
-          <% let yearTotal = 0; %>
-          <% if (y.weeks) { %>
-            <% for (const w of Object.values(y.weeks)) { %>
-              <% for (const d of Object.values(w.contributionDays || {})) { %>
-                <% yearTotal += Number(d.count || d.total || 0); %>
-              <% } %>
-            <% } %>
-          <% } %>
-          <%= y.year || y.name || 'Year' %>: <%= yearTotal %> commits
-        <% } %>
-      <% } %>
-    <% } -%>
-  </div>
+<% if (plugins["calendar"]) { %>
+<% if (plugins["calendar"].error) { %>
+<p class="error"><%= plugins["calendar"].error.message %></p>
+<% } else { let total = 0; let peak = 0; const years = []; for (const {year, weeks} of plugins.calendar.years) { let yearTotal = 0; for (const {contributionDays} of weeks) { for (const {contributionCount} of contributionDays) yearTotal += contributionCount; } total += yearTotal; peak = Math.max(peak, yearTotal); years.push({year, total: yearTotal}); } %>
+<% if (years.length) { %>
+<dl class="terminal-kv">
+<dt>Total contributions</dt><dd><%= f(total) %></dd>
+</dl>
+<table class="tui-table tui-table--calendar">
+<thead><tr><th scope="col">Year</th><th scope="col" class="tui-number">Contributions</th><% if (peak) { %><th scope="col">Relative to peak</th><% } %></tr></thead>
+<tbody>
+<% for (const {year, total: yearTotal} of years) { const filled = peak ? Math.round((yearTotal / peak) * 10) : 0; %>
+<tr><th scope="row"><%= year %></th><td class="tui-number"><%= f(yearTotal) %></td><% if (peak) { %><td><span class="tui-bar" aria-hidden="true"><span><%= "█".repeat(filled) %></span><span class="tui-bar-empty"><%= "░".repeat(10 - filled) %></span></span></td><% } %></tr>
+<% } %>
+</tbody>
+</table>
+<% } else { %><p class="empty">No contribution history available.</p><% } %>
+<% } %>
 <% } %>

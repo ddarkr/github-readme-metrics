@@ -1,22 +1,21 @@
-<% if ((account === "user")&&((base.activity)||(base.community))) { %>
-<div class="stdin"><%- meta.$ %> git status</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (base.activity) { -%>
-<b>Recent activity</b>
-  <b><%= `${computed.commits}`.padStart(5) %></b> commit<%= s(computed.commits) %>
-  <b><%= `${user.contributionsCollection.totalPullRequestReviewContributions}`.padStart(5) %></b> pull request<%= s(user.contributionsCollection.totalPullRequestReviewContributions) %> reviewed
-  <b><%= `${user.contributionsCollection.totalPullRequestContributions}`.padStart(5) %></b> pull request<%= s(user.contributionsCollection.totalPullRequestContributions) %> opened
-  <b><%= `${user.contributionsCollection.totalIssueContributions}`.padStart(5) %></b> issue<%= s(user.contributionsCollection.totalIssueContributions) %> opened
-  <b><%= `${user.issueComments.totalCount}`.padStart(5) %></b> issue comment<%= s(user.issueComments.totalCount) %>
-<% } -%>
-<% if ((base.activity)&&(base.community)) { -%>
-
-<% } -%>
-<% if (base.community) { -%>
-<b>Tracked activity</b>
-  <b><%= `${user.following.totalCount}`.padStart(5) %></b> user<%= s(user.followers.totalCount) %> followed
-  <b><%= `${user.sponsorshipsAsSponsor.totalCount}`.padStart(5) %></b> repositor<%= s(user.sponsorshipsAsSponsor.totalCount, "y") %> sponsored
-  <b><%= `${user.starredRepositories.totalCount}`.padStart(5) %></b> repositor<%= s(user.starredRepositories.totalCount, "y") %> starred
-  <b><%= `${user.watching.totalCount}`.padStart(5) %></b> repositor<%= s(user.watching.totalCount, "y") %> watched
-<% } -%>
-</div><% } -%>
+<% if ((!q.repo && account === "user")&&((base.activity)||(base.community))) { %>
+<% if (base.activity) { %>
+<h3>Recent activity</h3>
+<dl class="terminal-kv">
+<dt>Commits</dt><dd><%= computed.commits %></dd>
+<dt>PRs reviewed</dt><dd><%= user.contributionsCollection.totalPullRequestReviewContributions %></dd>
+<dt>PRs opened</dt><dd><%= user.contributionsCollection.totalPullRequestContributions %></dd>
+<dt>Issues opened</dt><dd><%= user.contributionsCollection.totalIssueContributions %></dd>
+<dt>Issue comments</dt><dd><%= user.issueComments.totalCount %></dd>
+</dl>
+<% } %>
+<% if (base.community) { %>
+<h3>Tracked activity</h3>
+<dl class="terminal-kv">
+<dt>Following</dt><dd><%= user.following.totalCount %></dd>
+<dt>Repos sponsored</dt><dd><%= user.sponsorshipsAsSponsor.totalCount %></dd>
+<dt>Repos starred</dt><dd><%= user.starredRepositories.totalCount %></dd>
+<dt>Repos watched</dt><dd><%= user.watching.totalCount %></dd>
+</dl>
+<% } %>
+<% } %>

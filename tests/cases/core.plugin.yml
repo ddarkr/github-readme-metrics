@@ -1,5 +1,5 @@
 - name: 🧱 Core - Organization
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     user: github
     token: MOCKED_TOKEN
@@ -7,7 +7,7 @@
     use_mocked_data: 'yes'
     verify: 'yes'
 - name: 🧱 Core - Large display
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     config_display: large
@@ -15,7 +15,7 @@
     verify: 'yes'
 - name: 🧱 Core - JSON metrics
   if: ${{ success() || failure() }}
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     config_output: json
@@ -23,7 +23,7 @@
     verify: 'yes'
 - name: 🧱 Core - PNG metrics
   if: ${{ success() || failure() }}
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     config_output: png
@@ -31,14 +31,14 @@
     verify: 'yes'
 - name: 🧱 Core - Metrics insights
   if: ${{ success() || failure() }}
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     config_output: insights
     use_mocked_data: 'yes'
     verify: 'yes'
 - name: 🧱 Core - Presets
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     base: header, repositories

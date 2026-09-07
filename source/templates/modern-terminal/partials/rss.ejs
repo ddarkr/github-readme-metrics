@@ -1,18 +1,8 @@
-<% if (plugins.rss) { %>
-<div class="stdin"><%- meta.$ %> rss fetch <%= plugins.rss?.source ?? "" %></div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.rss.error) { -%>
-<span class="error"><%= plugins.rss.error.message %></span><%# -%>
-<% } else { -%>
-  <% if (plugins.rss.feed && plugins.rss.feed.length) { -%>
-    <% for (const {title, date} of plugins.rss.feed) { -%>
-      <% const t = String(title || "").padEnd(60); -%>
-      <% const d = f.date(new Date(date), {date:true, timeZone:config.timezone?.name}); -%>
-%>
-<%= t %> <span style="color:#888"><%= d %></span>
-    <% } -%>
-  <% } else { -%>
-    Empty RSS feed
-  <% } -%>
-<% } -%>
-</div><% } %>
+<% if (plugins["rss"]) { %>
+<% if (plugins["rss"].error) { %>
+<p class="error"><%= plugins["rss"].error.message %></p>
+<% } else { %>
+<p class="terminal-subtitle"><%= plugins.rss.source %></p>
+<% if (plugins.rss.feed.length) { %><ul class="terminal-list"><% for (const {title, date} of plugins.rss.feed) { %><li><b><%= title %></b><p class="terminal-subtitle"><%= f.date(new Date(date), {date:true, timeZone:config.timezone?.name}) %></p></li><% } %></ul><% } else { %><p class="empty">No entries in this RSS feed.</p><% } %>
+<% } %>
+<% } %>

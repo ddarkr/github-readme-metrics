@@ -2,18 +2,20 @@
 
 ## 0️ Prepare your machine
 
-A machine with a recent version of [NodeJS](https://nodejs.org) is required (see used version in [Dockerfile](/Dockerfile#L1-L2)).
+Node.js 24 or newer is required. Docker and CI use Node.js 24.
 
 ## 1️ Clone repository and install dependencies
 
 Run the following command to clone this repository and install dependencies.
 
 ```shell
-git clone https://github.com/lowlighter/metrics.git
+git clone https://github.com/ddarkr/metrics.git
 cd metrics/
-npm install
+npm ci
 cp settings.example.json settings.json
 ```
+
+Puppeteer downloads its browser during installation. To use an existing Chrome or Chromium installation instead, set `PUPPETEER_SKIP_DOWNLOAD=true` when installing and `PUPPETEER_BROWSER_PATH` to the browser executable when running metrics. The Docker image installs Debian Chromium and configures these variables automatically.
 
 ## 2️ Setup and configure *metrics*
 
@@ -41,5 +43,11 @@ Testing is done through [jest](https://github.com/facebook/jest) framework.
 
 To avoid consuming APIs requests and causing additional charges on external services, data are [mocked](/tests/mocks/index.mjs) using [JavaScript Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) and [Faker.js](https://github.com/faker-js/faker) with randomly generated data.
 
-Since tests are pretty long to run, it is advised to just let GitHub Actions do the testing.
+Run `npm test` for runtime, plugin integration, rendering regressions, and the mocked Action/web/placeholder matrix. The web tests use an automatically assigned port and do not load your `settings.json`.
+
+`npm run test-presets` is separate: it checks the external presets branch and may clone it.
+
+After changing metadata or examples, run `npm run build` and include its generated Action inputs, option reference, compatibility matrix, and test cases. Edit the source `metadata.yml` and `examples.yml`, not their generated copies.
+
+For an isolated interactive preview without personal credentials, run `SANDBOX=true PORT=3001 npm start`.
 

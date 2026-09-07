@@ -1,5 +1,5 @@
 - name: 📰 Recent activity - Recent activity
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     token: MOCKED_TOKEN
     plugin_activity: 'yes'

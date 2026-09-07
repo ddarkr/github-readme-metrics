@@ -1,12 +1,20 @@
-<% if ((account === "user")&&(base.header)) { %>
-<div class="stdin"><%- meta.$ %> whoami</div><%# -%>
-<div class="stdout"><%# -%>
-<b><%= user.name || user.login %></b> registered=<%= computed.registration.match(/^.+? [ymd]/)?.[0].replace(/ /g, "") %>, uid=<%= `${user.databaseId}`.substr(-4) %>, gid=<%= user.organizations.totalCount %>
-  contributed to <%= user.repositoriesContributedTo.totalCount %> repositor<%= s(user.repositoriesContributedTo.totalCount, "y") %> <b><% for (const [x, {color}] of Object.entries(computed.calendar)) { -%><span style="color:<%= color %>">#</span><% } %></b>
-  followed by <b><%= user.followers.totalCount %></b> user<%= s(user.followers.totalCount) %>
-</div><% } else if ((account === "organization")&&(base.header)) { %><%# -%>
-<div class="stdin"><%- meta.$ %> whoami</div><%# -%>
-<div class="stdout"><%# -%>
-<b><%= user.name || user.login %></b> registered=<%= computed.registration.match(/^.+? [ymd]/)?.[0].replace(/ /g, "") %>, uid=0, gid=<%= `${user.databaseId}`.substr(-4) %>
-  organization with <b><%= user.membersWithRole.totalCount %></b> member<%= s(user.membersWithRole.totalCount) %>
-</div><% } -%>
+<% if (base.header) { %>
+<dl class="terminal-kv">
+<dt><%= q.repo ? "Repository" : "Name" %></dt><dd><%= user.name || user.login %></dd>
+<dt><%= q.repo ? "Created" : "Joined GitHub" %></dt><dd><%= computed.registration %></dd>
+<% if (q.repo) { %>
+<dt>Deployments</dt><dd><%= repo.deployments.totalCount %></dd>
+<dt>Environments</dt><dd><%= repo.environments.totalCount %></dd>
+<dt>Contributors</dt><dd><%= repo.contributors.totalCount %></dd>
+<% if (repo.actionUsersCount != null) { %><dt>Action users</dt><dd><%= repo.actionUsersCount %></dd><% } %>
+<% } else if (account === "user") { %>
+<dt>Contributed repos</dt><dd><%= user.repositoriesContributedTo.totalCount %></dd>
+<dt>Followers</dt><dd><%= user.followers.totalCount %></dd>
+<% if (user.isHireable) { %><dt>Availability</dt><dd>Available for hire</dd><% } %>
+<% } else if (account === "organization") { %>
+<dt>Members</dt><dd><%= user.membersWithRole.totalCount %></dd>
+<% if (user.isVerified) { %><dt>Organization</dt><dd>Verified</dd><% } %>
+<% } %>
+<% if (!q.repo && user.location) { %><dt>Location</dt><dd><%= user.location %></dd><% } %>
+</dl>
+<% } %>

@@ -54,7 +54,7 @@ inputs:
       - `spotify`: "client_id, client_secret, refresh_token"
       - `lastfm`: "api_key"
       - `youtube`: "cookie"
-      - `koito`: "api_key" (optional for public instances)
+      - `koito`: API key sent as `Authorization: Token …` (optional for public instances)
     type: token
     default: ""
     extras:
@@ -62,10 +62,10 @@ inputs:
 
   plugin_music_user:
     description: |
-      Music provider username or Koito instance URL
+      Music provider username or Koito instance base URL
 
       - For Spotify, Last.fm, YouTube: username
-      - For Koito: instance URL (e.g., https://music-stats.doda.im)
+      - For Koito: HTTP(S) instance base URL (e.g., https://music-stats.doda.im)
     type: string
     default: .user.login
     preset: no

@@ -1,27 +1,22 @@
-<% if (plugins.stackoverflow) { %>
-<div class="stdin"><%- meta.$ %> stackoverflow</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.stackoverflow.error) { -%>
-<span class="error"><%= plugins.stackoverflow.error.message %></span><%# -%>
-<% } else { -%>
-<% const u = plugins.stackoverflow.user || {} %>
-<%= ("NAME".padEnd(14) + String(u.name || u.login || "").padStart(24)) %>
-<%= ("REPUTATION".padEnd(14) + String(u.reputation || 0).padStart(8)) %>
-<%= ("QUESTIONS".padEnd(14) + String(u.questions || 0).padStart(6) + "  ANSWERS".padEnd(10) + String(u.answers || 0).padStart(6)) %>
-<%= ("COMMENTS".padEnd(14) + String(u.comments || 0).padStart(6) + "  BADGES".padEnd(10) + String(u.badges || 0).padStart(6)) %>
-
-<% for (const section of plugins.stackoverflow.sections) { if (!plugins.stackoverflow[section]?.length) continue %>
-<%= ("\n" + ({"questions-recent":"Recent questions", "questions-top":"Top questions", "answers-recent":"Recent answers", "answers-top":"Top answers"}[section] || section)) %>
-<% for (const {type, ...entry} of plugins.stackoverflow[section]) { %>
-  <% if (type === "question") { %>
-<%= ("- Q: ".padEnd(6) + String(entry.title || "").slice(0, 80)) %>
-<%= ("  tags:".padEnd(10) + String((entry.tags || []).join(", ")).slice(0, 60)) %>
-<%= ("  upvotes:".padEnd(12) + String(entry.upvotes || 0).padStart(4) + "  views:" + String(entry.views || 0).padStart(6)) %>
-  <% } else if (type === "answer") { %>
-<%= ("- A: ".padEnd(6) + String(entry.question?.title || entry.title || "").slice(0, 80)) %>
-<%= ("  upvotes:".padEnd(12) + String(entry.upvotes || 0).padStart(4) + "  comments:" + String(entry.comments || 0).padStart(4)) %>
-  <% } %>
+<% if (plugins["stackoverflow"]) { %>
+<% if (plugins["stackoverflow"].error) { %>
+<p class="error"><%= plugins["stackoverflow"].error.message %></p>
+<% } else { %>
+<dl class="terminal-kv">
+<% for (const [key, label] of [["reputation", "Reputation"], ["questions", "Questions"], ["answers", "Answers"], ["comments", "Comments"], ["badges", "Badges"]]) { %><dt><%= label %></dt><dd><%= f(plugins.stackoverflow.user[key]) %></dd><% } %>
+</dl>
+<% for (const section of plugins.stackoverflow.sections) { const entries = plugins.stackoverflow[section]; if (!entries?.length) continue %>
+<h3><%= {"questions-recent":"Recent questions", "questions-top":"Top questions", "answers-recent":"Recent answers", "answers-top":"Top answers"}[section] %></h3>
+<ul class="terminal-list">
+<% for (const entry of entries) { %>
+<li><b><%- entry.type === "question" ? entry.title : entry.question?.title %></b>
+<% if (entry.type === "question") { %><p class="terminal-subtitle"><%= entry.tags.join(", ") %></p><% } %>
+<div class="prose <%= plugins.stackoverflow.lines ? 'clamped' : '' %>" style="--line-limit:<%= plugins.stackoverflow.lines %>"><%- entry.body %></div>
+<p class="terminal-subtitle"><%= f(entry.upvotes) %> upvotes · <%= f(entry.downvotes) %> downvotes · <%= f(entry.comments) %> comments · <%= entry.created %></p>
+<% if (entry.type === "question") { %><p><%= f(entry.views) %> views · <%= f(entry.answers) %> answers</p><% } else if (entry.accepted) { %><p class="diff">Accepted answer</p><% } %>
+</li>
+<% } %>
+</ul>
 <% } %>
 <% } %>
-<% } -%>
-</div><% } %>
+<% } %>

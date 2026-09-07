@@ -1,20 +1,12 @@
-<% if (plugins.posts) { %>
-<div class="stdin"><%- meta.$ %> posts --source "<%= plugins.posts.source %>"</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.posts.error) { -%>
-<span class="error"><%= plugins.posts.error.message %></span><%# -%>
-<% } else { -%>
-From <b><%= plugins.posts.source %></b>
-<% if (Array.isArray(plugins.posts.list) && plugins.posts.list.length) { %>
-<% for (const {title, description, date} of plugins.posts.list) { %>
-<%= f.date(new Date(date), {date:true, timeZone:config.timezone?.name}) %>  -  <b><%= title %></b>
-<% if (plugins.posts.descriptions && description) { %>
-  <span style="color:#9aa4b2"><%= description %></span>
-<% } %>
----
-<% } %>
+<% if (plugins["posts"]) { %>
+<% if (plugins["posts"].error) { %>
+<p class="error"><%= plugins["posts"].error.message %></p>
 <% } else { %>
-No recent posts
+<p class="terminal-subtitle">From <%= plugins.posts.source %></p>
+<% if (plugins.posts.list.length) { %><ul class="terminal-list">
+<% for (const {title, description, date, image} of plugins.posts.list) { %><li><b><%= title %></b><p class="terminal-subtitle"><%= f.date(new Date(date), {date:true, timeZone:config.timezone?.name}) %></p>
+<% if (plugins.posts.covers && image) { %><img class="report-image" src="<%= image %>" alt=""/><% } %>
+<% if (plugins.posts.descriptions && description) { %><p><%= description %></p><% } %>
+</li><% } %></ul><% } else { %><p class="empty">No recent posts from this source.</p><% } %>
 <% } %>
-<% } -%>
-</div><% } %>
+<% } %>

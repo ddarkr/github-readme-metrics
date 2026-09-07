@@ -254,6 +254,44 @@ inputs:
     example: base.header, base.repositories
     global: yes
 
+  config_terminal_theme:
+    description: |
+      Terminal template color theme
+
+      Used by the `modern-terminal` template.
+    type: string
+    default: warp-dark
+    values:
+      - warp-dark
+      - warp-light
+    global: yes
+
+  config_terminal_density:
+    description: |
+      Terminal block density
+
+      Used by the `modern-terminal` template.
+    type: string
+    default: comfortable
+    values:
+      - comfortable
+      - compact
+    global: yes
+
+  config_terminal_dividers:
+    description: |
+      Display dividers between terminal blocks
+    type: boolean
+    default: yes
+    global: yes
+
+  config_terminal_animations:
+    description: |
+      Animate terminal blocks when rendering SVG output
+    type: boolean
+    default: yes
+    global: yes
+
   config_twemoji:
     description: |
       Use twemojis

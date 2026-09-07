@@ -1,5 +1,5 @@
 - name: 📙 Terminal template - Example
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     template: terminal
     token: MOCKED_TOKEN

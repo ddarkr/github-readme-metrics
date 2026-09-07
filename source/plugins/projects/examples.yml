@@ -1,5 +1,5 @@
 - name: Project from a repository
-  uses: ddarkr/metrics@latest
+  uses: ddarkr/metrics@master
   with:
     filename: metrics.plugin.projects.svg
     token: ${{ secrets.METRICS_TOKEN_WITH_SCOPES }}

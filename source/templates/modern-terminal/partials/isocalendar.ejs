@@ -1,15 +1,15 @@
 <% if (plugins.isocalendar) { %>
-<div class="stdin"><%- meta.$ %> git log --since='1 year ago' --oneline --shortstat</div><%# -%>
-<div class="stdout"><%# -%>
-<% if (plugins.isocalendar.error) { -%>
-<span class="error"><%= plugins.isocalendar.error.message %></span><%# -%>
-<% } else { -%>
-Contributions calendar
-<% if (plugins.isocalendar.streak.current) { %>
-Current streak: <%= `${plugins.isocalendar.streak.current}`.padStart(3) %> day<%= s(plugins.isocalendar.streak.current) %>
+
+  <% if (plugins.isocalendar.error) { -%>
+    <span class="error"><%= plugins.isocalendar.error.message %></span>
+  <% } else { -%>
+    <div class="terminal-kv">
+      <% if (plugins.isocalendar.streak.current) { %><span class="terminal-kv__key">Current streak</span><span class="terminal-kv__value"><%= plugins.isocalendar.streak.current %> day<%= s(plugins.isocalendar.streak.current) %></span><% } %>
+      <span class="terminal-kv__key">Best streak</span><span class="terminal-kv__value"><%= plugins.isocalendar.streak.max %> day<%= s(plugins.isocalendar.streak.max) %></span>
+      <span class="terminal-kv__key">Highest day</span><span class="terminal-kv__value"><%= plugins.isocalendar.max %></span>
+      <span class="terminal-kv__key">Daily average</span><span class="terminal-kv__value"><%= plugins.isocalendar.average %></span>
+    </div>
+    <% if (plugins.isocalendar.svg) { %><div class="report-chart"><%- plugins.isocalendar.svg %></div><% } %>
+  <% } -%>
+
 <% } %>
-Best streak:    <%= `${plugins.isocalendar.streak.max}`.padStart(3) %> day<%= s(plugins.isocalendar.streak.max) %>
-Highest in a day at <%= plugins.isocalendar.max %>
-Average per day ~<%= plugins.isocalendar.average %>
-<% } -%>
-</div><% } %>
