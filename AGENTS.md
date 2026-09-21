@@ -47,12 +47,12 @@ metrics/
 
 ## COMMANDS
 ```bash
-npm start              # Start web instance
-npm test               # Run all tests (Jest, --runInBand)
-npm run test-metrics   # Run metrics tests only
-npm run dev            # Dev mode with nodemon
-npm run linter         # ESLint check
-npm run build          # Build project
+pnpm start            # Start web instance
+pnpm test             # Run all tests (Jest, --runInBand)
+pnpm run test-metrics # Run metrics tests only
+pnpm run dev          # Dev mode with nodemon
+pnpm run linter       # ESLint check
+pnpm run build        # Build project
 ```
 
 ## NOTES

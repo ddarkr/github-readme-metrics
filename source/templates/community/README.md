@@ -83,12 +83,13 @@ To create a new template, clone and setup this repository first:
 ```shell
 git clone https://github.com/ddarkr/github-readme-metrics.git
 cd metrics/
-npm install
+corepack enable
+pnpm install --frozen-lockfile
 ```
 
 Find a cool name for your new template and run the following:
 ```shell
-npm run quickstart template <template_name>
+pnpm run quickstart template <template_name>
 ```
 
 It will create a new directory in `/source/templates` with the following file structure:

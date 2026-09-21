@@ -15,14 +15,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
       - name: Setup NodeJS
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
       - name: Setup metrics
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Run linter
-        run: npm run linter
+        run: pnpm run linter
 
   build:
     name: Build and test checked-out revision
@@ -34,7 +37,7 @@ jobs:
       - name: Build test image
         run: docker build -t github-readme-metrics:${{ github.sha }} .
       - name: Run offline regression and widget tests
-        run: docker run --rm --entrypoint="" github-readme-metrics:${{ github.sha }} npm test
+        run: docker run --rm --entrypoint="" github-readme-metrics:${{ github.sha }} pnpm test
 
   analyze:
     name: Analyze checked-out revision

@@ -2,6 +2,7 @@
   "name": "github-readme-metrics",
   "version": "3.35.0-beta",
   "private": true,
+  "packageManager": "pnpm@11.9.0",
   "description": "An infographics generator with 40+ plugins and 300+ options to display stats about your GitHub account and render them as SVG, Markdown, PDF or JSON!",
   "main": "source/app/action/index.mjs",
   "scripts": {

@@ -14,8 +14,8 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # Copy the lockfile first so dependency installation is cacheable and deterministic.
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN corepack enable && pnpm install --frozen-lockfile
 
 # Tests and the action load fixtures from the repository, so retain the full source tree.
 COPY . .

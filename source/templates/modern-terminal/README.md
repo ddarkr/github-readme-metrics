@@ -141,7 +141,7 @@ Render profiles and repositories in both themes at 320, 375, 414, and 768 pixels
 ### Automated widget checks
 
 ```sh
-npx jest --runInBand tests/modern-terminal.test.js
+pnpm exec jest --runInBand tests/modern-terminal.test.js
 ```
 
 The suite renders every content widget registered in `partials/_.json` with seeded preview data in both themes, checks that domain values appear, validates SVG/XML and local icon references, and exercises disabled and escaped error states. It uses the real preview generator and EJS partials; it does not authenticate to external APIs or exercise repository data collection.

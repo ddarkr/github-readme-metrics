@@ -18,3 +18,5 @@ metrics.config.yml
 coverage
 .nyc_output
 npm-debug.log*
+pnpm-debug.log*
+.pnpm-store

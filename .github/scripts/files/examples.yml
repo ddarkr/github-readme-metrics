@@ -133,7 +133,7 @@ jobs:
           user: ddarkr
           repo: github-readme-metrics
           plugin_licenses: yes
-          plugin_licenses_setup: npm ci
+          plugin_licenses_setup: pnpm install --frozen-lockfile
           plugin_licenses_legal: yes
           plugin_licenses_ratio: yes
           plugins_errors_fatal: yes

@@ -18,13 +18,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
       - name: Setup NodeJS
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
       - name: Setup metrics
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Publish presets examples
-        run: npm run presets -- publish
+        run: pnpm run presets publish
         env:
           GITHUB_TOKEN: ${{ github.token }}

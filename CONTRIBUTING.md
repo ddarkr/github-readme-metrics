@@ -6,7 +6,7 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md) for the source layout and [local setup](
 
 ## Development prerequisites
 
-- Node.js 24 or newer and npm. Use `npm ci` to install the lockfile's dependency versions.
+- Node.js 24 or newer and pnpm 11.9.0 (pinned via `packageManager`; Node 24 ships corepack, so bootstrap with `corepack enable`). Use `pnpm install --frozen-lockfile` to install the lockfile's dependency versions. Lifecycle scripts for puppeteer, sharp, canvas, and dprint are allowed via `pnpm-workspace.yaml`.
 - Chrome/Chromium for browser-backed rendering tests. Use Puppeteer's installed browser, or set `PUPPETEER_BROWSER_PATH` to an existing executable.
 - Keep personal credentials in GitHub Actions secrets or the ignored local `settings.json`. Never put real credentials in test fixtures, screenshots, logs, or committed workflow files.
 - `tests/secrets.json` contains committed dummy inputs for scenario generation. It is not a credential store; never replace its fixture values with real tokens.
@@ -22,16 +22,16 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md) for the source layout and [local setup](
 ## Checks
 
 ```sh
-npm test
-npm run linter
-npm run build
+pnpm test
+pnpm run linter
+pnpm run build
 ```
 
-`npm test` runs the offline regression, integration-fixture, widget, and browser rendering suites. It does not establish that every external service accepts live credentials. The browser-backed cases require Chrome/Chromium even though they use local fixture data.
+`pnpm test` runs the offline regression, integration-fixture, widget, and browser rendering suites. It does not establish that every external service accepts live credentials. The browser-backed cases require Chrome/Chromium even though they use local fixture data.
 
-`npm run test-metrics` runs the broader Action/web scenario matrix. `npm run test-presets` is separate and requires its configured preset checkout. These suites can depend on external resources; they are not the default offline check.
+`pnpm run test-metrics` runs the broader Action/web scenario matrix. `pnpm run test-presets` is separate and requires its configured preset checkout. These suites can depend on external resources; they are not the default offline check.
 
-`npm run build` regenerates documentation, descriptors, example workflows, and test cases in place; it is not a JavaScript compilation step. The normal command does not publish. Do not use the build script's `publish` mode for local verification.
+`pnpm run build` regenerates documentation, descriptors, example workflows, and test cases in place; it is not a JavaScript compilation step. The normal command does not publish. Do not use the build script's `publish` mode for local verification.
 
 ## Source files and generated files
 

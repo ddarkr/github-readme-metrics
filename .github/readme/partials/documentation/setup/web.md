@@ -15,7 +15,7 @@ Set the required `token` in `settings.json` to a GitHub personal access token an
 Start the instance locally:
 
 ```sh
-npm start
+pnpm start
 ```
 
 The example configuration listens on port 3000. Test through `http://127.0.0.1:3000`; do not expose the configuration file or token through a static server, image, repository, or URL.
@@ -28,7 +28,7 @@ Build the image as described in the [Docker guide](/.github/readme/partials/docu
 docker run --rm --entrypoint="" \
   --publish 127.0.0.1:3000:3000 \
   --volume "$PWD/settings.json:/metrics/settings.json:ro" \
-  github-readme-metrics npm start
+  github-readme-metrics pnpm start
 ```
 
 The image includes Chromium and configures Puppeteer to use it. Do not bake `settings.json` into an image or publish it in a build context.

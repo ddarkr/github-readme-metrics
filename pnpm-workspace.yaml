@@ -1,0 +1,6 @@
+allowBuilds:
+  canvas: true
+  dprint: true
+  fsevents: true
+  puppeteer: true
+  sharp: true

@@ -13,7 +13,7 @@ const __quickstart = paths.join(__metrics, ".github/scripts/quickstart")
 
 //Check arguments
 if ((!mode)||(!name))
-  throw new Error(`Usage is "npm run quickstart -- <mode> <name>"`)
+  throw new Error(`Usage is "pnpm run quickstart <mode> <name>"`)
 if (!["plugin", "template"].includes(mode))
   throw new Error(`Unsupported mode ${mode}`)
 

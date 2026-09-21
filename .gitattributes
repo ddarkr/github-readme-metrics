@@ -23,4 +23,4 @@ source/templates/README.md linguist-generated
 action.yml linguist-generated
 settings.example.json linguist-generated
 tests/cases/* linguist-generated
-package-lock.json linguist-generated
+pnpm-lock.yaml linguist-generated

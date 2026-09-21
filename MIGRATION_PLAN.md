@@ -20,10 +20,10 @@ git push -u origin feat/typescript-migration
 ### 0.2 현재 상태 스냅샷
 ```bash
 # 테스트 통과 확인
-npm test
+pnpm test
 
 # 빌드 확인
-npm run build
+pnpm run build
 
 # 현재 파일 목록 저장
 find source -name "*.mjs" > .migration-backup-filelist.txt
@@ -35,7 +35,7 @@ find source -name "*.mjs" > .migration-backup-filelist.txt
 
 ### 1.1 패키지 설치
 ```bash
-npm install -D typescript esbuild tsx @types/node ts-jest @typescript-eslint/parser @typescript-eslint/eslint-plugin
+pnpm add -D typescript esbuild tsx @types/node ts-jest @typescript-eslint/parser @typescript-eslint/eslint-plugin
 ```
 
 | 패키지 | 역할 | 버전 |
@@ -495,7 +495,7 @@ export interface ActionInputs {
 
 **추가 설치**:
 ```bash
-npm install -D @types/express @types/d3 @types/ejs @types/js-yaml @types/compression
+pnpm add -D @types/express @types/d3 @types/ejs @types/js-yaml @types/compression
 ```
 
 ---
@@ -858,7 +858,7 @@ ENTRYPOINT node /metrics/source/app/action/index.mjs
 ENTRYPOINT node /metrics/dist/app/action/index.mjs
 
 # Or (tsx 직접 실행)
-ENTRYPOINT npx tsx /metrics/source/app/action/index.ts
+ENTRYPOINT pnpm exec tsx /metrics/source/app/action/index.ts
 ```
 
 ### 7.2 Web Server (`source/app/web/`)
@@ -912,22 +912,22 @@ export default config
 **`.github/workflows/test.yml` 변경**:
 ```yaml
 - name: Type check
-  run: npm run typecheck
+  run: pnpm run typecheck
 
 - name: Lint
-  run: npm run linter
+  run: pnpm run linter
 
 - name: Test
-  run: npm test
+  run: pnpm test
 ```
 
 ### 9.2 Dockerfile 변경
 
 ```dockerfile
 # TypeScript 빌드 단계 추가
-RUN npm ci
-RUN npm run typecheck
-RUN npm run build
+RUN pnpm install --frozen-lockfile
+RUN pnpm run typecheck
+RUN pnpm run build
 ```
 
 ---
@@ -936,12 +936,12 @@ RUN npm run build
 
 | 검증 항목 | 명령어 | 기대 결과 |
 |---|---|---|
-| 타입 체크 | `npm run typecheck` | 에러 없음 |
-| 빌드 | `npm run build` | dist/ 생성 |
-| 린트 | `npm run linter` | 에러 없음 |
-| 테스트 | `npm test` | 전체 통과 |
-| 서버 기동 | `npm start` | 정상 동작 |
-| 개발 모드 | `npm run dev` | 핫 리로드 동작 |
+| 타입 체크 | `pnpm run typecheck` | 에러 없음 |
+| 빌드 | `pnpm run build` | dist/ 생성 |
+| 린트 | `pnpm run linter` | 에러 없음 |
+| 테스트 | `pnpm test` | 전체 통과 |
+| 서버 기동 | `pnpm start` | 정상 동작 |
+| 개발 모드 | `pnpm run dev` | 핫 리로드 동작 |
 | Docker 빌드 | `docker build .` | 이미지 생성 |
 | GitHub Action | 테스트 워크플로우 | 정상 실행 |
 

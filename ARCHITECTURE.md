@@ -57,7 +57,7 @@ Modern Terminal registers its content partials in `source/templates/modern-termi
 
 ## Source of generated files
 
-`npm run build` invokes `.github/scripts/build.mjs`. It regenerates files in place; it does not compile the application or publish in its normal mode.
+`pnpm run build` invokes `.github/scripts/build.mjs`. It regenerates files in place; it does not compile the application or publish in its normal mode.
 
 | Generated output | Maintained source |
 | --- | --- |
@@ -80,7 +80,7 @@ Change generator inputs before regenerating outputs. Generated example workflows
 - `metrics.test.js` covers the broader Action, web, and placeholder scenario matrix.
 - `presets.test.js` covers an explicitly configured preset checkout.
 
-`npm test` selects the offline suites; browser-backed cases still need Chrome/Chromium. Use Puppeteer's installed browser or `PUPPETEER_BROWSER_PATH`. The broader scenario and preset suites have separate commands because they can depend on external resources. See [CONTRIBUTING.md](CONTRIBUTING.md) for the verification workflow and [.github/readme/partials/documentation/setup/local.md](.github/readme/partials/documentation/setup/local.md) for setup.
+`pnpm test` selects the offline suites; browser-backed cases still need Chrome/Chromium. Use Puppeteer's installed browser or `PUPPETEER_BROWSER_PATH`. The broader scenario and preset suites have separate commands because they can depend on external resources. See [CONTRIBUTING.md](CONTRIBUTING.md) for the verification workflow and [.github/readme/partials/documentation/setup/local.md](.github/readme/partials/documentation/setup/local.md) for setup.
 
 ## Credentials and deployment
 
