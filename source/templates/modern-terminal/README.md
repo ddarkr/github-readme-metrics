@@ -133,6 +133,7 @@ The public inputs are defined in the core plugin metadata:
 `template.mjs` resolves these through `core.inputs()` and stores `{theme, density, dividers, animations}` in `data.terminal`. Template-local query aliases and arbitrary inline font-size, line-height, and padding overrides are not additional public settings. Preview renderers that bypass the processor must supply the same resolved object. Global `config_animations: no` and reduced-motion preferences also disable CSS motion.
 
 The token block in `style.css` owns theme colors, type, the four-pixel spacing scale, rules, and motion. Body and command text are 13px; table headings and supporting text are 12px. Comfortable density uses 1.4 line height and 16px block padding; compact uses 1.3 and 12px. Both themes share the composition and tabular numeric alignment. Plugin-provided images and charts remain available where they are the actual requested content.
+Tables explicitly inherit the report text color so numeric cells remain readable when Chromium rasterizes the embedded SVG.
 
 ### Visual checks
 
