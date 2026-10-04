@@ -27,6 +27,8 @@ All product and company names are trademarks™ or registered® trademarks of th
 </table>
 <!--/header-->
 
+Recent activity supports both embedded commit lists and GitHub's newer push events containing only `before`/`head` revisions. For the latter, commit details are fetched from the compare API; inaccessible ranges are skipped. Each comparison includes up to 250 commits, and newly created branches use the head commit.
+
 ## ➡️ Available options
 
 <!--options-->

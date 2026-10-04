@@ -1,5 +1,5 @@
-//Legacy import
-import { recent as recent_analyzer } from "./../languages/analyzers.mjs"
+//Imports
+import { pushEventCommits, recent as recent_analyzer } from "./../languages/analyzers.mjs"
 
 //Setup
 export default async function({login, data, rest, imports, q, account}, {enabled = false, extras = false, ...defaults} = {}) {
@@ -46,10 +46,9 @@ export default async function({login, data, rest, imports, q, account}, {enabled
     console.debug(`metrics/compute/${login}/plugins > habits > loading patches`)
     const patches = [
       ...await Promise.allSettled(
-        commits
-          .flatMap(({payload}) => payload.commits)
-          .filter(({author}) => data.shared["commits.authoring"].filter(authoring => author?.login?.toLocaleLowerCase().includes(authoring) || author?.email?.toLocaleLowerCase().includes(authoring) || author?.name?.toLocaleLowerCase().includes(authoring)).length)
-          .map(async commit => (await rest.request(commit)).data.files),
+        (await pushEventCommits(rest, commits))
+          .filter(({author}) => data.shared["commits.authoring"].filter(authoring => author?.login?.toLocaleLowerCase()?.includes(authoring) || author?.email?.toLocaleLowerCase()?.includes(authoring) || author?.name?.toLocaleLowerCase()?.includes(authoring)).length)
+          .map(async commit => (await rest.request(commit.url ?? commit)).data.files),
       ),
     ]
       .filter(({status}) => status === "fulfilled")

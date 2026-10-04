@@ -2,6 +2,7 @@
 import { cli } from "./analyzer/cli.mjs"
 import { IndepthAnalyzer } from "./analyzer/indepth.mjs"
 import { RecentAnalyzer } from "./analyzer/recent.mjs"
+export { pushEventCommits } from "./analyzer/recent.mjs"
 
 /**Indepth analyzer */
 export async function indepth({login, data, imports, rest, context, repositories}, {skipped, categories, timeout}) {

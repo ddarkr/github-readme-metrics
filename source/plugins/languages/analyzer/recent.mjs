@@ -3,7 +3,55 @@ import linguist from "linguist-js"
 import { filters } from "../../../app/metrics/utils.mjs"
 import { Analyzer } from "./analyzer.mjs"
 
-/**Recent analyzer */
+/**Resolve commit metadata for push events across events API shapes */
+export async function pushEventCommits(rest, events) {
+  const resolved = await Promise.all(events.map(async ({repo: {name: repo} = {}, payload = {}}) => {
+    //Legacy shape: commits embedded in event payload
+    if (Array.isArray(payload?.commits))
+      return payload.commits.map(normalizePushCommit)
+    //Current shape: only before/head range, resolve through compare API
+    if ((payload?.before) && (payload?.head)) {
+      const [owner, name] = (repo ?? "").split("/")
+      if ((!owner) || (!name))
+        return []
+      //Branch creation: before is all zeros so no range exists, resolve head commit alone for real author data
+      if (/^0+$/.test(payload.before)) {
+        try {
+          const {data} = await rest.repos.getCommit({owner, repo: name, ref: payload.head})
+          return [normalizePushCommit(data)]
+        }
+        catch (error) {
+          if ([404, 409, 422].includes(error?.status ?? error?.response?.status))
+            return []
+          throw error
+        }
+      }
+      try {
+        //ponytail: compare returns up to 250 commits; paginate if larger pushes need full analysis.
+        const {data: {commits = []}} = await rest.repos.compareCommitsWithBasehead({owner, repo: name, basehead: `${payload.before}...${payload.head}`})
+        return commits.map(normalizePushCommit)
+      }
+      catch (error) {
+        //Deleted, private or otherwise inaccessible range: no retrievable commits
+        if ([404, 409, 422].includes(error?.status ?? error?.response?.status))
+          return []
+        throw error
+      }
+    }
+    return []
+  }))
+  return resolved.flat()
+}
+
+/**Normalize a push-event commit so authoring filters see git emails/names, not just GitHub logins */
+function normalizePushCommit(commit) {
+  return {
+    ...commit,
+    author: {...commit.commit?.author, ...commit.author},
+    committer: {...commit.commit?.committer, ...commit.committer},
+  }
+}
+
 export class RecentAnalyzer extends Analyzer {
   /**Constructor */
   constructor() {
@@ -65,8 +113,7 @@ export class RecentAnalyzer extends Analyzer {
     this.debug("fetching patches")
     const patches = [
       ...await Promise.allSettled(
-        commits
-          .flatMap(({payload}) => payload.commits)
+        (await pushEventCommits(this.rest, commits))
           .filter(({committer}) => filters.text(committer?.email, this.authoring, {debug: false}))
           .map(commit => commit.url)
           .map(async commit => (await this.rest.request(commit)).data),
