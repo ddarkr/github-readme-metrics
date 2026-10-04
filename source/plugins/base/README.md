@@ -26,6 +26,8 @@
 </table>
 <!--/header-->
 
+Repository collection retries failed pages with a smaller batch and continues through full batches until the configured repository limit or the end of the available results.
+
 ## ➡️ Available options
 
 <!--options-->

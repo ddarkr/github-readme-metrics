@@ -145,15 +145,15 @@ export default async function({login, graphql, rest, data, q, queries, imports, 
       for (const type of ({user: ["repositories", "repositoriesContributedTo"], organization: ["repositories"]}[account] ?? [])) {
         //Iterate through repositories
         let cursor = null
-        let pushed = 0
         const options = {repositories: {forks, affiliations, constraints: ""}, repositoriesContributedTo: {forks: "", affiliations: "", constraints: ", includeUserRepositories: false, contributionTypes: COMMIT"}}[type] ?? null
         data.user[type] = data.user[type] ?? {}
         data.user[type].nodes = data.user[type].nodes ?? []
-        do {
+        for (;;) {
+          const requested = Math.min(repositories, {user: _batch, organization: Math.min(25, _batch)}[account])
           console.debug(`metrics/compute/${login}/base > retrieving ${type} after ${cursor}`)
           const request = {}
           try {
-            Object.assign(request, await graphql(queries.base.repositories({login, account, type, after: cursor ? `after: "${cursor}"` : "", repositories: Math.min(repositories, {user: _batch, organization: Math.min(25, _batch)}[account]), ...options})))
+            Object.assign(request, await graphql(queries.base.repositories({login, account, type, after: cursor ? `after: "${cursor}"` : "", repositories: requested, ...options})))
           }
           catch (error) {
             console.debug(`metrics/compute/${login}/base > failed to retrieve ${_batch} repositories after ${cursor}, this is probably due to an API timeout, halving batch`)
@@ -167,14 +167,15 @@ export default async function({login, graphql, rest, data, q, queries, imports, 
           const {[account]: {[type]: {edges = [], nodes = []} = {}}} = request
           cursor = edges?.[edges?.length - 1]?.cursor
           data.user[type].nodes.push(...nodes)
-          pushed = nodes.length
+          const pushed = nodes.length
           console.debug(`metrics/compute/${login}/base > retrieved ${pushed} ${type} after ${cursor}`)
-          if (pushed < repositories) {
+          if (pushed < requested) {
             console.debug(`metrics/compute/${login}/base > retrieved less repositories than expected, probably no more to fetch`)
             break
           }
+          if ((!cursor) || ((data.user.repositories?.nodes?.length ?? 0) + (data.user.repositoriesContributedTo?.nodes?.length ?? 0) >= repositories))
+            break
         }
-        while ((pushed) && (cursor) && ((data.user.repositories?.nodes?.length ?? 0) + (data.user.repositoriesContributedTo?.nodes?.length ?? 0) < repositories))
         //Limit repositories
         console.debug(`metrics/compute/${login}/base > keeping only ${repositories} ${type}`)
         data.user[type].nodes.splice(repositories)

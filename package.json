@@ -7,7 +7,7 @@
   "main": "source/app/action/index.mjs",
   "scripts": {
     "start": "node source/app/web/index.mjs",
-    "test": "jest --runInBand regressions.test.js rendering.test.js integrations.test.js modern-terminal.test.js",
+    "test": "jest --runInBand regressions.test.js rendering.test.js integrations.test.js modern-terminal.test.js habits-regressions.test.js repositories-regressions.test.js",
     "test-presets": "jest --runInBand presets.test.js --noStackTrace",
     "test-metrics": "jest --runInBand metrics.test.js",
     "build": "node .github/scripts/build.mjs",
