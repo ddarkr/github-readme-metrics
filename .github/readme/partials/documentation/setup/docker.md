@@ -7,6 +7,8 @@ docker build -t github-readme-metrics .
 ```
 
 The supplied Dockerfile uses Node.js 24, installs Debian Chromium, and configures `PUPPETEER_SKIP_DOWNLOAD` and `PUPPETEER_BROWSER_PATH` for that browser.
+Native dependencies also require `make` and `xz-utils`: the `licensed` Ruby dependency builds Nokogiri from its bundled source archives on ARM64.
+
 
 Run a one-off render with Action inputs as `INPUT_` environment variables. Mount a directory for output rather than putting credentials into the image:
 

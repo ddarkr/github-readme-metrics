@@ -8,7 +8,7 @@ ENV PUPPETEER_BROWSER_PATH=/usr/bin/chromium
 
 # Install runtime dependencies before installing Node modules.
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends chromium ca-certificates curl unzip ruby-full fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf git g++ cmake pkg-config libssl-dev python3 \
+  && apt-get install -y --no-install-recommends chromium ca-certificates curl unzip ruby-full fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf git g++ make xz-utils cmake pkg-config libssl-dev python3 \
   && curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh \
   && gem install licensed \
   && rm -rf /var/lib/apt/lists/*
